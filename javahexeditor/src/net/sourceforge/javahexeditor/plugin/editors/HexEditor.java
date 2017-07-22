@@ -208,8 +208,6 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 				Files.copy(input.getStorage().getContents(), systemFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				if (input.getClass().getName().contains("FileRevisionEditorInput")) {
 					inputName = tmpFile.getFileName() + " (from history)";
-				} else {
-					inputName = null;
 				}
 			} catch (Exception e) {
 				HexEditorPlugin.logError("Error on opening: " + localFile, e);
@@ -229,13 +227,13 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 			try {
 				// open file
 				manager.openFile(systemFile, charset);
+				if (inputName == null) {
+					inputName = systemFile.getName();
+				}
 			} catch (Exception ex) {
 				HexEditorPlugin.logError("Error on opening: " + localFile, ex);
 				statusLineManager.setErrorMessage(ex.getMessage());
 				systemFile = null;
-			}
-			if (inputName == null) {
-				inputName = systemFile.getName();
 			}
 			setPartName(inputName);
 		} else {
@@ -340,7 +338,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public  <T> T getAdapter(Class<T> required)  {
+	public <T> T getAdapter(Class<T> required) {
 		Object result = null;
 		if (IContentOutlinePage.class.isAssignableFrom(required)) {
 			if (outlinePage == null) {
@@ -354,7 +352,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		} else {
 			result = super.getAdapter(required);
 		}
-		return (T)result;
+		return (T) result;
 	}
 
 	/**

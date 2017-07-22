@@ -619,7 +619,6 @@ public final class BinaryContent {
      * @return number of bytes read
      * @throws IOException
      */
-    @SuppressWarnings("null")
     public long get(File destinationFile, long start, long length)
             throws IOException {
         if (start < 0L || length < 0L || start + length > length())

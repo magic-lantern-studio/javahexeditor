@@ -108,12 +108,12 @@ public final class FileOpenAction implements IObjectActionDelegate {
         if (object instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable) object;
 
-            IResource resource = (IResource) adaptable
+            IResource resource = adaptable
                     .getAdapter(IResource.class);
             if (resource != null) {
                 return resource.getLocation().toFile();
             }
-            File file = (File) adaptable.getAdapter(File.class);
+            File file =adaptable.getAdapter(File.class);
             if (file != null) {
                 return file;
             }
