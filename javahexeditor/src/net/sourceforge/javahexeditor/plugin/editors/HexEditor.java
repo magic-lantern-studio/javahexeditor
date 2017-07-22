@@ -23,22 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Set;
-
-import net.sourceforge.javahexeditor.BinaryContent;
-import net.sourceforge.javahexeditor.BinaryContent.RangeSelection;
-import net.sourceforge.javahexeditor.HexTexts;
-import net.sourceforge.javahexeditor.Manager;
-import net.sourceforge.javahexeditor.Preferences;
-import net.sourceforge.javahexeditor.Texts;
-import net.sourceforge.javahexeditor.common.Log;
-import net.sourceforge.javahexeditor.common.TextUtility;
-import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -85,499 +74,487 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
+import net.sourceforge.javahexeditor.BinaryContent;
+import net.sourceforge.javahexeditor.BinaryContent.RangeSelection;
+import net.sourceforge.javahexeditor.HexTexts;
+import net.sourceforge.javahexeditor.Manager;
+import net.sourceforge.javahexeditor.Preferences;
+import net.sourceforge.javahexeditor.Texts;
+import net.sourceforge.javahexeditor.common.Log;
+import net.sourceforge.javahexeditor.common.TextUtility;
+import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
+
 public final class HexEditor extends EditorPart implements ISelectionProvider {
 
-    private static class MyAction extends Action {
-        private Manager manager;
-        private String myId;
+	private static class MyAction extends Action {
+		private Manager manager;
+		private String myId;
 
-        public MyAction(Manager manager, String id) {
-            if (manager == null) {
-                throw new IllegalArgumentException(
-                        "Parameter 'manager' must not be null.");
-            }
-            if (id == null) {
-                throw new IllegalArgumentException(
-                        "Parameter 'id' must not be null.");
-            }
-            this.manager = manager;
-            myId = id;
-        }
+		public MyAction(Manager manager, String id) {
+			if (manager == null) {
+				throw new IllegalArgumentException("Parameter 'manager' must not be null.");
+			}
+			if (id == null) {
+				throw new IllegalArgumentException("Parameter 'id' must not be null.");
+			}
+			this.manager = manager;
+			myId = id;
+		}
 
-        @Override
-        public void run() {
-            if (myId.equals(ActionFactory.UNDO.getId()))
-                manager.doUndo();
-            else if (myId.equals(ActionFactory.REDO.getId()))
-                manager.doRedo();
-            else if (myId.equals(ActionFactory.CUT.getId()))
-                manager.doCut();
-            else if (myId.equals(ActionFactory.COPY.getId()))
-                manager.doCopy();
-            else if (myId.equals(ActionFactory.PASTE.getId()))
-                manager.doPaste();
-            else if (myId.equals(ActionFactory.DELETE.getId()))
-                manager.doDelete();
-            else if (myId.equals(ActionFactory.SELECT_ALL.getId()))
-                manager.doSelectAll();
-            else if (myId.equals(ActionFactory.FIND.getId()))
-                manager.doFind();
-        }
-    }
+		@Override
+		public void run() {
+			if (myId.equals(ActionFactory.UNDO.getId()))
+				manager.doUndo();
+			else if (myId.equals(ActionFactory.REDO.getId()))
+				manager.doRedo();
+			else if (myId.equals(ActionFactory.CUT.getId()))
+				manager.doCut();
+			else if (myId.equals(ActionFactory.COPY.getId()))
+				manager.doCopy();
+			else if (myId.equals(ActionFactory.PASTE.getId()))
+				manager.doPaste();
+			else if (myId.equals(ActionFactory.DELETE.getId()))
+				manager.doDelete();
+			else if (myId.equals(ActionFactory.SELECT_ALL.getId()))
+				manager.doSelectAll();
+			else if (myId.equals(ActionFactory.FIND.getId()))
+				manager.doFind();
+		}
+	}
 
-    // Public id from the contributions.
-    public static final String ID = "net.sourceforge.javahexeditor";
+	// Public id from the contributions.
+	public static final String ID = "net.sourceforge.javahexeditor";
 
-    // Private ids from the contributions.
-    private static final String OUTLINE_ELEMENT_ATTRIBUTE_CLASS = "class";
-    private static final String OUTLINE_ELEMENT_NAME = "outline";
-    private static final String OUTLINE_ID = "net.sourceforge.javahexeditor.outline";
+	// Private ids from the contributions.
+	private static final String OUTLINE_ELEMENT_ATTRIBUTE_CLASS = "class";
+	private static final String OUTLINE_ELEMENT_NAME = "outline";
+	private static final String OUTLINE_ID = "net.sourceforge.javahexeditor.outline";
 
-    Manager manager;
-    private IContentOutlinePage outlinePage;
-    private IPropertyChangeListener preferencesChangeListener;
-    Set<ISelectionChangedListener> selectionListeners;
+	Manager manager;
+	private IContentOutlinePage outlinePage;
+	private IPropertyChangeListener preferencesChangeListener;
+	Set<ISelectionChangedListener> selectionListeners;
 
-    private IStatusLineManager statusLineManager;
+	private IStatusLineManager statusLineManager;
 
-    private HexTexts hexTexts;
+	private HexTexts hexTexts;
 
-    public HexEditor() {
-        super();
-        manager = new Manager();
-    }
+	public HexEditor() {
+		super();
+		manager = new Manager();
+	}
 
-    @Override
-    public void addSelectionChangedListener(ISelectionChangedListener listener) {
-        if (listener == null) {
-            return;
-        }
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		if (listener == null) {
+			return;
+		}
 
-        if (selectionListeners == null) {
-            selectionListeners = new HashSet<ISelectionChangedListener>();
-        }
-        selectionListeners.add(listener);
-    }
+		if (selectionListeners == null) {
+			selectionListeners = new HashSet<ISelectionChangedListener>();
+		}
+		selectionListeners.add(listener);
+	}
 
-    @Override
-    public void createPartControl(Composite parent) {
+	@Override
+	public void createPartControl(Composite parent) {
 
-        statusLineManager = getEditorSite().getActionBars()
-                .getStatusLineManager();
+		statusLineManager = getEditorSite().getActionBars().getStatusLineManager();
 
-        HexEditorPlugin plugin = HexEditorPlugin.getDefault();
-        getManager().setTextFont(HexEditorPreferences.getFontData());
-        manager.setFindReplaceHistory(plugin.getFindReplaceHistory());
-        hexTexts = manager.createEditorPart(parent);
-        FillLayout fillLayout = new FillLayout();
-        parent.setLayout(fillLayout);
+		HexEditorPlugin plugin = HexEditorPlugin.getDefault();
+		getManager().setTextFont(HexEditorPreferences.getFontData());
+		manager.setFindReplaceHistory(plugin.getFindReplaceHistory());
+		hexTexts = manager.createEditorPart(parent);
+		FillLayout fillLayout = new FillLayout();
+		parent.setLayout(fillLayout);
 
-        String charset = null;
-        IEditorInput unresolved = getEditorInput();
-        File systemFile = null;
-        IFile localFile = null;
-        String inputName = null;
-        if (unresolved instanceof FileEditorInput) {
-            localFile = ((FileEditorInput) unresolved).getFile();
-        } else if (unresolved instanceof IPathEditorInput) { // eg.
-            // FileInPlaceEditorInput
-            IPathEditorInput file = (IPathEditorInput) unresolved;
-            systemFile = file.getPath().toFile();
-        } else if (unresolved instanceof ILocationProvider) {
-            ILocationProvider location = (ILocationProvider) unresolved;
-            IWorkspaceRoot rootWorkspace = ResourcesPlugin.getWorkspace()
-                    .getRoot();
-            localFile = rootWorkspace.getFile(location.getPath(location));
-        } else if (unresolved instanceof IURIEditorInput) {
-            URI uri = ((IURIEditorInput) unresolved).getURI();
-            if (uri != null) {
-                IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-                IFile[] files = root.findFilesForLocationURI(uri);
+		String charset = null;
+		IEditorInput unresolved = getEditorInput();
+		File systemFile = null;
+		IFile localFile = null;
+		String inputName = null;
+		if (unresolved instanceof FileEditorInput) {
+			localFile = ((FileEditorInput) unresolved).getFile();
+		} else if (unresolved instanceof IPathEditorInput) { // eg.
+			// FileInPlaceEditorInput
+			IPathEditorInput file = (IPathEditorInput) unresolved;
+			systemFile = file.getPath().toFile();
+		} else if (unresolved instanceof ILocationProvider) {
+			ILocationProvider location = (ILocationProvider) unresolved;
+			IWorkspaceRoot rootWorkspace = ResourcesPlugin.getWorkspace().getRoot();
+			localFile = rootWorkspace.getFile(location.getPath(location));
+		} else if (unresolved instanceof IURIEditorInput) {
+			URI uri = ((IURIEditorInput) unresolved).getURI();
+			if (uri != null) {
+				IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+				IFile[] files = root.findFilesForLocationURI(uri);
 
-                if (files.length != 0) {
-                    localFile = files[0];
-                } else {
-                    systemFile = new File(uri);
-                }
-            }
-        } else if(unresolved instanceof IStorageEditorInput) {
-            // TODO this is just a hack to get the editor opened on history entries
-            // Ideally we would open not files but streams.
-            IStorageEditorInput input = (IStorageEditorInput) unresolved;
-            try {
-                Path tmpDir = Files.createTempDirectory(null);
-                Path tmpFile = tmpDir.resolve(input.getStorage().getName());
-                systemFile = tmpFile.toFile();
-                systemFile.createNewFile();
-                systemFile.deleteOnExit();
-                Files.copy(input.getStorage().getContents(), systemFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                if (input.getClass().getName().contains("FileRevisionEditorInput")) {
-                    inputName = tmpFile.getFileName() + " (from history)";
-                } else {
-                    inputName = null;
-                }
-            } catch (Exception e) {
-                HexEditorPlugin.logError("Error on opening: " + localFile, e);
-            }
-        }
-        // charset
-        if (localFile != null) {
-            systemFile = localFile.getLocation().toFile();
-            try {
-                charset = localFile.getCharset(true);
-            } catch (CoreException e) {
-                HexEditorPlugin.logError("Error on opening: " + localFile, e);
-            }
-        }
+				if (files.length != 0) {
+					localFile = files[0];
+				} else {
+					systemFile = new File(uri);
+				}
+			}
+		} else if (unresolved instanceof IStorageEditorInput) {
+			// TODO this is just a hack to get the editor opened on history entries
+			// Ideally we would open not files but streams.
+			IStorageEditorInput input = (IStorageEditorInput) unresolved;
+			try {
+				Path tmpDir = Files.createTempDirectory(null);
+				Path tmpFile = tmpDir.resolve(input.getStorage().getName());
+				systemFile = tmpFile.toFile();
+				systemFile.createNewFile();
+				systemFile.deleteOnExit();
+				Files.copy(input.getStorage().getContents(), systemFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+				if (input.getClass().getName().contains("FileRevisionEditorInput")) {
+					inputName = tmpFile.getFileName() + " (from history)";
+				} else {
+					inputName = null;
+				}
+			} catch (Exception e) {
+				HexEditorPlugin.logError("Error on opening: " + localFile, e);
+			}
+		}
+		// charset
+		if (localFile != null) {
+			systemFile = localFile.getLocation().toFile();
+			try {
+				charset = localFile.getCharset(true);
+			} catch (CoreException e) {
+				HexEditorPlugin.logError("Error on opening: " + localFile, e);
+			}
+		}
 
-        if (systemFile != null) {
-            try {
-                // open file
-                manager.openFile(systemFile, charset);
-            } catch (Exception ex) {
-                HexEditorPlugin.logError("Error on opening: " + localFile, ex);
-                statusLineManager.setErrorMessage(ex.getMessage());
-                systemFile = null;
-            }
-            if(inputName == null) {
-                inputName = systemFile.getName();
-            }
-            setPartName(inputName);
-        } else {
-            setPartName(Texts.EMPTY);
-        }
+		if (systemFile != null) {
+			try {
+				// open file
+				manager.openFile(systemFile, charset);
+			} catch (Exception ex) {
+				HexEditorPlugin.logError("Error on opening: " + localFile, ex);
+				statusLineManager.setErrorMessage(ex.getMessage());
+				systemFile = null;
+			}
+			if (inputName == null) {
+				inputName = systemFile.getName();
+			}
+			setPartName(inputName);
+		} else {
+			setPartName(Texts.EMPTY);
+		}
 
-        // Register any global actions with the site's IActionBars.
-        IActionBars bars = getEditorSite().getActionBars();
-        String id = ActionFactory.UNDO.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
-        id = ActionFactory.REDO.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
-        id = ActionFactory.CUT.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
-        id = ActionFactory.COPY.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
-        id = ActionFactory.PASTE.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
-        id = ActionFactory.DELETE.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
-        id = ActionFactory.SELECT_ALL.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
-        id = ActionFactory.FIND.getId();
-        bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		// Register any global actions with the site's IActionBars.
+		IActionBars bars = getEditorSite().getActionBars();
+		String id = ActionFactory.UNDO.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		id = ActionFactory.REDO.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		id = ActionFactory.CUT.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		id = ActionFactory.COPY.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		id = ActionFactory.PASTE.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		id = ActionFactory.DELETE.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		id = ActionFactory.SELECT_ALL.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
+		id = ActionFactory.FIND.getId();
+		bars.setGlobalActionHandler(id, new MyAction(manager, id));
 
-        manager.addListener(new Listener() {
-            @Override
-            @SuppressWarnings("synthetic-access")
-            public void handleEvent(Event event) {
-                firePropertyChange(PROP_DIRTY);
-                updateActionsStatus();
-            }
-        });
+		manager.addListener(new Listener() {
+			@Override
+			@SuppressWarnings("synthetic-access")
+			public void handleEvent(Event event) {
+				firePropertyChange(PROP_DIRTY);
+				updateActionsStatus();
+			}
+		});
 
-        bars.updateActionBars();
+		bars.updateActionBars();
 
-        preferencesChangeListener = new IPropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                if (Preferences.FONT_DATA.equals(event.getProperty())) {
-                    manager.setTextFont((FontData) event.getNewValue());
-                }
-            }
-        };
-        IPreferenceStore store = plugin.getPreferenceStore();
-        store.addPropertyChangeListener(preferencesChangeListener);
+		preferencesChangeListener = new IPropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (Preferences.FONT_DATA.equals(event.getProperty())) {
+					manager.setTextFont((FontData) event.getNewValue());
+				}
+			}
+		};
+		IPreferenceStore store = plugin.getPreferenceStore();
+		store.addPropertyChangeListener(preferencesChangeListener);
 
-        manager.addLongSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                Log.trace(this, "Long selection: {0}", e);
-                if (selectionListeners == null) {
-                    return;
-                }
+		manager.addLongSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Log.trace(this, "Long selection: {0}", e);
+				if (selectionListeners == null) {
+					return;
+				}
 
-                long[] longSelection = manager.getLongSelection(e);
-                SelectionChangedEvent event = new SelectionChangedEvent(
-                        HexEditor.this, new StructuredSelection(new Object[] {
-                                new Long(longSelection[0]),
-                                new Long(longSelection[1]) }));
-                for (ISelectionChangedListener listener : selectionListeners) {
-                    listener.selectionChanged(event);
-                }
-            }
-        });
-        // getSite().getPage().addSelectionListener(
-        // new ISelectionListener() {
-        // @Override
-        // public void selectionChanged(IWorkbenchPart part,
-        // ISelection selection) {
-        // if (ID.equals(part.getSite().getId())) {
-        // return;
-        // }
-        // }
-        // });
-    }
+				long[] longSelection = manager.getLongSelection(e);
+				SelectionChangedEvent event = new SelectionChangedEvent(HexEditor.this, new StructuredSelection(
+						new Object[] { new Long(longSelection[0]), new Long(longSelection[1]) }));
+				for (ISelectionChangedListener listener : selectionListeners) {
+					listener.selectionChanged(event);
+				}
+			}
+		});
+		// getSite().getPage().addSelectionListener(
+		// new ISelectionListener() {
+		// @Override
+		// public void selectionChanged(IWorkbenchPart part,
+		// ISelection selection) {
+		// if (ID.equals(part.getSite().getId())) {
+		// return;
+		// }
+		// }
+		// });
+	}
 
-    @Override
-    public void dispose() {
-        IPreferenceStore store = HexEditorPlugin.getDefault()
-                .getPreferenceStore();
-        if(preferencesChangeListener != null) {
-            store.removePropertyChangeListener(preferencesChangeListener);
-        }
-        if(hexTexts != null) {
-            hexTexts.dispose();
-        }
-    }
+	@Override
+	public void dispose() {
+		IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
+		if (preferencesChangeListener != null) {
+			store.removePropertyChangeListener(preferencesChangeListener);
+		}
+		if (hexTexts != null) {
+			hexTexts.dispose();
+		}
+	}
 
-    @Override
-    public void doSave(IProgressMonitor monitor) {
-        monitor.beginTask(Texts.EDITOR_MESSAGE_SAVING_FILE_PLEASE_WAIT,
-                IProgressMonitor.UNKNOWN);
-        try {
-            getManager().saveFile(monitor);
-        } catch (IOException ex) {
-            statusLineManager.setErrorMessage(ex.getMessage());
-        }
-        monitor.done();
-    }
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		monitor.beginTask(Texts.EDITOR_MESSAGE_SAVING_FILE_PLEASE_WAIT, IProgressMonitor.UNKNOWN);
+		try {
+			getManager().saveFile(monitor);
+		} catch (IOException ex) {
+			statusLineManager.setErrorMessage(ex.getMessage());
+		}
+		monitor.done();
+	}
 
-    @Override
-    public void doSaveAs() {
-        saveToFile(false);
-    }
+	@Override
+	public void doSaveAs() {
+		saveToFile(false);
+	}
 
-    @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
-        Object result = null;
-        if (IContentOutlinePage.class.isAssignableFrom(required)) {
-            if (outlinePage == null) {
-                outlinePage = getOutlinePage();
-            }
-            result = outlinePage;
-        } else if (BinaryContent.class.isAssignableFrom(required)) {
-            result = getManager().getContent();
-        } else if (Manager.class.isAssignableFrom(required)) {
-            result = getManager();
-        } else {
-            result = super.getAdapter(required);
-        }
-        return result;
-    }
+	@SuppressWarnings("unchecked")
+	@Override
+	public  <T> T getAdapter(Class<T> required)  {
+		Object result = null;
+		if (IContentOutlinePage.class.isAssignableFrom(required)) {
+			if (outlinePage == null) {
+				outlinePage = getOutlinePage();
+			}
+			result = outlinePage;
+		} else if (BinaryContent.class.isAssignableFrom(required)) {
+			result = getManager().getContent();
+		} else if (Manager.class.isAssignableFrom(required)) {
+			result = getManager();
+		} else {
+			result = super.getAdapter(required);
+		}
+		return (T)result;
+	}
 
-    /**
-     * Getter for the manager instance.
-     *
-     * @return the manager
-     */
-    public Manager getManager() {
-        return manager;
-    }
+	/**
+	 * Getter for the manager instance.
+	 *
+	 * @return the manager
+	 */
+	public Manager getManager() {
+		return manager;
+	}
 
-    IContentOutlinePage getOutlinePage() {
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint(OUTLINE_ID);
-        if (point == null) {
-            return null;
-        }
+	IContentOutlinePage getOutlinePage() {
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		IExtensionPoint point = registry.getExtensionPoint(OUTLINE_ID);
+		if (point == null) {
+			return null;
+		}
 
-        IExtension[] extensions = point.getExtensions();
-        if (extensions.length == 0) {
-            return null;
-        }
-        IConfigurationElement[] elements = extensions[0]
-                .getConfigurationElements();
-        String className = null;
-        for (int i = 0; i < elements.length; ++i) {
-            if (OUTLINE_ELEMENT_NAME.equals(elements[i].getName())) {
-                className = elements[i]
-                        .getAttribute(OUTLINE_ELEMENT_ATTRIBUTE_CLASS);
-                break;
-            }
-        }
+		IExtension[] extensions = point.getExtensions();
+		if (extensions.length == 0) {
+			return null;
+		}
+		IConfigurationElement[] elements = extensions[0].getConfigurationElements();
+		String className = null;
+		for (int i = 0; i < elements.length; ++i) {
+			if (OUTLINE_ELEMENT_NAME.equals(elements[i].getName())) {
+				className = elements[i].getAttribute(OUTLINE_ELEMENT_ATTRIBUTE_CLASS);
+				break;
+			}
+		}
 
-        Bundle aBundle = Platform.getBundle(extensions[0]
-                .getNamespaceIdentifier());
-        IContentOutlinePage result = null;
-        if (aBundle != null) {
-            try {
-                aBundle.start();
-            } catch (BundleException e) {
-                return null;
-            }
-            try {
-                // throws IllegalAccessException, InstantiationException,
-                // ClassNotFoundException
-                result = (IContentOutlinePage) aBundle.loadClass(className)
-                        .newInstance();
-            } catch (Exception e) {
-                return null;
-            }
-        }
+		Bundle aBundle = Platform.getBundle(extensions[0].getNamespaceIdentifier());
+		IContentOutlinePage result = null;
+		if (aBundle != null) {
+			try {
+				aBundle.start();
+			} catch (BundleException e) {
+				return null;
+			}
+			try {
+				// throws IllegalAccessException, InstantiationException,
+				// ClassNotFoundException
+				result = (IContentOutlinePage) aBundle.loadClass(className).newInstance();
+			} catch (Exception e) {
+				return null;
+			}
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public ISelection getSelection() {
-        RangeSelection rangeSelection = getManager().getSelection();
-        return new StructuredSelection(new Object[] {
-                new Long(rangeSelection.start), new Long(rangeSelection.end) });
-    }
+	@Override
+	public ISelection getSelection() {
+		RangeSelection rangeSelection = getManager().getSelection();
+		return new StructuredSelection(new Object[] { new Long(rangeSelection.start), new Long(rangeSelection.end) });
+	}
 
-    @Override
-    public void init(IEditorSite site, final IEditorInput input)
-            throws PartInitException {
-        Log.trace(this, "init starts with selection provider {0}",
-                site.getSelectionProvider());
+	@Override
+	public void init(IEditorSite site, final IEditorInput input) throws PartInitException {
+		Log.trace(this, "init starts with selection provider {0}", site.getSelectionProvider());
 
-        setSite(site);
-        if (!(input instanceof IPathEditorInput)
-                && !(input instanceof ILocationProvider)
-                && (!(input instanceof IURIEditorInput))
-                && (!(input instanceof IStorageEditorInput))) {
-            throw new PartInitException("Input '" + input.toString() + "'is not a file");
-        }
-        setInput(input);
-        // When opening an external file the workbench (Eclipse 3.1) calls
-        // HexEditorActionBarContributor.
-        // MyStatusLineContributionItem.fill() before
-        // HexEditorActionBarContributor.setActiveEditor()
-        // but we need an editor to fill the status bar.
-        site.getActionBarContributor().setActiveEditor(this);
-        site.setSelectionProvider(this);
-    }
+		setSite(site);
+		if (!(input instanceof IPathEditorInput) && !(input instanceof ILocationProvider)
+				&& (!(input instanceof IURIEditorInput)) && (!(input instanceof IStorageEditorInput))) {
+			throw new PartInitException("Input '" + input.toString() + "'is not a file");
+		}
+		setInput(input);
+		// When opening an external file the workbench (Eclipse 3.1) calls
+		// HexEditorActionBarContributor.
+		// MyStatusLineContributionItem.fill() before
+		// HexEditorActionBarContributor.setActiveEditor()
+		// but we need an editor to fill the status bar.
+		site.getActionBarContributor().setActiveEditor(this);
+		site.setSelectionProvider(this);
+	}
 
-    @Override
-    public boolean isDirty() {
-        return getManager().isDirty();
-    }
+	@Override
+	public boolean isDirty() {
+		return getManager().isDirty();
+	}
 
-    @Override
-    public boolean isSaveAsAllowed() {
-        return true;
-    }
+	@Override
+	public boolean isSaveAsAllowed() {
+		return true;
+	}
 
-    @Override
-    public void removeSelectionChangedListener(
-            ISelectionChangedListener listener) {
-        if (selectionListeners != null) {
-            selectionListeners.remove(listener);
-        }
-    }
+	@Override
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+		if (selectionListeners != null) {
+			selectionListeners.remove(listener);
+		}
+	}
 
-    void saveToFile(final boolean selection) {
-        final File file = getManager().showSaveAsDialog(
-                getEditorSite().getShell(), selection);
-        if (file == null) {
-            return;
-        }
+	void saveToFile(final boolean selection) {
+		final File file = getManager().showSaveAsDialog(getEditorSite().getShell(), selection);
+		if (file == null) {
+			return;
+		}
 
-        IRunnableWithProgress runnable = new IRunnableWithProgress() {
-            @Override
-            public void run(IProgressMonitor monitor) {
-                saveToFile(file, selection, monitor);
-            }
-        };
-        ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(
-                getEditorSite().getShell());
-        try {
-            monitorDialog.run(false, false, runnable);
-        } catch (InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+			@Override
+			public void run(IProgressMonitor monitor) {
+				saveToFile(file, selection, monitor);
+			}
+		};
+		ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(getEditorSite().getShell());
+		try {
+			monitorDialog.run(false, false, runnable);
+		} catch (InvocationTargetException ex) {
+			throw new RuntimeException(ex);
+		} catch (InterruptedException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 
-    void saveToFile(File file, boolean selection, IProgressMonitor monitor) {
-        monitor.beginTask(Texts.EDITOR_MESSAGE_SAVING_FILE_PLEASE_WAIT,
-                IProgressMonitor.UNKNOWN);
-        try {
-            if (selection) {
-                manager.doSaveSelectionAs(file);
-            } else {
-                manager.saveAsFile(file, monitor);
-            }
-        } catch (IOException ex) {
-            monitor.done();
-            statusLineManager.setErrorMessage(ex.getMessage());
-            return;
-        }
-        monitor.done();
-        if (!selection) {
-            setPartName(file.getName());
-            firePropertyChange(PROP_DIRTY);
-        }
+	void saveToFile(File file, boolean selection, IProgressMonitor monitor) {
+		monitor.beginTask(Texts.EDITOR_MESSAGE_SAVING_FILE_PLEASE_WAIT, IProgressMonitor.UNKNOWN);
+		try {
+			if (selection) {
+				manager.doSaveSelectionAs(file);
+			} else {
+				manager.saveAsFile(file, monitor);
+			}
+		} catch (IOException ex) {
+			monitor.done();
+			statusLineManager.setErrorMessage(ex.getMessage());
+			return;
+		}
+		monitor.done();
+		if (!selection) {
+			setPartName(file.getName());
+			firePropertyChange(PROP_DIRTY);
+		}
 
-        statusLineManager.setMessage(TextUtility.format(
-                Texts.EDITOR_MESSAGE_FILE_SAVED, file.getAbsolutePath()));
-    }
+		statusLineManager.setMessage(TextUtility.format(Texts.EDITOR_MESSAGE_FILE_SAVED, file.getAbsolutePath()));
+	}
 
-    @Override
-    public void setFocus() {
-        // useless. It is called before ActionBarContributor.setActiveEditor()
-        // so focusing is done there
-        hexTexts.setFocus();
-    }
+	@Override
+	public void setFocus() {
+		// useless. It is called before ActionBarContributor.setActiveEditor()
+		// so focusing is done there
+		hexTexts.setFocus();
+	}
 
-    @Override
-    public void setSelection(ISelection selection) {
-        if (selection.isEmpty()) {
-            return;
-        }
-        StructuredSelection aSelection = (StructuredSelection) selection;
-        long[] startEnd = (long[]) aSelection.getFirstElement();
-        long start = startEnd[0];
-        long end = start;
-        if (startEnd.length > 1) {
-            end = startEnd[1];
-        }
-        if (aSelection.size() > 1) {
-            startEnd = (long[]) aSelection.toArray()[1];
-            end = startEnd[0];
-            if (startEnd.length > 1) {
-                end = startEnd[1];
-            }
-        }
-        getManager().setSelection(new RangeSelection(start, end));
-    }
+	@Override
+	public void setSelection(ISelection selection) {
+		if (selection.isEmpty()) {
+			return;
+		}
+		StructuredSelection aSelection = (StructuredSelection) selection;
+		long[] startEnd = (long[]) aSelection.getFirstElement();
+		long start = startEnd[0];
+		long end = start;
+		if (startEnd.length > 1) {
+			end = startEnd[1];
+		}
+		if (aSelection.size() > 1) {
+			startEnd = (long[]) aSelection.toArray()[1];
+			end = startEnd[0];
+			if (startEnd.length > 1) {
+				end = startEnd[1];
+			}
+		}
+		getManager().setSelection(new RangeSelection(start, end));
+	}
 
-    /**
-     * Updates the status of actions: enables/disables them depending on whether
-     * there is text selected and whether inserting or overwriting is active.
-     * Undo/redo actions are enabled/disabled as well.
-     */
-    void updateActionsStatus() {
-        boolean textSelected = getManager().isTextSelected();
-        boolean lengthModifiable = textSelected && !manager.isOverwriteMode();
-        IActionBars bars = getEditorSite().getActionBars();
-        IAction action = bars
-                .getGlobalActionHandler(ActionFactory.UNDO.getId());
-        if (action != null) {
-            action.setEnabled(manager.canUndo());
-        }
+	/**
+	 * Updates the status of actions: enables/disables them depending on whether
+	 * there is text selected and whether inserting or overwriting is active.
+	 * Undo/redo actions are enabled/disabled as well.
+	 */
+	void updateActionsStatus() {
+		boolean textSelected = getManager().isTextSelected();
+		boolean lengthModifiable = textSelected && !manager.isOverwriteMode();
+		IActionBars bars = getEditorSite().getActionBars();
+		IAction action = bars.getGlobalActionHandler(ActionFactory.UNDO.getId());
+		if (action != null) {
+			action.setEnabled(manager.canUndo());
+		}
 
-        action = bars.getGlobalActionHandler(ActionFactory.REDO.getId());
-        if (action != null) {
-            action.setEnabled(manager.canRedo());
-        }
+		action = bars.getGlobalActionHandler(ActionFactory.REDO.getId());
+		if (action != null) {
+			action.setEnabled(manager.canRedo());
+		}
 
-        action = bars.getGlobalActionHandler(ActionFactory.CUT.getId());
-        if (action != null) {
-            action.setEnabled(lengthModifiable);
-        }
+		action = bars.getGlobalActionHandler(ActionFactory.CUT.getId());
+		if (action != null) {
+			action.setEnabled(lengthModifiable);
+		}
 
-        action = bars.getGlobalActionHandler(ActionFactory.COPY.getId());
-        if (action != null) {
-            action.setEnabled(textSelected);
-        }
+		action = bars.getGlobalActionHandler(ActionFactory.COPY.getId());
+		if (action != null) {
+			action.setEnabled(textSelected);
+		}
 
-        action = bars.getGlobalActionHandler(ActionFactory.DELETE.getId());
-        if (action != null) {
-            action.setEnabled(lengthModifiable);
-        }
+		action = bars.getGlobalActionHandler(ActionFactory.DELETE.getId());
+		if (action != null) {
+			action.setEnabled(lengthModifiable);
+		}
 
-        bars.updateActionBars();
-    }
+		bars.updateActionBars();
+	}
 }
