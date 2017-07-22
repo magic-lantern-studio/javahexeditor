@@ -2,8 +2,8 @@
 <feature
       id="net.sourceforge.javahexeditor"
       label="Java Hex Editor"
-      version="0.5.0.qualifier"
-      provider-name="Andrey Loskutov"
+      version="0.5.1.qualifier"
+      provider-name="Jordi Bergenthal, Peter Dell, Andrey Loskutov"
       plugin="net.sourceforge.javahexeditor">
 
    <description url="http://javahexeditor.sourceforge.net">
@@ -322,7 +322,7 @@ the &quot;copyright&quot; line and a pointer to where the full notice is found.
    </license>
 
    <url>
-      <update label="Andrey Loskutov plugins site" url="http://andrei.gmxhome.de/eclipse/"/>
+      <update label="Java Hex Editor Update Site" url="http://javahexeditor.sourceforge.net/update"/>
    </url>
 
    <plugin
