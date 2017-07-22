@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Java Hex Editor
 Bundle-SymbolicName: net.sourceforge.javahexeditor; singleton:=true
-Bundle-Version: 0.5.0.qualifier
+Bundle-Version: 0.5.1.qualifier
 Bundle-Activator: net.sourceforge.javahexeditor.plugin.HexEditorPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -14,9 +14,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.core.filesystem
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Andrey Loskutov
+Bundle-Vendor: Jordi Bergenthal, Peter Dell, Andrey Loskutov
 Export-Package: net.sourceforge.javahexeditor.plugin,
  net.sourceforge.javahexeditor.plugin.actions,
  net.sourceforge.javahexeditor.plugin.editors,
  net.sourceforge.javahexeditor.test
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
