@@ -76,7 +76,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * A binary file editor, composed of two synchronized displays: an hexadecimal
  * and a basic ASCII char display. The file size has no effect on the memory
- * footprint of the editor. It has binary, ASCII and unicode find functionality.
+ * footprint of the editor. It has binary, ASCII and Unicode find functionality.
  * Use addListener(SWT.Modify, Listener) to listen to changes of the 'dirty',
  * 'overwrite/insert', 'selection' and 'canUndo/canRedo' status.
  *
