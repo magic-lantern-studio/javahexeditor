@@ -28,43 +28,41 @@ import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
  */
 public final class Log {
 
-    static final boolean DEBUG = HexEditorPlugin.getDefault().isDebugging();
+	static final boolean DEBUG = HexEditorPlugin.getDefault().isDebugging();
 
-    /**
-     * Creation is private.
-     */
-    private Log() {
-    }
+	/**
+	 * Creation is private.
+	 */
+	private Log() {
+	}
 
-    public static void logError(String message, Object[] parameters,
-            Throwable th) {
-        if (message == null) {
-            throw new IllegalArgumentException(
-                    "Parameter 'message' must not be null.");
-        }
-        String m = createMessage("ERROR: ", message, parameters);
-        HexEditorPlugin.logError(m, th);
-    }
+	public static void logError(String message, Object[] parameters, Throwable th) {
+		if (message == null) {
+			throw new IllegalArgumentException("Parameter 'message' must not be null.");
+		}
+		String m = createMessage("ERROR: ", message, parameters);
+		HexEditorPlugin.logError(m, th);
+	}
 
-    public static void trace(Object owner, String message, Object... parameters) {
-        if(DEBUG) {
-            String m = createMessage(owner, message, parameters);
-            System.out.println(m);
-        }
-    }
+	public static void trace(Object owner, String message, Object... parameters) {
+		if (DEBUG) {
+			String m = createMessage(owner, message, parameters);
+			System.out.println(m);
+		}
+	}
 
-    private static String createMessage(Object owner, String message, Object... parameters) {
-        if (message == null) {
-            message = "";
-        }
-        String[] stringParameters = null;
-        if (parameters != null) {
-            stringParameters = new String[parameters.length];
-            for (int i = 0; i < parameters.length; i++) {
-                stringParameters[i] = String.valueOf(parameters[i]);
-            }
-        }
-        return owner + ":" + TextUtility.format(message, stringParameters);
-    }
+	private static String createMessage(Object owner, String message, Object... parameters) {
+		if (message == null) {
+			message = "";
+		}
+		String[] stringParameters = null;
+		if (parameters != null) {
+			stringParameters = new String[parameters.length];
+			for (int i = 0; i < parameters.length; i++) {
+				stringParameters[i] = String.valueOf(parameters[i]);
+			}
+		}
+		return owner + ":" + TextUtility.format(message, stringParameters);
+	}
 
 }

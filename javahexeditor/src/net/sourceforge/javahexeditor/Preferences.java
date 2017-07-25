@@ -27,13 +27,13 @@ import org.eclipse.swt.graphics.FontData;
  * @author Peter Dell
  */
 public final class Preferences {
-    // Property names
-    public static final String FONT_NAME = "font.name";
-    public static final String FONT_SIZE = "font.size";
-    public static final String FONT_STYLE = "font.style";
-    public static final String FONT_DATA = "font.data";
+	// Property names
+	public static final String FONT_NAME = "font.name";
+	public static final String FONT_SIZE = "font.size";
+	public static final String FONT_STYLE = "font.style";
+	public static final String FONT_DATA = "font.data";
 
-    public static FontData getDefaultFontData() {
-        return new FontData("Courier New", 10, SWT.NORMAL);
-    }
+	public static FontData getDefaultFontData() {
+		return new FontData("Courier New", 10, SWT.NORMAL);
+	}
 }

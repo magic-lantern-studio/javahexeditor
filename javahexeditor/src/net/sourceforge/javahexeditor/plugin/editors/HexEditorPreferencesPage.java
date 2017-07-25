@@ -19,10 +19,6 @@
  */
 package net.sourceforge.javahexeditor.plugin.editors;
 
-import net.sourceforge.javahexeditor.Preferences;
-import net.sourceforge.javahexeditor.PreferencesManager;
-import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
-
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -33,6 +29,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.service.prefs.BackingStoreException;
 
+import net.sourceforge.javahexeditor.Preferences;
+import net.sourceforge.javahexeditor.PreferencesManager;
+import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
+
 /**
  * This class represents a preference page that is contributed to the
  * Preferences dialog.
@@ -41,47 +41,44 @@ import org.osgi.service.prefs.BackingStoreException;
  * preference store that belongs to the main plug-in class. That way,
  * preferences can be accessed directly via the preference store.
  */
-public class HexEditorPreferencesPage extends PreferencePage implements
-IWorkbenchPreferencePage {
+public class HexEditorPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
 
-    private PreferencesManager preferences;
+	private PreferencesManager preferences;
 
-    @Override
-    protected Control createContents(Composite parent) {
-        FontData fontData = HexEditorPreferences.getFontData();
-        preferences = new PreferencesManager(fontData);
+	@Override
+	protected Control createContents(Composite parent) {
+		FontData fontData = HexEditorPreferences.getFontData();
+		preferences = new PreferencesManager(fontData);
 
-        return preferences.createPreferencesPart(parent);
-    }
+		return preferences.createPreferencesPart(parent);
+	}
 
-    @Override
-    public void init(IWorkbench workbench) {
-    }
+	@Override
+	public void init(IWorkbench workbench) {
+	}
 
-    @Override
-    protected void performDefaults() {
-        super.performDefaults();
-        preferences.setFontData(null);
-    }
+	@Override
+	protected void performDefaults() {
+		super.performDefaults();
+		preferences.setFontData(null);
+	}
 
-    @Override
-    public boolean performOk() {
-        IPreferenceStore store = HexEditorPlugin.getDefault()
-                .getPreferenceStore();
-        FontData fontData = preferences.getFontData();
-        store.setValue(Preferences.FONT_NAME, fontData.getName());
-        store.setValue(Preferences.FONT_STYLE, fontData.getStyle());
-        store.setValue(Preferences.FONT_SIZE, fontData.getHeight());
-        store.firePropertyChangeEvent(Preferences.FONT_DATA, null, fontData);
+	@Override
+	public boolean performOk() {
+		IPreferenceStore store = HexEditorPlugin.getDefault().getPreferenceStore();
+		FontData fontData = preferences.getFontData();
+		store.setValue(Preferences.FONT_NAME, fontData.getName());
+		store.setValue(Preferences.FONT_STYLE, fontData.getStyle());
+		store.setValue(Preferences.FONT_SIZE, fontData.getHeight());
+		store.firePropertyChangeEvent(Preferences.FONT_DATA, null, fontData);
 
-        try {
-            InstanceScope.INSTANCE.getNode(HexEditorPlugin.ID).flush();
-        } catch (BackingStoreException ex) {
+		try {
+			InstanceScope.INSTANCE.getNode(HexEditorPlugin.ID).flush();
+		} catch (BackingStoreException ex) {
 
-            throw new RuntimeException( "Cannot store preferences for plugin '"
-                    + HexEditorPlugin.ID + "'", ex);
-        }
+			throw new RuntimeException("Cannot store preferences for plugin '" + HexEditorPlugin.ID + "'", ex);
+		}
 
-        return true;
-    }
+		return true;
+	}
 }

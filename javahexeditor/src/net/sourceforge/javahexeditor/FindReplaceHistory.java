@@ -29,61 +29,60 @@ import java.util.List;
  */
 public final class FindReplaceHistory {
 
-    /**
-     * An entry has a string value and a flag indicating whether the text is to
-     * be interpreted as text or as hex value(s).
-     */
-    public static final class Entry {
-        private String stringValue;
-        private boolean hex;
+	/**
+	 * An entry has a string value and a flag indicating whether the text is to be
+	 * interpreted as text or as hex value(s).
+	 */
+	public static final class Entry {
+		private String stringValue;
+		private boolean hex;
 
-        public Entry(String stringValue, boolean selected) {
-            if (stringValue == null) {
-                throw new IllegalArgumentException(
-                        "Parameter 'stringValue' must not be null.");
-            }
+		public Entry(String stringValue, boolean selected) {
+			if (stringValue == null) {
+				throw new IllegalArgumentException("Parameter 'stringValue' must not be null.");
+			}
 
-            this.stringValue = stringValue;
-            this.hex = selected;
-        }
+			this.stringValue = stringValue;
+			this.hex = selected;
+		}
 
-        public String getStringValue() {
-            return stringValue;
-        }
+		public String getStringValue() {
+			return stringValue;
+		}
 
-        public boolean isHex() {
-            return hex;
-        }
-    }
+		public boolean isHex() {
+			return hex;
+		}
+	}
 
-    private List<Entry> findList;
-    private List<Entry> replaceList;
+	private List<Entry> findList;
+	private List<Entry> replaceList;
 
-    public FindReplaceHistory() {
-        findList = new ArrayList<Entry>();
-        replaceList = new ArrayList<Entry>();
-    }
+	public FindReplaceHistory() {
+		findList = new ArrayList<Entry>();
+		replaceList = new ArrayList<Entry>();
+	}
 
-    /**
-     * Gets the list of previous find operations
-     *
-     * @return The modifiable list of previous find operations, may be empty,
-     *         not <code>null</code>.
-     */
-    public List<Entry> getFindList() {
+	/**
+	 * Gets the list of previous find operations
+	 *
+	 * @return The modifiable list of previous find operations, may be empty, not
+	 *         <code>null</code>.
+	 */
+	public List<Entry> getFindList() {
 
-        return findList;
-    }
+		return findList;
+	}
 
-    /**
-     * Gets the list of previous replace operations
-     *
-     * @return The modifiable list of previous replace operations, may be empty,
-     *         not <code>null</code>.
-     */
-    public List<Entry> getReplaceList() {
+	/**
+	 * Gets the list of previous replace operations
+	 *
+	 * @return The modifiable list of previous replace operations, may be empty, not
+	 *         <code>null</code>.
+	 */
+	public List<Entry> getReplaceList() {
 
-        return replaceList;
-    }
+		return replaceList;
+	}
 
 }

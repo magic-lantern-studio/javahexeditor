@@ -25,11 +25,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.eclipse.swt.graphics.FontData;
+
 import net.sourceforge.javahexeditor.Preferences;
 import net.sourceforge.javahexeditor.PreferencesManager;
 import net.sourceforge.javahexeditor.common.SWTUtility;
-
-import org.eclipse.swt.graphics.FontData;
 
 final class HexEditorPreferences {
 	public final String PROPERTIES_FILE = "javahexeditor.properties";
@@ -47,7 +47,7 @@ final class HexEditorPreferences {
 
 	/**
 	 * Gets the currently active font data.
-	 * 
+	 *
 	 * @return The currently active font data, not <code>null</code>.
 	 */
 	public FontData getFontData() {
@@ -56,7 +56,7 @@ final class HexEditorPreferences {
 
 	/**
 	 * Sets the currently active font data.
-	 * 
+	 *
 	 * @param fontData
 	 *            The currently active font data, not <code>null</code>.
 	 */

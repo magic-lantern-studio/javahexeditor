@@ -103,22 +103,23 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
 		@Override
 		public void run() {
-			if (myId.equals(ActionFactory.UNDO.getId()))
+			if (myId.equals(ActionFactory.UNDO.getId())) {
 				manager.doUndo();
-			else if (myId.equals(ActionFactory.REDO.getId()))
+			} else if (myId.equals(ActionFactory.REDO.getId())) {
 				manager.doRedo();
-			else if (myId.equals(ActionFactory.CUT.getId()))
+			} else if (myId.equals(ActionFactory.CUT.getId())) {
 				manager.doCut();
-			else if (myId.equals(ActionFactory.COPY.getId()))
+			} else if (myId.equals(ActionFactory.COPY.getId())) {
 				manager.doCopy();
-			else if (myId.equals(ActionFactory.PASTE.getId()))
+			} else if (myId.equals(ActionFactory.PASTE.getId())) {
 				manager.doPaste();
-			else if (myId.equals(ActionFactory.DELETE.getId()))
+			} else if (myId.equals(ActionFactory.DELETE.getId())) {
 				manager.doDelete();
-			else if (myId.equals(ActionFactory.SELECT_ALL.getId()))
+			} else if (myId.equals(ActionFactory.SELECT_ALL.getId())) {
 				manager.doSelectAll();
-			else if (myId.equals(ActionFactory.FIND.getId()))
+			} else if (myId.equals(ActionFactory.FIND.getId())) {
 				manager.doFind();
+			}
 		}
 	}
 

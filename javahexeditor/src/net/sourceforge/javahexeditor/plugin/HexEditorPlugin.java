@@ -19,75 +19,75 @@
  */
 package net.sourceforge.javahexeditor.plugin;
 
-import net.sourceforge.javahexeditor.FindReplaceHistory;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import net.sourceforge.javahexeditor.FindReplaceHistory;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public final class HexEditorPlugin extends AbstractUIPlugin {
 
-    public static final String ID = "net.sourceforge.javahexeditor";
+	public static final String ID = "net.sourceforge.javahexeditor";
 
-    // The shared instance.
-    private static HexEditorPlugin plugin;
+	// The shared instance.
+	private static HexEditorPlugin plugin;
 
-    private FindReplaceHistory findReplaceHistory;
+	private FindReplaceHistory findReplaceHistory;
 
-    /**
-     * The constructor.
-     */
-    public HexEditorPlugin() {
-        findReplaceHistory = new FindReplaceHistory();
-    }
+	/**
+	 * The constructor.
+	 */
+	public HexEditorPlugin() {
+		findReplaceHistory = new FindReplaceHistory();
+	}
 
-    /**
-     * Returns the shared instance.
-     *
-     * @return The shared instance, not <code>null</code>.
-     */
-    public static HexEditorPlugin getDefault() {
-        return plugin;
-    }
+	/**
+	 * Returns the shared instance.
+	 *
+	 * @return The shared instance, not <code>null</code>.
+	 */
+	public static HexEditorPlugin getDefault() {
+		return plugin;
+	}
 
-    /**
-     * This method is called upon plug-in activation.
-     */
-    @Override
-    public void start(BundleContext context) throws Exception {
-        super.start(context);
-        plugin = this;
-    }
+	/**
+	 * This method is called upon plug-in activation.
+	 */
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
+	}
 
-    /**
-     * This method is called when the plug-in is stopped.
-     */
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        super.stop(context);
-        plugin = null;
-    }
+	/**
+	 * This method is called when the plug-in is stopped.
+	 */
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		plugin = null;
+	}
 
-    /**
-     * Gets the find-replace history.
-     *
-     * @return The modifiable find-replace history, not <code>null</code>.
-     */
-    public FindReplaceHistory getFindReplaceHistory() {
-        return findReplaceHistory;
-    }
+	/**
+	 * Gets the find-replace history.
+	 *
+	 * @return The modifiable find-replace history, not <code>null</code>.
+	 */
+	public FindReplaceHistory getFindReplaceHistory() {
+		return findReplaceHistory;
+	}
 
-    public static void logError(String message, Throwable e) {
-        if (message == null) {
-            message = e.getMessage();
-            if (message == null) {
-                message = e.toString();
-            }
-        }
-        getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, e));
-    }
+	public static void logError(String message, Throwable e) {
+		if (message == null) {
+			message = e.getMessage();
+			if (message == null) {
+				message = e.toString();
+			}
+		}
+		getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, e));
+	}
 }

@@ -23,69 +23,63 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 public class AllTests {
 
-    static final String resourceData = "TestsData.hex";
-    static final String resourceLongData = "TestsLongData.hex";
-    static final String resourceUnicode = "TestsUnicode.hex";
+	static final String resourceData = "TestsData.hex";
+	static final String resourceLongData = "TestsLongData.hex";
+	static final String resourceUnicode = "TestsUnicode.hex";
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(AllTests.suite());
-    }
+	public static void main(String[] args) {
+		junit.textui.TestRunner.run(AllTests.suite());
+	}
 
-    /**
-     * Helper method that creates a long test file
-     *
-     * @param size
-     * @return a test file of size size or null on error
-     */
-    public static File setUpLongData(long size) {
-        File longFile = new File(AllTests.class.getResource(resourceLongData)
-                .getPath());
-        try {
-            RandomAccessFile file = new RandomAccessFile(longFile, "rws");
-            file.setLength(size);
-            file.close();
-        } catch (IOException e) {
+	/**
+	 * Helper method that creates a long test file
+	 *
+	 * @param size
+	 * @return a test file of size size or null on error
+	 */
+	public static File setUpLongData(long size) {
+		File longFile = new File(AllTests.class.getResource(resourceLongData).getPath());
+		try {
+			RandomAccessFile file = new RandomAccessFile(longFile, "rws");
+			file.setLength(size);
+			file.close();
+		} catch (IOException e) {
 
-            return null;
-        }
+			return null;
+		}
 
-        return longFile;
-    }
+		return longFile;
+	}
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite(
-                "Test for net.sourceforge.javahexeditor");
+	public static Test suite() {
+		TestSuite suite = new TestSuite("Test for net.sourceforge.javahexeditor");
 
-        // suite.addTest(new BinaryContentTest("testRangesModified")); //XXX
-        // if (true) return suite;
+		// Note: gcj 4.4.0 won't let to memory-map twice the same file in the same
+		// virtual machine.
+		// BinaryContentTest and FinderTest both map TestsLongData.hex so if run
+		// from gcj the test
+		// crashes. Workaround: test first one, then the other.
+		// Plus file TestsLongData.hex should be with length 0.
+		// Plus gcc with text junit give an initializer exception (can be
+		// ignored).
+		// $JUnit-BEGIN$
+		suite.addTestSuite(BinaryContentTest.class);
+		suite.addTestSuite(HexTextsTest.class);
+		suite.addTestSuite(UndoRedoTest.class);
+		suite.addTestSuite(FinderTest.class);
+		// $JUnit-END$
+		return suite;
+	}
 
-        // XXX gcj 4.4.0 won't let to memory-map twice the same file in the same
-        // virtual machine.
-        // BinaryContentTest and FinderTest both map TestsLongData.hex so if run
-        // from gcj the test
-        // crashes. Workaround: test first one, then the other.
-        // Plus file TestsLongData.hex should be with length 0.
-        // Plus gcc with text junit give an initializer exception (can be
-        // ignored).
-        // $JUnit-BEGIN$
-        suite.addTestSuite(BinaryContentTest.class);
-        suite.addTestSuite(HexTextsTest.class);
-        suite.addTestSuite(UndoRedoTest.class);
-        suite.addTestSuite(FinderTest.class);
-        // $JUnit-END$
-        return suite;
-    }
-
-    /**
-     * Helper method to tear down the file created in setUpLongData()
-     */
-    public static void tearDownLongData() {
-        setUpLongData(0);
-    }
+	/**
+	 * Helper method to tear down the file created in setUpLongData()
+	 */
+	public static void tearDownLongData() {
+		setUpLongData(0);
+	}
 }

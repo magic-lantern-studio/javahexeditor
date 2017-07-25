@@ -27,13 +27,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 
-import net.sourceforge.javahexeditor.HelpResources;
-import net.sourceforge.javahexeditor.Manager;
-import net.sourceforge.javahexeditor.PreferencesManager;
-import net.sourceforge.javahexeditor.common.SWTUtility;
-import net.sourceforge.javahexeditor.common.TextUtility;
-import net.sourceforge.javahexeditor.standalone.HexEditorMenu.Actions;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.DND;
@@ -59,11 +52,18 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+import net.sourceforge.javahexeditor.HelpResources;
+import net.sourceforge.javahexeditor.Manager;
+import net.sourceforge.javahexeditor.PreferencesManager;
+import net.sourceforge.javahexeditor.common.SWTUtility;
+import net.sourceforge.javahexeditor.common.TextUtility;
+import net.sourceforge.javahexeditor.standalone.HexEditorMenu.Actions;
+
 /**
  * Stand-alone wrapper for the Hex Editor.
- * 
+ *
  * TODO: Verify German menu texts and accelerators <br/>
- * 
+ *
  * @author Jordi, Peter Dell
  */
 public final class HexEditor {
@@ -79,7 +79,7 @@ public final class HexEditor {
 
 	/**
 	 * Point of entry to the stand-alone version
-	 * 
+	 *
 	 * @param args
 	 *            optional first String: name of a file to edit
 	 */
@@ -96,7 +96,7 @@ public final class HexEditor {
 
 	/**
 	 * Point of entry to the stand-alone version
-	 * 
+	 *
 	 * @param args
 	 *            The command line arguments, not <code>null</code>.
 	 */
@@ -236,8 +236,9 @@ public final class HexEditor {
 		target.addDropListener(new DropTargetAdapter() {
 			@Override
 			public void dragEnter(DropTargetEvent e) {
-				if (e.detail == DND.DROP_NONE)
+				if (e.detail == DND.DROP_NONE) {
 					e.detail = DND.DROP_COPY;
+				}
 			}
 
 			@Override
