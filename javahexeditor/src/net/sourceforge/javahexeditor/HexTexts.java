@@ -1274,8 +1274,9 @@ public final class HexTexts extends Composite {
 	}
 
 	private boolean handleSelectedPreModify() {
-		if (myStart == myEnd || !myInserting)
+		if (myStart == myEnd || !myInserting) {
 			return false;
+		}
 
 		myContent.delete(myStart, myEnd - myStart);
 		myEnd = myStart;
@@ -1297,8 +1298,9 @@ public final class HexTexts extends Composite {
 	}
 
 	private void initFinder(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase) {
-		if (!searchForward)
+		if (!searchForward) {
 			myCaretStickToStart = true;
+		}
 		if (myFinder == null || !findString.equals(myPreviousFindString) || isHexString != myPreviousFindStringWasHex
 				|| ignoreCase != myPreviousFindIgnoredCase) {
 			myPreviousFindString = findString;
@@ -1386,7 +1388,7 @@ public final class HexTexts extends Composite {
 	}
 
 	/**
-	 * Initialise merger variables
+	 * Initialize merger variables
 	 *
 	 * @param changeRanges
 	 * @param highlightRanges
@@ -1530,10 +1532,12 @@ public final class HexTexts extends Composite {
 			styledText.setRedraw(true);
 			styledText1.setRedraw(true);
 			styledText2.setRedraw(true);
-			if (myPreviousLine >= 0 && myPreviousLine < numberOfLines)
+			if (myPreviousLine >= 0 && myPreviousLine < numberOfLines) {
 				myPreviousLine += newText.length() / charsForAddress * (forward ? 1 : -1);
-			if (myPreviousLine < -1 || myPreviousLine >= numberOfLines)
+			}
+			if (myPreviousLine < -1 || myPreviousLine >= numberOfLines) {
 				myPreviousLine = -1;
+			}
 		}
 		if (viewRanges != null) {
 			for (Iterator<StyleRange> i = viewRanges.iterator(); i.hasNext();) {
@@ -1548,8 +1552,9 @@ public final class HexTexts extends Composite {
 	}
 
 	void redrawTextAreas(boolean fromScratch) {
-		if (myContent == null || styledText1.isDisposed())
+		if (myContent == null || styledText1.isDisposed()) {
 			return;
+		}
 
 		long newLinesStart = myTextAreasStart;
 		int linesShifted = numberOfLines;
@@ -1565,8 +1570,9 @@ public final class HexTexts extends Composite {
 
 					return;
 				}
-				if (mode == SHIFT_BACKWARD)
+				if (mode == SHIFT_BACKWARD) {
 					newLinesStart = myTextAreasStart + (numberOfLines - (int) lines) * myBytesPerLine;
+				}
 			}
 		}
 		myPreviousRedrawStart = myTextAreasStart;
@@ -1633,17 +1639,20 @@ public final class HexTexts extends Composite {
 
 	void refreshSelections() {
 		if (myStart >= myEnd || myStart > myTextAreasStart + myBytesPerLine * numberOfLines
-				|| myEnd <= myTextAreasStart)
+				|| myEnd <= myTextAreasStart) {
 			return;
+		}
 
 		long startLocation = myStart - myTextAreasStart;
-		if (startLocation < 0L)
+		if (startLocation < 0L) {
 			startLocation = 0L;
+		}
 		int intStart = (int) startLocation;
 
 		long endLocation = myEnd - myTextAreasStart;
-		if (endLocation > myBytesPerLine * numberOfLines)
+		if (endLocation > myBytesPerLine * numberOfLines) {
 			endLocation = myBytesPerLine * numberOfLines;
+		}
 		int intEnd = (int) endLocation;
 
 		if (myCaretStickToStart) {
@@ -1818,20 +1827,23 @@ public final class HexTexts extends Composite {
 		myStart = 0L;
 		if (start > 0L) {
 			myStart = start;
-			if (myStart > myContent.length())
+			if (myStart > myContent.length()) {
 				myStart = myContent.length();
+			}
 		}
 
 		myEnd = myStart;
 		if (end > myStart) {
 			myEnd = end;
-			if (myEnd > myContent.length())
+			if (myEnd > myContent.length()) {
 				myEnd = myContent.length();
+			}
 		}
 
 		notifyLongSelectionListeners();
-		if (selection != (myStart != myEnd))
+		if (selection != (myStart != myEnd)) {
 			notifyListeners(SWT.Modify, null);
+		}
 	}
 
 	private void setAddressesGridDataWidthHint() {
@@ -1904,10 +1916,8 @@ public final class HexTexts extends Composite {
 	@Override
 	public void setFont(Font font) {
 		// bugfix: HexText's raw array overflows when font is very small and
-		// window very big
-		// very small sizes would compromise responsiveness in large windows,
-		// and they are too small
-		// to see anyway
+		// window very big very small sizes would compromise responsiveness in large
+		// windows, and they are too small to see anyway
 		if (font != null) {
 			int newSize = font.getFontData()[0].getHeight();
 			if (newSize == 1 || newSize == 2)
@@ -1977,8 +1987,9 @@ public final class HexTexts extends Composite {
 
 		position = position - position % myBytesPerLine;
 		myTextAreasStart = position;
-		if (numberOfLines > 2)
+		if (numberOfLines > 2) {
 			myTextAreasStart = position - (numberOfLines / 2) * myBytesPerLine;
+		}
 		ensureWholeScreenIsVisible();
 		redrawTextAreas(true);
 		// setFocus();
@@ -2014,8 +2025,9 @@ public final class HexTexts extends Composite {
 
 	private void undo(boolean previousAction) {
 		long[] selection = previousAction ? myContent.undo() : myContent.redo();
-		if (selection == null)
+		if (selection == null) {
 			return;
+		}
 
 		myUpANibble = 0;
 		myStart = selection[0];
@@ -2058,9 +2070,7 @@ public final class HexTexts extends Composite {
 		int width = getClientArea().width - styledText.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
 		int displayedNumberWidth = fontCharWidth * 4; // styledText1 and
 		// styledText2
-		myBytesPerLine = (width / displayedNumberWidth) & 0xfffffff8; // 0, 8,
-		// 16, 24,
-		// etc.
+		myBytesPerLine = (width / displayedNumberWidth) & 0xfffffff8; // 0, 8, 16, 24, etc.
 		if (myBytesPerLine < 16) {
 			myBytesPerLine = 16;
 		}
