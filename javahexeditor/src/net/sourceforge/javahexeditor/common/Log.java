@@ -28,7 +28,17 @@ import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
  */
 public final class Log {
 
-	static final boolean DEBUG = HexEditorPlugin.getDefault().isDebugging();
+	static final boolean DEBUG;
+
+	static {
+		HexEditorPlugin plugin = HexEditorPlugin.getDefault();
+
+		if (plugin != null && plugin.isDebugging()) {
+			DEBUG = true;
+		} else {
+			DEBUG = false;
+		}
+	}
 
 	/**
 	 * Creation is private.
