@@ -69,7 +69,7 @@ import net.sourceforge.javahexeditor.common.TextUtility;
  *
  * @author Jordi Bergenthal
  *
- *         TODO: Fix layout/visiblity and enabling<br/>
+ *         TODO: Fix layout/visiblity and enabling
  */
 final class FindReplaceDialog extends Dialog {
 

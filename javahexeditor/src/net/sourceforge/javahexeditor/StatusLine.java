@@ -127,43 +127,12 @@ final class StatusLine extends Composite {
 	}
 
 	/**
-	 * Update the position status and value.
-	 *
-	 * @param position
-	 * @param value
-	 *
-	 * @see #updatePosition
-	 * @see #updateValue
-	 */
-	public void updatePositionValue(long position, byte value) {
-		updatePosition(position);
-		updateValue(value);
-	}
-
-	/**
-	 * Update the selection status and value.
-	 *
-	 * @param rangeSelection
-	 * @param value
-	 *
-	 * @see #updateSelection
-	 * @see #updateValue
-	 */
-	public void updateSelectionValue(RangeSelection rangeSelection, byte value) {
-		if (rangeSelection == null) {
-			throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
-		}
-		updateSelection(rangeSelection);
-		updateValue(value);
-	}
-
-	/**
 	 * Update the position status. Displays its decimal and hex value.
 	 *
 	 * @param position
 	 *            position to display
 	 */
-	private void updatePosition(long position) {
+	public void updatePosition(long position) {
 		if (isDisposed() || positionLabel.isDisposed()) {
 			return;
 		}
@@ -180,7 +149,7 @@ final class StatusLine extends Composite {
 	 * @param value
 	 *            value to display
 	 */
-	private void updateValue(byte value) {
+	public void updateValue(byte value) {
 		if (isDisposed() || positionLabel.isDisposed()) {
 			return;
 		}
@@ -202,7 +171,11 @@ final class StatusLine extends Composite {
 	 * @param rangeSelection
 	 *            selection array to display: [0] = start, [1] = end
 	 */
-	private void updateSelection(RangeSelection rangeSelection) {
+	public void updateSelection(RangeSelection rangeSelection) {
+		if (rangeSelection == null) {
+			throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
+		}
+		
 		if (isDisposed() || positionLabel.isDisposed()) {
 			return;
 		}

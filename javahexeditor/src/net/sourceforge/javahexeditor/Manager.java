@@ -286,10 +286,11 @@ public final class Manager {
 		if (hexTexts != null && hexTexts.isEnabled()) {
 			statusLine.updateInsertMode(!hexTexts.isOverwriteMode());
 			if (hexTexts.isSelected()) {
-				statusLine.updateSelectionValue(hexTexts.getSelection(), hexTexts.getActualValue());
+				statusLine.updateSelection(hexTexts.getSelection());
 			} else {
-				statusLine.updatePositionValue(hexTexts.getCaretPos(), hexTexts.getActualValue());
+				statusLine.updatePosition(hexTexts.getCaretPos());
 			}
+			statusLine.updateValue(hexTexts.getActualValue());
 		}
 	}
 
@@ -370,10 +371,12 @@ public final class Manager {
 		if (selectBlockDialog == null) {
 			selectBlockDialog = new SelectBlockDialog(textsParent.getShell());
 		}
-		long start = selectBlockDialog.open(hexTexts.getSelection(), content.length());
-		long end = selectBlockDialog.getFinalEndResult();
-		if ((start >= 0L) && (end >= 0L) && (start != end)) {
-			hexTexts.selectBlock(start, end);
+		if (selectBlockDialog.open(hexTexts.getSelection(), content.length())) {
+			long start = selectBlockDialog.getFinalStartResult();
+			long end = selectBlockDialog.getFinalEndResult();
+			if ((start >= 0L) && (end >= 0L) && (start != end)) {
+				hexTexts.selectBlock(start, end);
+			}
 		}
 	}
 
@@ -628,14 +631,11 @@ public final class Manager {
 			throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_SAVE_FILE,
 					file.getAbsolutePath(), ex.getMessage()));
 		}
-		try {
-			content = new BinaryContent(file);
-			contentFile = file;
-			touchFile(monitor);
-		} catch (IOException ex) {
-			TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE, file.getAbsolutePath(),
-					ex.getMessage());
-		}
+
+		content = new BinaryContent(file);
+		contentFile = file;
+		touchFile(monitor);
+
 		hexTexts.setContentProvider(content);
 	}
 
@@ -643,6 +643,7 @@ public final class Manager {
 	 * Perform save action on opened file
 	 * 
 	 * @param monitor
+	 *            the progress monitor or <code>null</code>
 	 *
 	 * @throws IOException
 	 *             If the operation fails
@@ -652,12 +653,14 @@ public final class Manager {
 			content.get(contentFile);
 			content.dispose();
 			content = new BinaryContent(contentFile);
-			touchFile(monitor);
-		} catch (IOException e) {
-			// error handling below
-			HexEditorPlugin.logError("Error during save...", e);
+		} catch (IOException ex) {
 			content = new BinaryContent();
+			throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_SAVE_FILE,
+					contentFile.getAbsolutePath(), ex.getMessage()));
 		}
+
+		touchFile(monitor);
+
 		hexTexts.setContentProvider(content);
 	}
 
@@ -665,13 +668,14 @@ public final class Manager {
 		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(contentFile.getAbsolutePath()));
 	}
 
-	void touchFile(IProgressMonitor monitor) {
+	private void touchFile(IProgressMonitor monitor) throws IOException {
 		IFile file = getResource();
 		if (file.exists()) {
 			try {
 				file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
-			} catch (CoreException e) {
-				HexEditorPlugin.logError("Failed to touch: " + contentFile, e);
+			} catch (CoreException ex) {
+				throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE,
+						contentFile.getAbsolutePath(), ex.getMessage()));
 			}
 		}
 	}
@@ -697,16 +701,23 @@ public final class Manager {
 			hexTexts.setFocus();
 		}
 
+		updateStatusLine();
+	}
+
+	private void updateStatusLine() {
 		if (statusLine != null) {
 			statusLine.updateInsertMode(hexTexts == null ? true : !hexTexts.isOverwriteMode());
 			if (hexTexts != null) {
 				if (hexTexts.isSelected()) {
-					statusLine.updateSelectionValue(hexTexts.getSelection(), hexTexts.getActualValue());
+					statusLine.updateSelection(hexTexts.getSelection());
 				} else {
-					statusLine.updatePositionValue(hexTexts.getCaretPos(), hexTexts.getActualValue());
+					statusLine.updatePosition(hexTexts.getCaretPos());
 				}
+				statusLine.updateValue(hexTexts.getActualValue());
 			} else {
-				statusLine.updatePositionValue(0L, (byte) 0);
+				statusLine.updatePosition(0L);
+				statusLine.updateValue((byte) 0);
+
 			}
 		}
 	}
@@ -784,26 +795,14 @@ public final class Manager {
 	 * Event handler for updating the status line.
 	 */
 	void updateStatusLineAfterLongSelection() {
-		if (statusLine != null) {
-			if (hexTexts != null) {
-				if (hexTexts.isSelected()) {
-					statusLine.updateSelectionValue(hexTexts.getSelection(), hexTexts.getActualValue());
-				} else {
-					statusLine.updatePositionValue(hexTexts.getCaretPos(), hexTexts.getActualValue());
-				}
-			} else {
-				statusLine.updatePositionValue(0L, (byte) 0);
-			}
-		}
+		updateStatusLine();
 	}
 
 	/**
 	 * Event handler for updating the status line.
 	 */
 	void updateStatusLineAfterModify() {
-		if (statusLine != null) {
-			statusLine.updateInsertMode(hexTexts == null ? true : !hexTexts.isOverwriteMode());
-		}
+		updateStatusLine();
 	}
 
 }

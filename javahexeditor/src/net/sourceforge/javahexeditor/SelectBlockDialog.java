@@ -278,8 +278,7 @@ final class SelectBlockDialog extends Dialog {
 		statusLabel.setLayoutData(formData2);
 	}
 
-	// TODO change return to boolean
-	public long open(RangeSelection rangeSelection, long aLimit) {
+	public boolean open(RangeSelection rangeSelection, long aLimit) {
 		if (rangeSelection == null) {
 			throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
 		}
@@ -320,7 +319,7 @@ final class SelectBlockDialog extends Dialog {
 			}
 		}
 
-		return finalStartResult;
+		return finalStartResult>=0  && finalEndResult >=0;
 	}
 
 	public void validateResults() {

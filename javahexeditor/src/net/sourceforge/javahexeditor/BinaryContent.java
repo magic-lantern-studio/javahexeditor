@@ -561,7 +561,7 @@ public final class BinaryContent {
 		Range partialRange = null;
 		while (tailTree.hasNext() && (partialRange = tailTree.next()).position < exclusiveEnd) {
 			fillWithRange(dst, partialRange, positionSoFar - partialRange.position, positionSoFar + positionShift,
-					rangesModified);
+					rangesModified); // throws IOException
 			positionSoFar = partialRange.exclusiveEnd();
 			if (myChanges != null && myChangesInserted && positionSoFar + positionShift > myChangesPosition) {
 				positionShift = myChanges.size();

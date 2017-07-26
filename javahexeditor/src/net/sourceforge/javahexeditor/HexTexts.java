@@ -71,7 +71,6 @@ import net.sourceforge.javahexeditor.BinaryContent.RangeSelection;
 import net.sourceforge.javahexeditor.BinaryContentFinder.Match;
 import net.sourceforge.javahexeditor.common.SWTUtility;
 import net.sourceforge.javahexeditor.common.TextUtility;
-import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
 
 /**
  * A binary file editor, composed of two synchronized displays: an hexadecimal
@@ -1271,8 +1270,8 @@ public final class HexTexts extends Composite {
 		}
 		try {
 			myContent.get(ByteBuffer.wrap(tmpRawBuffer, 0, 1), null, pos);
-		} catch (Exception e) {
-			HexEditorPlugin.logError("Unexpected IO error at position " + pos, e);
+		} catch (IOException ex) {
+			throw new RuntimeException("Unexpected IO error at position " + pos, ex);
 		}
 		return tmpRawBuffer[0];
 	}
