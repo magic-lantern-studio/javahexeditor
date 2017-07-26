@@ -53,7 +53,7 @@ import net.sourceforge.javahexeditor.common.SWTUtility;
  * Manager of all preferences-editing widgets, with an optional stand-alone
  * dialog.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 public final class PreferencesManager {
 

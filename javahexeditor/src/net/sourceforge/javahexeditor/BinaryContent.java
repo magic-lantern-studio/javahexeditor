@@ -42,7 +42,7 @@ import net.sourceforge.javahexeditor.BinaryContentActionHistory.Entry;
  * positions where changes have been done. Files that back this content must not
  * be modified while the content is still in use.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 public final class BinaryContent {
 

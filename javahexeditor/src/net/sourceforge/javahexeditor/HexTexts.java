@@ -80,7 +80,7 @@ import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
  * Use addListener(SWT.Modify, Listener) to listen to changes of the 'dirty',
  * 'overwrite/insert', 'selection' and 'canUndo/canRedo' status.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 public final class HexTexts extends Composite {
 

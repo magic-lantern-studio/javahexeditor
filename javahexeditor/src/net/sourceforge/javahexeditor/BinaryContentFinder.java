@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * standard java unicode (all of big and little endian, odd and even address)
  * plus ASCII when the literal falls within ASCII char limits.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 public final class BinaryContentFinder {
 

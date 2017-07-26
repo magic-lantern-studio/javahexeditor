@@ -46,7 +46,7 @@ import net.sourceforge.javahexeditor.common.TextUtility;
 /**
  * Go to dialog. Remembers previous state.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 final class GoToDialog extends Dialog {
 

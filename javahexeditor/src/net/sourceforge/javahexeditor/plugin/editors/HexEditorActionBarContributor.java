@@ -44,7 +44,7 @@ import net.sourceforge.javahexeditor.Texts;
 /**
  * HexEditor contributor. Contributes status bar and menu bar items
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 public final class HexEditorActionBarContributor extends EditorActionBarContributor {
 

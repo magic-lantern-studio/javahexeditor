@@ -30,10 +30,10 @@ import org.eclipse.swt.custom.TextChangingEvent;
 import net.sourceforge.javahexeditor.common.Log;
 
 /**
- * StyledTextContent customised for content that fills up to one page of the
+ * StyledTextContent customized for content that fills up to one page of the
  * StyledText widget. No line delimiters, content wraps lines.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 final class DisplayedContent implements StyledTextContent {
 

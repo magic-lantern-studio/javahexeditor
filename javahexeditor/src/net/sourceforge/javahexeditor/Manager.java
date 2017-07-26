@@ -59,7 +59,7 @@ import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
  * actions, like "File->Save". Call {@link #createEditorPart} before any menu
  * actions.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  *
  */
 public final class Manager {

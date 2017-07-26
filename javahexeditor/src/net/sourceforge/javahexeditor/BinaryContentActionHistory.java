@@ -37,7 +37,7 @@ import net.sourceforge.javahexeditor.common.Log;
  * lower than {@link #MERGE_TIME}. Block actions are sequences of Range. Single
  * actions are one range of size 1.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 final class BinaryContentActionHistory {
 

@@ -67,7 +67,7 @@ import net.sourceforge.javahexeditor.common.TextUtility;
  * Remembers previous state, in case it has been closed by the user and reopened
  * again.
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  *
  *         TODO: Fix layout/visiblity and enabling<br/>
  */

@@ -23,7 +23,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
 /**
- *
+ * Preferences data container.
+ * 
  * @author Peter Dell
  */
 public final class Preferences {

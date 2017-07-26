@@ -41,10 +41,10 @@ import org.eclipse.swt.widgets.Display;
 import net.sourceforge.javahexeditor.common.TextUtility;
 
 /**
- * A clipboard for binary content. Data up to 4Mbytes is made available as text
+ * A clipboard for binary content. Data up to 4 Mbytes is made available as text
  * as well
  *
- * @author Jordi
+ * @author Jordi Bergenthal
  */
 final class BinaryContentClipboard {
 

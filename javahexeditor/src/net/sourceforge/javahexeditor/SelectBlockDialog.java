@@ -47,7 +47,7 @@ import net.sourceforge.javahexeditor.common.TextUtility;
 /**
  * Select block dialog. Remembers previous state.
  *
- * @author anb0s
+ * @author Andre Bossert
  */
 final class SelectBlockDialog extends Dialog {
 

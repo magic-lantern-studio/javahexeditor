@@ -62,9 +62,7 @@ import net.sourceforge.javahexeditor.standalone.HexEditorMenu.Actions;
 /**
  * Stand-alone wrapper for the Hex Editor.
  *
- * TODO: Verify German menu texts and accelerators <br/>
- *
- * @author Jordi, Peter Dell
+ * @author Jordi Bergenthal, Peter Dell
  */
 public final class HexEditor {
 
