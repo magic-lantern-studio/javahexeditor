@@ -71,7 +71,7 @@ final class Texts extends NLS {
 	public static String OUT_OF_MEMORY_ERROR_TITLE;
 	public static String OUT_OF_MEMORY_ERROR_MESSAGE;
 
-	public static String OPEN_USER_GUIDE_ERROR_MESSAGE;
+	public static String OPEN_HELP_FILE_ERROR_MESSAGE;
 
 	public static String ABOUT_DIALOG_TITLE;
 	public static String ABOUT_DIALOG_TEXT;

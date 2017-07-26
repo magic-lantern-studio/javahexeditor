@@ -472,7 +472,7 @@ public final class HexEditor {
 		try {
 			Desktop.getDesktop().browse(uri);
 		} catch (IOException ex) {
-			SWTUtility.showErrorMessage(shell, shell.getText(), Texts.OPEN_USER_GUIDE_ERROR_MESSAGE, uri.toString(),
+			SWTUtility.showErrorMessage(shell, shell.getText(), Texts.OPEN_HELP_FILE_ERROR_MESSAGE, uri.toString(),
 					ex.getMessage());
 		}
 

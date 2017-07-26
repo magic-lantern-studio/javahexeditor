@@ -81,13 +81,13 @@ public final class HexEditorPlugin extends AbstractUIPlugin {
 		return findReplaceHistory;
 	}
 
-	public static void logError(String message, Throwable e) {
+	public static void logError(String message, Throwable th) {
 		if (message == null) {
-			message = e.getMessage();
+			message = th.getMessage();
 			if (message == null) {
-				message = e.toString();
+				message = th.toString();
 			}
 		}
-		getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, e));
+		getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, th));
 	}
 }

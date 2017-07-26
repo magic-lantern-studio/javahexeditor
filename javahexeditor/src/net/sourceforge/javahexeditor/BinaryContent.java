@@ -165,9 +165,7 @@ public final class BinaryContent {
 	}
 
 	public static final long mappedFileBufferLength = 2048 * 1024; // for mapped
-	// file
-
-	// I/O
+	// file I/O
 
 	BinaryContentActionHistory actions; // undo/redo actions history
 	BinaryContentActionHistory actionsTemp;
@@ -395,8 +393,8 @@ public final class BinaryContent {
 	 * Closes all files before termination. After this call the object is no longer
 	 * valid. Calling dispose() is optional, but it will let use of files
 	 * immediately in the operating system, instead of having to wait until the
-	 * object is garbage collected. Note: apparently due to a bug in the java
-	 * virtual machine combined with some dumb os, files won't be freed after this
+	 * object is garbage collected. Note: apparently due to a bug in the Java
+	 * virtual machine combined with some dumb OS, files won't be freed after this
 	 * call. See http://forum.java.sun.com/thread.jspa?forumID=4&threadID=158689
 	 */
 	public void dispose() {

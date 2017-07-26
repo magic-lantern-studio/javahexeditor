@@ -41,7 +41,7 @@ import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
  * preference store that belongs to the main plug-in class. That way,
  * preferences can be accessed directly via the preference store.
  */
-public class HexEditorPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
+public final class HexEditorPreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private PreferencesManager preferences;
 
