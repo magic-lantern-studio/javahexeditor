@@ -29,7 +29,15 @@ See http://javahexeditor.sourceforge.net.
 javahexeditor change log
 ------------------------
 
-??/??/2014 version 0.4.9.
+??/??/2017 version 0.5.1.
+    Update to Java 1.8 and Eclipse Oxygene.
+ 
+??/??/2017 version 0.50
+    Fixed page-up/page-down handling.
+    Enabled opening files from the local history.
+    Thanks to Andrey Loskutov for the fixes.
+
+13/11/2014 version 0.4.9.
     Separated Eclipse plugin from stand-alone application.
     Included standard OSGI and SWT jars for location and UI widgets.
     New build process creates separate self-contained "JavaHexEditor.jar" file for Linux (32-bit), Windows (32-bit) and Windows (64-bit)
