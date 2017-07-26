@@ -22,16 +22,9 @@ package net.sourceforge.javahexeditor.plugin.editors;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -69,7 +62,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -138,6 +130,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
 	private IStatusLineManager statusLineManager;
 
+	private HexEditorInput hexEditorInput;
 	private HexTexts hexTexts;
 
 	public HexEditor() {
@@ -169,77 +162,20 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		FillLayout fillLayout = new FillLayout();
 		parent.setLayout(fillLayout);
 
-		String charset = null;
-		IEditorInput unresolved = getEditorInput();
-		File systemFile = null;
-		IFile localFile = null;
-		String inputName = null;
-		if (unresolved instanceof FileEditorInput) {
-			localFile = ((FileEditorInput) unresolved).getFile();
-		} else if (unresolved instanceof IPathEditorInput) { // eg.
-			// FileInPlaceEditorInput
-			IPathEditorInput file = (IPathEditorInput) unresolved;
-			systemFile = file.getPath().toFile();
-		} else if (unresolved instanceof ILocationProvider) {
-			ILocationProvider location = (ILocationProvider) unresolved;
-			IWorkspaceRoot rootWorkspace = ResourcesPlugin.getWorkspace().getRoot();
-			localFile = rootWorkspace.getFile(location.getPath(location));
-		} else if (unresolved instanceof IURIEditorInput) {
-			URI uri = ((IURIEditorInput) unresolved).getURI();
-			if (uri != null) {
-				IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-				IFile[] files = root.findFilesForLocationURI(uri);
-
-				if (files.length != 0) {
-					localFile = files[0];
-				} else {
-					systemFile = new File(uri);
-				}
-			}
-		} else if (unresolved instanceof IStorageEditorInput) {
-			// TODO this is just a hack to get the editor opened on history entries
-			// Ideally we would open not files but streams.
-			IStorageEditorInput input = (IStorageEditorInput) unresolved;
-			try {
-				Path tmpDir = Files.createTempDirectory(null);
-				Path tmpFile = tmpDir.resolve(input.getStorage().getName());
-				systemFile = tmpFile.toFile();
-				systemFile.createNewFile();
-				systemFile.deleteOnExit();
-				Files.copy(input.getStorage().getContents(), systemFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-				if (input.getClass().getName().contains("FileRevisionEditorInput")) {
-					inputName = tmpFile.getFileName() + " (from history)";
-				}
-			} catch (Exception e) {
-				HexEditorPlugin.logError("Error on opening: " + localFile, e);
-			}
+		// Free previously allocated temporary resources.
+		if (hexEditorInput != null) {
+			hexEditorInput.dispose();
 		}
-		// charset
-		if (localFile != null) {
-			systemFile = localFile.getLocation().toFile();
-			try {
-				charset = localFile.getCharset(true);
-			} catch (CoreException e) {
-				HexEditorPlugin.logError("Error on opening: " + localFile, e);
-			}
+		hexEditorInput = new HexEditorInput();
+		try {
+			hexEditorInput.open(getEditorInput());
+			manager.openFile(hexEditorInput.getContentFile(), hexEditorInput.getCharset());
+		} catch (CoreException ex) {
+			HexEditorPlugin.getDefault().getLog().log(ex.getStatus());
+			statusLineManager.setErrorMessage(ex.getMessage());
 		}
 
-		if (systemFile != null) {
-			try {
-				// open file
-				manager.openFile(systemFile, charset);
-				if (inputName == null) {
-					inputName = systemFile.getName();
-				}
-			} catch (Exception ex) {
-				HexEditorPlugin.logError("Error on opening: " + localFile, ex);
-				statusLineManager.setErrorMessage(ex.getMessage());
-				systemFile = null;
-			}
-			setPartName(inputName);
-		} else {
-			setPartName(Texts.EMPTY);
-		}
+		setPartName(hexEditorInput.getInputName());
 
 		// Register any global actions with the site's IActionBars.
 		IActionBars bars = getEditorSite().getActionBars();
@@ -298,16 +234,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 				}
 			}
 		});
-		// getSite().getPage().addSelectionListener(
-		// new ISelectionListener() {
-		// @Override
-		// public void selectionChanged(IWorkbenchPart part,
-		// ISelection selection) {
-		// if (ID.equals(part.getSite().getId())) {
-		// return;
-		// }
-		// }
-		// });
+
 	}
 
 	@Override
@@ -318,6 +245,9 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		}
 		if (hexTexts != null) {
 			hexTexts.dispose();
+		}
+		if (hexEditorInput != null) {
+			hexEditorInput.dispose();
 		}
 	}
 

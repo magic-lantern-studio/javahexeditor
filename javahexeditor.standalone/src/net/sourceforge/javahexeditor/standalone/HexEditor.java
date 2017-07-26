@@ -27,6 +27,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.DND;
@@ -382,7 +383,7 @@ public final class HexEditor {
 		}
 		try {
 			manager.doOpen(file, newFile, charset);
-		} catch (IOException ex) {
+		} catch (CoreException ex) {
 			SWTUtility.showErrorMessage(shell, Texts.OPEN_ERROR_TITLE, Texts.OPEN_ERROR_MESSAGE, ex.getMessage());
 		}
 

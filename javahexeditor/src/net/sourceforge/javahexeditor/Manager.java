@@ -29,7 +29,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
@@ -375,7 +377,7 @@ public final class Manager {
 		}
 	}
 
-	public void doOpen(File forceThisFile, boolean createNewFile, String charset) throws IOException {
+	public void doOpen(File forceThisFile, boolean createNewFile, String charset) throws CoreException {
 		String filePath = "";
 		if (forceThisFile == null && !createNewFile) {
 			filePath = new FileDialog(shell, SWT.OPEN).open();
@@ -395,7 +397,7 @@ public final class Manager {
 
 		try {
 			openFile(forceThisFile, charset);
-		} catch (IOException ex) {
+		} catch (CoreException ex) {
 			throw ex;
 		}
 
@@ -558,14 +560,21 @@ public final class Manager {
 	 * Open file for editing
 	 *
 	 * @param contentFile
-	 *            the file to be edited
+	 *            the input file, not <code>null</code>
 	 * @param charset
-	 * @throws IOException
-	 *             when a file has no read access
+	 *            the charset, not <code>null</code>
+	 * @throws CoreException
+	 *             if the input file cannot be read
 	 */
-	public void openFile(File contentFile, String charset) throws IOException {
-		content = new BinaryContent(contentFile); // throws IOException
+	public void openFile(File contentFile, String charset) throws CoreException {
 		this.contentFile = contentFile;
+		try {
+			content = new BinaryContent(contentFile);
+		} catch (IOException ex) {
+			throw new CoreException(new Status(IStatus.ERROR, HexEditorPlugin.ID,
+					TextUtility.format(Texts.MANAGER_OPEN_MESSAGE_CANNOT_OPEN_FILE, contentFile.getAbsolutePath()),
+					ex));
+		}
 		hexTexts.setCharset(charset);
 		hexTexts.setContentProvider(content);
 		hexTexts.setEnabled(true);
