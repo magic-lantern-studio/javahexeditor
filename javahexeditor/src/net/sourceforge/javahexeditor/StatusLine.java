@@ -57,58 +57,61 @@ final class StatusLine extends Composite {
 	}
 
 	private void initialize(boolean withSeparator) {
+
+		// From Eclipse 3.1's GridData javadoc:
+		// NOTE: Do not reuse GridData objects.
+		// Every control in a Composite that is
+		// managed by a GridLayout must have a unique GridData instance
 		GridLayout statusLayout = new GridLayout();
 		statusLayout.numColumns = withSeparator ? 6 : 5;
 		statusLayout.marginHeight = 0;
 		setLayout(statusLayout);
 
 		if (withSeparator) {
-			GridData separator1GridData = new GridData();
-			separator1GridData.grabExcessVerticalSpace = true;
-			separator1GridData.verticalAlignment = SWT.FILL;
 			Label separator1 = new Label(this, SWT.SEPARATOR);
-			separator1.setLayoutData(separator1GridData);
+			separator1.setLayoutData(createGridData());
 		} else {
-			GridData statusLineGridData = new GridData();
-			statusLineGridData.grabExcessVerticalSpace = true;
-			statusLineGridData.verticalAlignment = SWT.FILL;
-			setLayoutData(statusLineGridData);
+			setLayoutData(createGridData());
 		}
 
+		long MAX_FILE_SIZE = 1024 * 1024 * 1024; // Use a reasonable value to not waste space
+		positionLabel = new Label(this, SWT.SHADOW_NONE);
+		int maxLength = Math.max(getPositionText(Long.MAX_VALUE).length(),
+				getSelectionText(new RangeSelection(MAX_FILE_SIZE - 1, MAX_FILE_SIZE)).length());
+		positionLabel.setLayoutData(createGridData(maxLength));
+
+		Label separator2 = new Label(this, SWT.SEPARATOR);
+		separator2.setLayoutData(createGridData());
+
+		valueLabel = new Label(this, SWT.SHADOW_NONE);
+		maxLength = getValueText(Byte.MAX_VALUE).length();
+		GridData gridData2 = createGridData(maxLength);
+		valueLabel.setLayoutData(gridData2);
+
+		Label separator3 = new Label(this, SWT.SEPARATOR);
+		separator3.setLayoutData(createGridData());
+
+		insertModeLabel = new Label(this, SWT.SHADOW_NONE);
+		maxLength = Math.max(Texts.STATUS_LINE_MODE_INSERT.length(), Texts.STATUS_LINE_MODE_OVERWRITE.length());
+		insertModeLabel.setLayoutData(createGridData(maxLength));
+	}
+
+	private GridData createGridData() {
+		GridData gridData = new GridData();
+		gridData.grabExcessVerticalSpace = true;
+		gridData.widthHint = 1;
+		return gridData;
+	}
+
+	private GridData createGridData(int maxLength) {
 		GC gc = new GC(this);
 		FontMetrics fontMetrics = gc.getFontMetrics();
 
-		positionLabel = new Label(this, SWT.SHADOW_NONE);
-		GridData gridData1 = new GridData(
-				/* SWT.DEFAULT */(11 + 10 + 12 + 3 + 10 + 12) * fontMetrics.getAverageCharWidth(), SWT.DEFAULT);
-		positionLabel.setLayoutData(gridData1);
-
-		GridData separator23GridData = new GridData();
-		separator23GridData.grabExcessVerticalSpace = true;
-		separator23GridData.verticalAlignment = SWT.FILL;
-		Label separator2 = new Label(this, SWT.SEPARATOR);
-		separator2.setLayoutData(separator23GridData);
-
-		valueLabel = new Label(this, SWT.SHADOW_NONE);
-		GridData gridData2 = new GridData(
-				/* SWT.DEFAULT */(7 + 3 + 9 + 2 + 9 + 8 + 6) * fontMetrics.getAverageCharWidth(), SWT.DEFAULT);
-		valueLabel.setLayoutData(gridData2);
-
-		// From Eclipse 3.1's GridData javadoc:
-		// NOTE: Do not reuse GridData objects.
-		// Every control in a Composite that is managed by a
-		// GridLayout must have a unique GridData
-		GridData separator3GridData = new GridData();
-		separator3GridData.grabExcessVerticalSpace = true;
-		separator3GridData.verticalAlignment = SWT.FILL;
-		Label separator3 = new Label(this, SWT.SEPARATOR);
-		separator3.setLayoutData(separator3GridData);
-
-		insertModeLabel = new Label(this, SWT.SHADOW_NONE);
-		int maxLength = Math.max(Texts.STATUS_LINE_MODE_INSERT.length(), Texts.STATUS_LINE_MODE_OVERWRITE.length());
-		GridData gridData3 = new GridData((maxLength + 2) * fontMetrics.getAverageCharWidth(), SWT.DEFAULT);
-		insertModeLabel.setLayoutData(gridData3);
+		GridData gridData = new GridData((maxLength) * fontMetrics.getAverageCharWidth(), SWT.DEFAULT);
+		gridData.grabExcessVerticalSpace = true;
 		gc.dispose();
+
+		return gridData;
 	}
 
 	/**
@@ -133,14 +136,19 @@ final class StatusLine extends Composite {
 	 *            position to display
 	 */
 	public void updatePosition(long position) {
+		if (position < 0) {
+			throw new IllegalArgumentException("Parameter 'position' must not be negative.");
+		}
 		if (isDisposed() || positionLabel.isDisposed()) {
 			return;
 		}
+		positionLabel.setText(getPositionText(position));
+	}
 
+	private String getPositionText(long position) {
 		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_POSITION,
 				NumberUtility.getDecimalAndHexString(position));
-
-		positionLabel.setText(text);
+		return text;
 	}
 
 	/**
@@ -153,15 +161,17 @@ final class StatusLine extends Composite {
 		if (isDisposed() || positionLabel.isDisposed()) {
 			return;
 		}
+		valueLabel.setText(getValueText(value));
+	}
 
+	private String getValueText(byte value) {
 		int unsignedValue = value & 0xff;
 		String binaryText = "0000000" + Integer.toBinaryString(unsignedValue);
 		binaryText = binaryText.substring(binaryText.length() - 8);
 
 		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_VALUE, NumberUtility.getDecimalString(unsignedValue),
 				NumberUtility.getHexString(unsignedValue), binaryText);
-
-		valueLabel.setText(text);
+		return text;
 	}
 
 	/**
@@ -175,14 +185,21 @@ final class StatusLine extends Composite {
 		if (rangeSelection == null) {
 			throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
 		}
-		
+
 		if (isDisposed() || positionLabel.isDisposed()) {
 			return;
 		}
+
+		positionLabel.setText(getSelectionText(rangeSelection));
+	}
+
+	private String getSelectionText(RangeSelection rangeSelection) {
+		if (rangeSelection == null) {
+			throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
+		}
 		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_SELECTION,
 				NumberUtility.getDecimalAndHexRangeString(rangeSelection.start, rangeSelection.end));
-
-		positionLabel.setText(text);
+		return text;
 	}
 
 }
