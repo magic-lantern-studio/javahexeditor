@@ -345,7 +345,7 @@ final class FindReplaceDialog extends Dialog {
 		if (shell == null || shell.isDisposed()) {
 			createShell();
 		}
-		SWTUtility.reduceDistance(getParent(), shell);
+		SWTUtility.placeInCenterOf(shell, target.getShell());
 		findGroup.refreshCombo();
 		long selectionLength = myTarget.getSelection().getLength();
 		if (selectionLength > 0L && selectionLength <= BinaryContentFinder.MAX_SEQUENCE_SIZE) {

@@ -92,7 +92,7 @@ public final class PreferencesManager {
 	private Label label1;
 	private Label label2;
 	private Label label3;
-	Shell dialog;
+	Shell shell;
 
 	public static int fontStyleToInt(String styleString) {
 		int style = SWT.NORMAL;
@@ -236,7 +236,7 @@ public final class PreferencesManager {
 		rowLayout1.marginHeight = 10;
 		rowLayout1.marginWidth = 10;
 		rowLayout1.pack = false;
-		buttonBar = new Composite(dialog, SWT.NONE);
+		buttonBar = new Composite(shell, SWT.NONE);
 		buttonBar.setLayout(rowLayout1);
 		buttonBar.setLayoutData(gridData);
 
@@ -256,10 +256,10 @@ public final class PreferencesManager {
 			public void widgetSelected(SelectionEvent e) {
 				initialFontData = sampleFontData;
 				dialogResult = SWT.OK;
-				dialog.close();
+				shell.close();
 			}
 		});
-		dialog.setDefaultButton(okButton);
+		shell.setDefaultButton(okButton);
 		cancelButton = new Button(buttonBar, SWT.NONE);
 		cancelButton.setText(Texts.BUTTON_CANCEL_LABEL);
 		cancelButton.addSelectionListener(new SelectionAdapter() {
@@ -267,19 +267,19 @@ public final class PreferencesManager {
 			public void widgetSelected(SelectionEvent e) {
 				sampleFontData = initialFontData;
 				dialogResult = SWT.CANCEL;
-				dialog.close();
+				shell.close();
 			}
 		});
 	}
 
-	private void createDialog(Shell parentShell) {
-		dialog = new Shell(parentShell, SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
+	private void createShell(Shell parentShell) {
+		shell = new Shell(parentShell, SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
 		GridLayout gridLayout1 = new GridLayout();
 		gridLayout1.marginHeight = 3;
 		gridLayout1.marginWidth = 3;
-		dialog.setLayout(gridLayout1);
-		dialog.setText(Texts.PREFERENCES_MANAGER_DIALOG_TITLE);
-		createPreferencesPart(dialog);
+		shell.setLayout(gridLayout1);
+		shell.setText(Texts.PREFERENCES_MANAGER_DIALOG_TITLE);
+		createPreferencesPart(shell);
 		createCompositeOkCancel();
 	}
 
@@ -354,18 +354,18 @@ public final class PreferencesManager {
 	/**
 	 * Creates a self contained standalone dialog
 	 *
-	 * @param aParentShell
+	 * @param parentShell
 	 * @return SWT.OK or SWT.CANCEL
 	 */
-	public int openDialog(Shell aParentShell) {
+	public int openDialog(Shell parentShell) {
 		dialogResult = SWT.CANCEL; // when user presses escape
-		if (dialog == null || dialog.isDisposed()) {
-			createDialog(aParentShell);
+		if (shell == null || shell.isDisposed()) {
+			createShell(parentShell);
 		}
-		SWTUtility.reduceDistance(aParentShell, dialog);
-		dialog.open();
+		SWTUtility.placeInCenterOf(shell, parentShell);
+		shell.open();
 		Display display = parent.getDisplay();
-		while (!dialog.isDisposed()) {
+		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
 			}

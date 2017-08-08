@@ -349,7 +349,7 @@ public final class Manager {
 			goToDialog = new GoToDialog(textsParent.getShell());
 		}
 
-		long location = goToDialog.open(content.length() - 1L);
+		long location = goToDialog.open(hexTexts.getShell(), content.length() - 1L);
 		if (location >= 0L) {
 			long button = goToDialog.getButtonPressed();
 			if (button == 1) {
@@ -371,7 +371,7 @@ public final class Manager {
 		if (selectBlockDialog == null) {
 			selectBlockDialog = new SelectBlockDialog(textsParent.getShell());
 		}
-		if (selectBlockDialog.open(hexTexts.getSelection(), content.length())) {
+		if (selectBlockDialog.open(hexTexts.getShell(), hexTexts.getSelection(), content.length())) {
 			long start = selectBlockDialog.getFinalStartResult();
 			long end = selectBlockDialog.getFinalEndResult();
 			if ((start >= 0L) && (end >= 0L) && (start != end)) {

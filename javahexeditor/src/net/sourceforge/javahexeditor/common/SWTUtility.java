@@ -21,6 +21,7 @@
 package net.sourceforge.javahexeditor.common;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -63,37 +64,33 @@ public final class SWTUtility {
 	}
 
 	/**
-	 * Helper method to make a shell come closer to another shell
+	 * Helper method to make a center a shell or dialog in the center of another
+	 * shell.
 	 *
+	 * * @param movingShell shell to be relocated, not <code>null</code>
+	 * 
 	 * @param fixedShell
-	 *            where movingShell will get closer to
-	 * @param movingShell
-	 *            shell to be relocated
+	 *            shell to be used as reference, not <code>null</code>
+	 * 
 	 */
-	public static void reduceDistance(Shell fixedShell, Shell movingShell) {
-		if (fixedShell == null) {
-			throw new IllegalArgumentException("Parameter 'fixedShell' must not be null.");
-		}
+	public static void placeInCenterOf(Shell movingShell, Shell fixedShell) {
 		if (movingShell == null) {
 			throw new IllegalArgumentException("Parameter 'movingShell' must not be null.");
 		}
+		if (fixedShell == null) {
+			throw new IllegalArgumentException("Parameter 'fixedShell' must not be null.");
+		}
+
 		movingShell.pack();
 
-		Rectangle fixed = fixedShell.getBounds();
-		Rectangle moving = movingShell.getBounds();
-		int[] fixedLower = { fixed.x, fixed.y };
-		int[] fixedHigher = { fixed.x + fixed.width, fixed.y + fixed.height };
-		int[] movingLower = { moving.x, moving.y };
-		int[] movingSpan = { moving.width, moving.height };
+		Rectangle fixedShellSize = fixedShell.getBounds();
+		Rectangle dialogSize = movingShell.getBounds();
 
-		for (int i = 0; i < 2; ++i) {
-			if (movingLower[i] + movingSpan[i] < fixedLower[i]) {
-				movingLower[i] = fixedLower[i] - movingSpan[i] + 10;
-			} else if (fixedHigher[i] < movingLower[i]) {
-				movingLower[i] = fixedHigher[i] - 10;
-			}
-		}
-		movingShell.setLocation(movingLower[0], movingLower[1]);
+		int locationX, locationY;
+		locationX = (fixedShellSize.width - dialogSize.width) / 2 + fixedShellSize.x;
+		locationY = (fixedShellSize.height - dialogSize.height) / 2 + fixedShellSize.y;
+
+		movingShell.setLocation(new Point(locationX, locationY));
 	}
 
 	public static int showMessage(Shell shell, int style, String title, String message, String... parameters) {

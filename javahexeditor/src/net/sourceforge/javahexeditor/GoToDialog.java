@@ -270,7 +270,7 @@ final class GoToDialog extends Dialog {
 		label2.setLayoutData(formData2);
 	}
 
-	public long open(long limit) {
+	public long open(Shell parentShell, long limit) {
 		this.limit = limit;
 		finalResult = -1L;
 		buttonPressed = 0;
@@ -278,7 +278,7 @@ final class GoToDialog extends Dialog {
 			createShell();
 		}
 
-		SWTUtility.reduceDistance(getParent(), shell);
+		SWTUtility.placeInCenterOf(shell, parentShell);
 		if (lastHexButtonSelected) {
 			hexRadioButton.setSelection(true);
 		} else {

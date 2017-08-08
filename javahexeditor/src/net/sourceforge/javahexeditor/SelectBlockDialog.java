@@ -278,7 +278,7 @@ final class SelectBlockDialog extends Dialog {
 		statusLabel.setLayoutData(formData2);
 	}
 
-	public boolean open(RangeSelection rangeSelection, long aLimit) {
+	public boolean open(Shell parentShell, RangeSelection rangeSelection, long aLimit) {
 		if (rangeSelection == null) {
 			throw new IllegalArgumentException("Parameter 'rangeSelection' must not be null.");
 		}
@@ -288,7 +288,7 @@ final class SelectBlockDialog extends Dialog {
 		if (shell == null || shell.isDisposed()) {
 			createShell();
 		}
-		SWTUtility.reduceDistance(getParent(), shell);
+		SWTUtility.placeInCenterOf(shell, parentShell);
 
 		if (lastHexButtonSelected) {
 			hexRadioButton.setSelection(true);
