@@ -215,20 +215,15 @@ public final class HexEditor {
 		gridLayout.marginBottom = 2;
 		Composite hexTextsParent = new Composite(shell, SWT.NONE);
 		hexTextsParent.setLayout(gridLayout);
+
 		manager.createEditorPart(hexTextsParent);
 
-		GridData statusParentGridData = new GridData();
+		GridData gridData = new GridData();
 		GC gc = new GC(hexTextsParent);
-		statusParentGridData.heightHint = gc.getFontMetrics().getHeight();
+		gridData.heightHint = gc.getFontMetrics().getHeight();
 		gc.dispose();
-		Composite statusParent = new Composite(hexTextsParent, SWT.NONE);
-		statusParent.setLayoutData(statusParentGridData);
-		GridLayout statusParentGridLayout = new GridLayout();
-		statusParentGridLayout.marginHeight = 0;
-		statusParentGridLayout.marginWidth = 0;
-		statusParent.setLayout(statusParentGridLayout);
-
-		manager.createStatusPart(statusParent, false);
+		Composite statusLine = manager.createStatusPart(hexTextsParent, false);
+		statusLine.setLayoutData(gridData);
 
 		DropTarget target = new DropTarget(hexTextsParent, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
 		target.setTransfer(new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance() });

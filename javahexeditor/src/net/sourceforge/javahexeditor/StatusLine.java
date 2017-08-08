@@ -70,10 +70,8 @@ final class StatusLine extends Composite {
 		if (withSeparator) {
 			Label separator1 = new Label(this, SWT.SEPARATOR);
 			separator1.setLayoutData(createGridData());
-		} else {
-			setLayoutData(createGridData());
 		}
-
+	
 		long MAX_FILE_SIZE = 1024 * 1024 * 1024; // Use a reasonable value to not waste space
 		positionLabel = new Label(this, SWT.SHADOW_NONE);
 		int maxLength = Math.max(getPositionText(Long.MAX_VALUE).length(),
@@ -130,6 +128,13 @@ final class StatusLine extends Composite {
 	}
 
 	/**
+	 * Clear the position status.
+	 */
+	public void clearPosition() {
+		positionLabel.setText(Texts.EMPTY);
+	}
+
+	/**
 	 * Update the position status. Displays its decimal and hex value.
 	 *
 	 * @param position
@@ -148,29 +153,6 @@ final class StatusLine extends Composite {
 	private String getPositionText(long position) {
 		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_POSITION,
 				NumberUtility.getDecimalAndHexString(position));
-		return text;
-	}
-
-	/**
-	 * Update the value. Displays its decimal, hex and binary value
-	 *
-	 * @param value
-	 *            value to display
-	 */
-	public void updateValue(byte value) {
-		if (isDisposed() || positionLabel.isDisposed()) {
-			return;
-		}
-		valueLabel.setText(getValueText(value));
-	}
-
-	private String getValueText(byte value) {
-		int unsignedValue = value & 0xff;
-		String binaryText = "0000000" + Integer.toBinaryString(unsignedValue);
-		binaryText = binaryText.substring(binaryText.length() - 8);
-
-		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_VALUE, NumberUtility.getDecimalString(unsignedValue),
-				NumberUtility.getHexString(unsignedValue), binaryText);
 		return text;
 	}
 
@@ -199,6 +181,39 @@ final class StatusLine extends Composite {
 		}
 		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_SELECTION,
 				NumberUtility.getDecimalAndHexRangeString(rangeSelection.start, rangeSelection.end));
+		return text;
+	}
+
+	/**
+	 * Clear the value status.
+	 */
+	public void clearValue() {
+		if (isDisposed() || valueLabel.isDisposed()) {
+			return;
+		}
+		valueLabel.setText(Texts.EMPTY);
+	}
+
+	/**
+	 * Update the value status. Displays its decimal, hex and binary value
+	 *
+	 * @param value
+	 *            value to display
+	 */
+	public void updateValue(byte value) {
+		if (isDisposed() || valueLabel.isDisposed()) {
+			return;
+		}
+		valueLabel.setText(getValueText(value));
+	}
+
+	private String getValueText(byte value) {
+		int unsignedValue = value & 0xff;
+		String binaryText = "0000000" + Integer.toBinaryString(unsignedValue);
+		binaryText = binaryText.substring(binaryText.length() - 8);
+
+		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_VALUE, NumberUtility.getDecimalString(unsignedValue),
+				NumberUtility.getHexString(unsignedValue), binaryText);
 		return text;
 	}
 

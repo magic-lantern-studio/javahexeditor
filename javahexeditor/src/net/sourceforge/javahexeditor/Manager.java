@@ -278,20 +278,13 @@ public final class Manager {
 	 * @param withLeftSeparator
 	 *            so it can be put besides other status items (for plugin)
 	 */
-	public void createStatusPart(Composite parent, boolean withLeftSeparator) {
+	public Composite createStatusPart(Composite parent, boolean withLeftSeparator) {
 		if (parent == null) {
 			throw new IllegalArgumentException("Parameter 'parent' must not be null.");
 		}
 		statusLine = new StatusLine(parent, SWT.NONE, withLeftSeparator);
-		if (hexTexts != null && hexTexts.isEnabled()) {
-			statusLine.updateInsertMode(!hexTexts.isOverwriteMode());
-			if (hexTexts.isSelected()) {
-				statusLine.updateSelection(hexTexts.getSelection());
-			} else {
-				statusLine.updatePosition(hexTexts.getCaretPos());
-			}
-			statusLine.updateValue(hexTexts.getActualValue());
-		}
+		updateStatusLine();
+		return statusLine;
 	}
 
 	/**
@@ -707,7 +700,7 @@ public final class Manager {
 	private void updateStatusLine() {
 		if (statusLine != null) {
 			statusLine.updateInsertMode(hexTexts == null ? true : !hexTexts.isOverwriteMode());
-			if (hexTexts != null) {
+			if (hexTexts != null && hexTexts.isEnabled()) {
 				if (hexTexts.isSelected()) {
 					statusLine.updateSelection(hexTexts.getSelection());
 				} else {
@@ -715,9 +708,8 @@ public final class Manager {
 				}
 				statusLine.updateValue(hexTexts.getActualValue());
 			} else {
-				statusLine.updatePosition(0L);
-				statusLine.updateValue((byte) 0);
-
+				statusLine.clearPosition();
+				statusLine.clearValue();
 			}
 		}
 	}
