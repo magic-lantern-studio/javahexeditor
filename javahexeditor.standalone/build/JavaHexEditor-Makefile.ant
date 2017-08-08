@@ -95,6 +95,9 @@
 		<antcall target="create_platform_zip">
 			<param name="platform" value="win32-x86" />
 		</antcall>
+		<antcall target="create_platform_zip">
+			<param name="platform" value="win32-x86_64" />
+		</antcall>
 
 	</target>
 
