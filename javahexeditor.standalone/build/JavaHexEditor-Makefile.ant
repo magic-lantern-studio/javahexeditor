@@ -8,7 +8,7 @@
 
 		<!-- Set version property and create version file -->
 		<tstamp>
-			<format property="version" pattern="yyyy-MM-dd hh:mm:ss" locale="en,GB" />
+			<format property="version" pattern="yyyy-MM-dd HH:mm:ss" locale="en,GB" />
 		</tstamp>
 		<echo file="..\..\javahexeditor\bin\net\sourceforge\javahexeditor\Manager.version"> "${version}"</echo>
 
@@ -111,13 +111,14 @@
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
 				<attribute name="Class-Path" value="." />
 				<attribute name="Rsrc-Main-Class" value="net.sourceforge.javahexeditor.standalone.HexEditor" />
-				<attribute name="Rsrc-Class-Path" value="./ org.eclipse.osgi.jar swt.jar" />
+				<attribute name="Rsrc-Class-Path" value="./ org.eclipse.equinox.common.jar org.eclipse.osgi.jar swt.jar" />
 			</manifest>
 			<zipfileset src="../lib/jar-in-jar-loader.zip" />
 			<fileset dir="../../javahexeditor/bin">
 				<exclude name="net/sourceforge/javahexeditor/test/**" />
 			</fileset>
 			<fileset dir="../bin" />
+			<zipfileset dir="../lib" includes="org.eclipse.equinox.common.jar" />
 			<zipfileset dir="../lib" includes="org.eclipse.osgi.jar" />
 			<zipfileset dir="../lib/${platform}" includes="swt.jar" />
 		</jar>
