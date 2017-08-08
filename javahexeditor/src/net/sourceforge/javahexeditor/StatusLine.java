@@ -71,7 +71,7 @@ final class StatusLine extends Composite {
 			Label separator1 = new Label(this, SWT.SEPARATOR);
 			separator1.setLayoutData(createGridData());
 		}
-	
+
 		long MAX_FILE_SIZE = 1024 * 1024 * 1024; // Use a reasonable value to not waste space
 		positionLabel = new Label(this, SWT.SHADOW_NONE);
 		int maxLength = Math.max(getPositionText(Long.MAX_VALUE).length(),
@@ -131,6 +131,9 @@ final class StatusLine extends Composite {
 	 * Clear the position status.
 	 */
 	public void clearPosition() {
+		if (isDisposed() || positionLabel.isDisposed()) {
+			return;
+		}
 		positionLabel.setText(Texts.EMPTY);
 	}
 

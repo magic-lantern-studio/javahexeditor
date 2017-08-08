@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import java.net.URI;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.DND;
@@ -53,6 +54,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
+import net.sourceforge.javahexeditor.FileToucher;
 import net.sourceforge.javahexeditor.HelpResources;
 import net.sourceforge.javahexeditor.Manager;
 import net.sourceforge.javahexeditor.PreferencesManager;
@@ -111,7 +113,15 @@ public final class HexEditor {
 			}
 		}
 		Display display = Display.getDefault();
-		manager = new Manager();
+		manager = new Manager(new FileToucher() {
+
+			@Override
+			public void touchFile(File contentFile, IProgressMonitor monitor) throws IOException {
+				if (contentFile.exists()) {
+					contentFile.setLastModified(System.currentTimeMillis());
+				}
+			}
+		});
 		preferences = new HexEditorPreferences(this);
 		preferences.load();
 

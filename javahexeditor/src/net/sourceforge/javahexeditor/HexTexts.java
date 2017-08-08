@@ -1927,7 +1927,7 @@ public final class HexTexts extends Composite {
 
 		charsForFileSizeAddress = Long.toHexString(myContent.length()).length();
 
-		setEnabled(myContent != null);
+		setEnabled(true);
 		updateScrollBar();
 		redrawTextAreas(true);
 		notifyLongSelectionListeners();

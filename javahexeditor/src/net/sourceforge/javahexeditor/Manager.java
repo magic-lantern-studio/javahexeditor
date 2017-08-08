@@ -19,19 +19,14 @@
  */
 package net.sourceforge.javahexeditor;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -73,6 +68,10 @@ public final class Manager {
 	private static final String OS_PATH = "net/sourceforge/javahexeditor/Manager.os";
 	private static final String VERSION_PATH = "net/sourceforge/javahexeditor/Manager.version";
 
+	// Logic components
+	private FileToucher fileToucher;
+	
+	// State
 	private BinaryContent content;
 	private File contentFile;
 
@@ -92,6 +91,13 @@ public final class Manager {
 	private GoToDialog goToDialog;
 	private SelectBlockDialog selectBlockDialog;
 
+	public Manager(FileToucher fileToucher){
+		if (fileToucher == null) {
+			throw new IllegalArgumentException("Parameter 'fileToucher' must not be null.");
+		}
+		this.fileToucher=fileToucher;
+		
+	}
 	/**
 	 * Gets the build OS .
 	 *
@@ -627,7 +633,7 @@ public final class Manager {
 
 		content = new BinaryContent(file);
 		contentFile = file;
-		touchFile(monitor);
+		fileToucher.touchFile(contentFile, monitor);
 
 		hexTexts.setContentProvider(content);
 	}
@@ -643,7 +649,7 @@ public final class Manager {
 	 */
 	public void saveFile(IProgressMonitor monitor) throws IOException {
 		try {
-			content.get(contentFile);
+			content.get(contentFile); // TODO: Actually use the progress monitor to do something
 			content.dispose();
 			content = new BinaryContent(contentFile);
 		} catch (IOException ex) {
@@ -652,35 +658,11 @@ public final class Manager {
 					contentFile.getAbsolutePath(), ex.getMessage()));
 		}
 
-		touchFile(monitor);
+		fileToucher.touchFile(contentFile, monitor);
 
 		hexTexts.setContentProvider(content);
 	}
 
-	private void touchFile(IProgressMonitor monitor) throws IOException {
-		IWorkspace workspace = null;
-		try {
-			workspace = ResourcesPlugin.getWorkspace();
-		} catch (IllegalStateException ex) {
-			workspace = null;
-		}
-
-		if (workspace != null) {
-			IFile file = workspace.getRoot().getFileForLocation(new Path(contentFile.getAbsolutePath()));
-			if (file.exists()) {
-				try {
-					file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
-				} catch (CoreException ex) {
-					throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE,
-							contentFile.getAbsolutePath(), ex.getMessage()));
-				}
-			}
-		} else {
-			if (contentFile.exists()) {
-				contentFile.setLastModified(System.currentTimeMillis());
-			}
-		}
-	}
 
 	/**
 	 * Sets Find/Replace combo lists pre-exisiting values.

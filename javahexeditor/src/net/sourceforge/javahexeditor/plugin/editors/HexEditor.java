@@ -19,18 +19,21 @@
  */
 package net.sourceforge.javahexeditor.plugin.editors;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -67,6 +70,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import net.sourceforge.javahexeditor.BinaryContent;
+import net.sourceforge.javahexeditor.FileToucher;
 import net.sourceforge.javahexeditor.BinaryContent.RangeSelection;
 import net.sourceforge.javahexeditor.HexTexts;
 import net.sourceforge.javahexeditor.Manager;
@@ -135,7 +139,25 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
 	public HexEditor() {
 		super();
-		manager = new Manager();
+		manager = new Manager(new FileToucher() {
+
+			@Override
+			public void touchFile(File contentFile, IProgressMonitor monitor) throws IOException {
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+
+				IFile file = workspace.getRoot().getFileForLocation(new Path(contentFile.getAbsolutePath()));
+				if (file.exists()) {
+					try {
+						file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
+					} catch (CoreException ex) {
+						throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE,
+								contentFile.getAbsolutePath(), ex.getMessage()));
+					}
+
+				}
+			}
+		});
+		;
 	}
 
 	@Override
