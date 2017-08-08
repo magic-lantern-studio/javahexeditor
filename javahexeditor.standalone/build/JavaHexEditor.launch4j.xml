@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>@JAVAHEXEDTOR_STANDALONE_DIR@\out\@PLATFORM_ID@\JavaHexEditor.jar</jar>
+  <outfile>@JAVAHEXEDTOR_STANDALONE_DIR@\out\@PLATFORM_ID@\JavaHexEditor.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl>http://javahexeditor.sourceforge.net</supportUrl>
+  <stayAlive>false</stayAlive>
+  <manifest></manifest>
+  <icon>@JAVAHEXEDTOR_STANDALONE_DIR@\icons\javahexeditor.ico</icon>
+  <jre>
+    <path></path>
+    <bundledJre64Bit>false</bundledJre64Bit>
+    <minVersion>1.7.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>@RUNTIME_BITS@</runtimeBits>
+  </jre>
+  <versionInfo>
+    <fileVersion>@VERSION@</fileVersion>
+    <txtFileVersion>@VERSION_TEXT@</txtFileVersion>
+    <fileDescription>Java Hex Editor - Windows @RUNTIME_BITS@-Bit (@PLATFORM_ID@)</fileDescription>
+    <copyright>(C) 2006 - 2017 Jordi Bergenthal and Peter Dell</copyright>
+    <productVersion>@VERSION@</productVersion>
+    <txtProductVersion>@VERSION_TEXT@</txtProductVersion>
+    <productName>Java Hex Editor</productName>
+    <companyName></companyName>
+    <internalName>JavaHexEditor.launch4j.xml</internalName>
+    <originalFilename>JavaHexEditor.exe</originalFilename>
+  </versionInfo>
+</launch4jConfig>
