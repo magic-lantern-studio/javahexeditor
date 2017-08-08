@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -657,18 +658,27 @@ public final class Manager {
 		hexTexts.setContentProvider(content);
 	}
 
-	IFile getResource() {
-		return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(contentFile.getAbsolutePath()));
-	}
-
 	private void touchFile(IProgressMonitor monitor) throws IOException {
-		IFile file = getResource();
-		if (file.exists()) {
-			try {
-				file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
-			} catch (CoreException ex) {
-				throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE,
-						contentFile.getAbsolutePath(), ex.getMessage()));
+		IWorkspace workspace = null;
+		try {
+			workspace = ResourcesPlugin.getWorkspace();
+		} catch (IllegalStateException ex) {
+			workspace = null;
+		}
+
+		if (workspace != null) {
+			IFile file = workspace.getRoot().getFileForLocation(new Path(contentFile.getAbsolutePath()));
+			if (file.exists()) {
+				try {
+					file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
+				} catch (CoreException ex) {
+					throw new IOException(TextUtility.format(Texts.MANAGER_SAVE_MESSAGE_CANNOT_READ_FROM_SAVED_FILE,
+							contentFile.getAbsolutePath(), ex.getMessage()));
+				}
+			}
+		} else {
+			if (contentFile.exists()) {
+				contentFile.setLastModified(System.currentTimeMillis());
 			}
 		}
 	}
