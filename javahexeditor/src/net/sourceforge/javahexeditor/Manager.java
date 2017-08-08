@@ -573,7 +573,6 @@ public final class Manager {
 					ex));
 		}
 		hexTexts.setCharset(charset);
-		hexTexts.setEnabled(true);
 		hexTexts.setContentProvider(content);
 
 	}
@@ -710,7 +709,7 @@ public final class Manager {
 	private void updateStatusLine() {
 		if (statusLine != null) {
 			statusLine.updateInsertMode(hexTexts == null ? true : !hexTexts.isOverwriteMode());
-			if (hexTexts != null && hexTexts.isEnabled()) {
+			if (hexTexts != null && hexTexts.getContent() != null) {
 				if (hexTexts.isSelected()) {
 					statusLine.updateSelection(hexTexts.getSelection());
 				} else {
