@@ -72,6 +72,7 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 				myMenuItem.setText(Texts.EDITOR_TRIM_MENU_ITEM_LABEL);
 				myMenuItem.setEnabled(textSelected && !activeEditor.getManager().isOverwriteMode());
 				myMenuItem.addSelectionListener(new SelectionAdapter() {
+
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						Manager manager = activeEditor.getManager();
@@ -86,6 +87,7 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 				myMenuItem.setAccelerator(SWT.CONTROL | 'E');
 				myMenuItem.setEnabled(true);
 				myMenuItem.addSelectionListener(new SelectionAdapter() {
+
 					@Override
 					public void widgetSelected(SelectionEvent e) {
 						Manager manager = activeEditor.getManager();
@@ -206,12 +208,14 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 	 */
 	@Override
 	public void setActiveEditor(IEditorPart targetEditor) {
-		if (activeEditor != null) {
-			Manager manager = ((HexEditor) targetEditor).getManager();
-			manager.reuseStatusLinelFrom(activeEditor.getManager());
+		if (targetEditor instanceof HexEditor) {
+			if (activeEditor != null) {
+				Manager manager = ((HexEditor) targetEditor).getManager();
+				manager.reuseStatusLinelFrom(activeEditor.getManager());
+			}
+			activeEditor = (HexEditor) targetEditor;
+			activeEditor.getManager().setFocus();
+			activeEditor.updateActionsStatus();
 		}
-		activeEditor = (HexEditor) targetEditor;
-		activeEditor.getManager().setFocus();
-		activeEditor.updateActionsStatus();
 	}
 }
