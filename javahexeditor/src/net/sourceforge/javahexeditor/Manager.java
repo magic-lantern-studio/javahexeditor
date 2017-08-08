@@ -573,8 +573,8 @@ public final class Manager {
 					ex));
 		}
 		hexTexts.setCharset(charset);
-		hexTexts.setContentProvider(content);
 		hexTexts.setEnabled(true);
+		hexTexts.setContentProvider(content);
 
 	}
 
