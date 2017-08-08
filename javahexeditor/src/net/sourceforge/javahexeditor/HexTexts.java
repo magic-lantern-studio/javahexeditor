@@ -1906,12 +1906,15 @@ public final class HexTexts extends Composite {
 	 * display area in the same position, but only if it falls within the new
 	 * content's limits.
 	 *
-	 * @param aContent
+	 * @param newContent
 	 *            the content to be displayed
 	 */
-	public void setContentProvider(BinaryContent aContent) {
+	public void setContentProvider(BinaryContent newContent) {
 		boolean firstContent = (myContent == null);
-		myContent = aContent;
+		if (myContent != null && myContent != newContent) {
+			myContent.dispose();
+		}
+		myContent = newContent;
 		myFinder = null;
 		if (myContent != null) {
 			myContent.setActionsHistory();
