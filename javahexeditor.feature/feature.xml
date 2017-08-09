@@ -3,7 +3,7 @@
       id="net.sourceforge.javahexeditor"
       label="Java Hex Editor"
       version="0.5.1.qualifier"
-      provider-name="Jordi Bergenthal, Peter Dell, Andrey Loskutov"
+      provider-name="Jordi Bergenthal, Andre Bossert, Peter Dell, Andrey Loskutov"
       plugin="net.sourceforge.javahexeditor">
 
    <description url="http://javahexeditor.sourceforge.net">
