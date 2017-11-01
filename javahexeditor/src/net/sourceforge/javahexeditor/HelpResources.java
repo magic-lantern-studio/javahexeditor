@@ -51,6 +51,7 @@ public final class HelpResources {
 
 				uri = writeResource("/help/index.html", "index.html").toURI();
 				writeResource("/images/javahexeditor-48x48.png", null);
+				writeResource("/images/linux-files-preferences.png", null);
 				writeResource("/images/screenshot-01.png", null);
 				writeResource("/images/screenshot-02.png", null);
 			}
