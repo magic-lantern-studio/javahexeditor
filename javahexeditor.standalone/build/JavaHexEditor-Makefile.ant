@@ -153,7 +153,17 @@
 
 	<target name="create_platform_zip">
 		<delete file="../out/${platform}/javahexeditor-${platform}.zip" />
-		<zip destfile="../out/javahexeditor-${platform}.zip" basedir="../out/${platform}" />
+		
+		<!-- ZIP code and source from Eclipse workspace to "out" folder -->
+		<!-- The regular ZIP task cannot preserve the executable flags for Unix, therefore we use a native Unix zip 
+		 	 <zip destfile="../out/javahexeditor-${platform}.zip" basedir="../out/${platform}" />
+		-->
+		<exec executable="C:\jac\cygwin\bin\zip.exe" dir="../out/${platform}">
+			<arg value="../javahexeditor-${platform}.zip" />
+			<arg value="-r" />
+			<arg value="*.*" />
+		</exec>
+
 		<delete dir="../out/${platform}" />
 	</target>
 
