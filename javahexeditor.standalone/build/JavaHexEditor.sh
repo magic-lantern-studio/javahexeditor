@@ -1,1 +1,2 @@
-java -jar JavaHexEditor %1
+#!/bin/sh
+java -jar JavaHexEditor.jar "$@"
