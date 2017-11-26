@@ -14,7 +14,7 @@
 
 		<!-- Copy built-in documentation to web site folder for upload -->
 		<!-- The destination folders are excluded from source code versioning -->
-		<copy file="../../javahexeditor/src/help/index.html" todir="../../javahexeditor.site" overwrite="true" />
+		<copy file="../../javahexeditor/src/index.html" todir="../../javahexeditor.site" overwrite="true" />
 		<replace file="../../javahexeditor.site/index.html" token="&lt;p id=&quot;version&quot;&gt;" value="&lt;p&gt;This is version ${version} of the program. " />
 		<mkdir dir="../../javahexeditor.site/images" />
 		<copy todir="../../javahexeditor.site/images" overwrite="true">
