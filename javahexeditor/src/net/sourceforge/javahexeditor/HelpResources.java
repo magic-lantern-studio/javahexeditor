@@ -49,7 +49,7 @@ public final class HelpResources {
 		} else {
 			{
 
-				uri = writeResource("/help/index.html", "index.html").toURI();
+				uri = writeResource("/index.html", null).toURI();
 				writeResource("/images/javahexeditor-48x48.png", null);
 				writeResource("/images/linux-files-preferences.png", null);
 				writeResource("/images/screenshot-01.png", null);

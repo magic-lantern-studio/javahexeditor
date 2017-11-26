@@ -1,7 +1,7 @@
 
 javahexeditor - Java Hex Editor
 
-Copyright (C) 2006 - 2014 Jordi Bergenthal, pestatije(-at_)users.sourceforge.net.
+Copyright (C) 2006 - 2017 Jordi Bergenthal, pestatije(-at_)users.sourceforge.net.
 The official javahexeditor project site is sourceforge.net/projects/javahexeditor.
 
 This program is free software; you can redistribute it and/or modify
@@ -29,10 +29,14 @@ See http://javahexeditor.sourceforge.net.
 javahexeditor change log
 ------------------------
 
-??/??/2017 version 0.5.1.
-    Update to Java 1.8 and Eclipse Oxygene.
+26/11/2017 version 0.5.1.
+    Adapt wrappers for Windows and Mac OS X to Java 1.8.
+    Update help files and internal help file structure.
+
+09/08/2017 version 0.5.1.
+    Update to Java 1.7 and Eclipse Oxygene.
  
-??/??/2017 version 0.50
+08/08/2017 version 0.5.0
     Fixed page-up/page-down handling.
     Enabled opening files from the local history.
     Thanks to Andrey Loskutov for the fixes.
