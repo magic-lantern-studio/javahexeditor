@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="create_run_jars" name="Create Runnable Jars for Project net.sourceforge.javahexeditor.standalone with Jar-in-Jar Loader">
-	<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
+	<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" />
 
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
 	<!--ANT 1.7 is required                                        -->
@@ -78,12 +78,12 @@
 
 
 		<!-- Remove jars that have been wrapped before zipping -->
-		<delete file="../out/linux-x86/JavaHexEditor.jar" failonerror="true"/>
-		<delete file="../out/linux-x86_64/JavaHexEditor.jar" failonerror="true"/>
-		<delete file="../out/macosx-x86/JavaHexEditor.jar" failonerror="true"/>
-		<delete file="../out/macosx-x86_64/JavaHexEditor.jar" failonerror="true"/>
-		<delete file="../out/win32-x86/JavaHexEditor.jar" failonerror="true"/>
-		<delete file="../out/win32-x86_64/JavaHexEditor.jar" failonerror="true"/>
+		<delete file="../out/linux-x86/JavaHexEditor.jar" failonerror="true" />
+		<delete file="../out/linux-x86_64/JavaHexEditor.jar" failonerror="true" />
+		<delete file="../out/macosx-x86/JavaHexEditor.jar" failonerror="true" />
+		<delete file="../out/macosx-x86_64/JavaHexEditor.jar" failonerror="true" />
+		<delete file="../out/win32-x86/JavaHexEditor.jar" failonerror="true" />
+		<delete file="../out/win32-x86_64/JavaHexEditor.jar" failonerror="true" />
 
 		<!-- Create zip files for upload -->
 		<antcall target="create_platform_zip">
@@ -142,7 +142,8 @@
 		<mkdir dir="../out/${platform}/javahexeditor.app" />
 		<!-- See the "build/jarbundler.txt" fie for details on the task -->
 		<!-- The ".icns" file was created using http://iconverticons.com/online -->
-		<jarbundler dir="../out/${platform}/" name="javahexeditor" copyright="Copyright" mainclass="net.sourceforge.javahexeditor.standalone.HexEditor" jar="../out/${platform}/JavaHexEditor.jar" jvmversion="1.8+" vmoptions="-Xms256M" shortname="Java Hex Editor" build="$${version}" icon="../../javahexeditor/src/images/javahexeditor-48x48.icns" />
+		<jarbundler dir="../out/${platform}/" name="javahexeditor" copyright="(C) 2006 - 2017 Jordi Bergenthal and Peter Dell" shortname="Java Hex Editor" build="$${version}" icon="../../javahexeditor/src/images/javahexeditor-48x48.icns" useJavaXKey="true" mainclass="net.sourceforge.javahexeditor.standalone.HexEditor" jar="../out/${platform}/JavaHexEditor.jar" jvmversion="1.8+" vmoptions="-Xms256M -Xmx256M">
+		</jarbundler>
 		<copy todir="../out/${platform}/javahexeditor.app/Contents/MacOS" overwrite="true">
 			<fileset file="./JavaApplicationStub" />
 		</copy>
