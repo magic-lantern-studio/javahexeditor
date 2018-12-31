@@ -1,14 +1,12 @@
 <project name="Site" basedir=".">
 
-	<!-- - - - - - - - - - - - - - - - - - 
-	          target: name                      
-	         - - - - - - - - - - - - - - - - - -->
 	<target name="_clean_folder">
 		<echo message="Cleaning ${folder}" />
 		<delete dir="${folder}/features" />
 		<delete dir="${folder}/plugins" />
 		<delete file="${folder}/artifacts.jar" />
 		<delete file="${folder}/content.jar" />
+		<delete file="${folder}/logs.zip" />
 	</target>
 
 	<target name="_copy_folder">
