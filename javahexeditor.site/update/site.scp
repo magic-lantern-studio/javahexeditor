@@ -1,0 +1,8 @@
+open sftp://%SOURCEFORGE_USER%:%SOURCEFORGE_PASSWORD%@web.sourceforge.net/ -hostkey="ssh-ed25519 256 6e:b2:16:7a:ee:b6:c2:23:c5:8f:ff:e7:9d:cd:d4:1a" -rawsettings FSProtocol=2
+
+lcd C:\jac\system\Java\Programming\Repositories\JavaHexEditor\javahexeditor.site
+cd /home/project-web/javahexeditor/htdocs
+
+synchronize -delete remote
+
+exit
