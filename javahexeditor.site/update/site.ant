@@ -19,6 +19,7 @@
 		<copy todir="${target}" preservelastmodified="true">
 			<fileset file="${source}/artifacts.jar" />
 			<fileset file="${source}/content.jar" />
+			<fileset file="${source}/index.html" />
 			<fileset file="${source}/site.xml" />
 		</copy>
 		<copy todir="${target}/features" preservelastmodified="true">
