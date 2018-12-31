@@ -4,11 +4,11 @@ JarBundler
 JarBundler is a feature-rich Ant task which will create a Mac OS X application bundle from a list of Jar files and a main class name.
 You can add an Icon resource, set various Mac OS X native look-and-feel bells and whistles, and maintain your application bundles as part of your normal build and release cycle.
 
-See "https://github.com/UltraMixer/JarBundler" and the downloaded "jarbundler.html".
+See "https://github.com/UltraMixer/JarBundler/releases" to download "jarbundler-core-3.3.0.jar".
 
 Installation
 
-Move the file <tt>jarbundler-2.3.1.jar into your local ANT lib directory.  Remove any older versions at this time.
+Add the file"jarbundler-core-3.3.0.jar" inthe preferences under "Ant / Runtime / Classpath / Global Entries".
 To use the Jar Bundler Ant Task, create a task definition in your ANT build.xml file like this:
 <taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
 
