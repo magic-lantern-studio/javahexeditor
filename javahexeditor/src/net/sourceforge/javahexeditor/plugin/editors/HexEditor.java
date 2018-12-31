@@ -220,7 +220,6 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
 		manager.addListener(new Listener() {
 			@Override
-			@SuppressWarnings("synthetic-access")
 			public void handleEvent(Event event) {
 				firePropertyChange(PROP_DIRTY);
 				updateActionsStatus();

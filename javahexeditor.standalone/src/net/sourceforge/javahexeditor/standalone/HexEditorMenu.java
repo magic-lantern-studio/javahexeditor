@@ -174,7 +174,6 @@ public final class HexEditorMenu {
 		return result;
 	}
 
-	@SuppressWarnings("unused")
 	private void createMenuSeparator(Menu menu) {
 		new MenuItem(menu, SWT.SEPARATOR);
 	}
