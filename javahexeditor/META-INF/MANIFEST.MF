@@ -20,3 +20,4 @@ Export-Package: net.sourceforge.javahexeditor.plugin,
  net.sourceforge.javahexeditor.plugin.editors,
  net.sourceforge.javahexeditor.test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Automatic-Module-Name: net.sourceforge.javahexeditor
