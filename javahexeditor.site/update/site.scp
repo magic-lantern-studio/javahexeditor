@@ -5,4 +5,9 @@ cd /home/project-web/javahexeditor/htdocs
 
 synchronize -delete remote
 
+lcd C:\jac\system\Java\Programming\Repositories\JavaHexEditor\javahexeditor.standalone\out
+cd /home/pfs/project/javahexeditor/javahexeditor/current
+
+synchronize -delete remote
+
 exit
