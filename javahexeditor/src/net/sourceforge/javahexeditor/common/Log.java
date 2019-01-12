@@ -19,8 +19,6 @@
  */
 package net.sourceforge.javahexeditor.common;
 
-import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
-
 /**
  * Utility class to issue log messages.
  *
@@ -28,17 +26,32 @@ import net.sourceforge.javahexeditor.plugin.HexEditorPlugin;
  */
 public final class Log {
 
-	static final boolean DEBUG;
+	public static interface Delegate {
 
-	static {
-		HexEditorPlugin plugin = HexEditorPlugin.getDefault();
+		public boolean isTraceActive();
 
-		if (plugin != null && plugin.isDebugging()) {
-			DEBUG = true;
-		} else {
-			DEBUG = false;
-		}
+		public void log(String message, Throwable th);
 	}
+
+	private static final class DefaultDelegate implements Delegate {
+
+		@Override
+		public boolean isTraceActive() {
+			return false;
+		}
+
+		@Override
+		public void log(String message, Throwable th) {
+			System.err.println(message);
+			if (th != null) {
+				th.printStackTrace(System.err);
+			}
+
+		}
+
+	}
+
+	private static Delegate delegate = new DefaultDelegate();
 
 	/**
 	 * Creation is private.
@@ -46,18 +59,24 @@ public final class Log {
 	private Log() {
 	}
 
+	public static void setDelegate(Delegate delegate) {
+		Log.delegate = delegate;
+	}
+
 	public static void logError(String message, Object[] parameters, Throwable th) {
 		if (message == null) {
 			throw new IllegalArgumentException("Parameter 'message' must not be null.");
 		}
-		String m = createMessage("ERROR: ", message, parameters);
-		HexEditorPlugin.logError(m, th);
+		if (delegate != null) {
+			String m = createMessage("ERROR: ", message, parameters);
+			delegate.log(m, th);
+		}
 	}
 
 	public static void trace(Object owner, String message, Object... parameters) {
-		if (DEBUG) {
+		if (delegate != null && delegate.isTraceActive()) {
 			String m = createMessage(owner, message, parameters);
-			System.out.println(m);
+			delegate.log(m, null);
 		}
 	}
 
