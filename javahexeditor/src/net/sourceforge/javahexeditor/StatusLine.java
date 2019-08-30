@@ -44,12 +44,10 @@ final class StatusLine extends Composite {
 	/**
 	 * Create a status line part
 	 *
-	 * @param parent
-	 *            parent in the widget hierarchy
-	 * @param style
-	 *            not used
-	 * @param withLeftSeparator
-	 *            so it can be put besides other status items (for plugin)
+	 * @param parent            parent in the widget hierarchy
+	 * @param style             not used
+	 * @param withLeftSeparator so it can be put besides other status items (for
+	 *                          plugin)
 	 */
 	public StatusLine(Composite parent, int style, boolean withLeftSeparator) {
 		super(parent, style);
@@ -105,7 +103,8 @@ final class StatusLine extends Composite {
 		GC gc = new GC(this);
 		FontMetrics fontMetrics = gc.getFontMetrics();
 
-		GridData gridData = new GridData((maxLength) * fontMetrics.getAverageCharWidth(), SWT.DEFAULT);
+		int width = (int) (maxLength * fontMetrics.getAverageCharacterWidth());
+		GridData gridData = new GridData(width, SWT.DEFAULT);
 		gridData.grabExcessVerticalSpace = true;
 		gc.dispose();
 
@@ -115,9 +114,8 @@ final class StatusLine extends Composite {
 	/**
 	 * Update the insert/overwrite mode.
 	 *
-	 * @param insert
-	 *            <code>true</code> for insert mode, or <code>false</code> for
-	 *            overwrite
+	 * @param insert <code>true</code> for insert mode, or <code>false</code> for
+	 *               overwrite
 	 */
 	public void updateInsertMode(boolean insert) {
 		if (isDisposed() || insertModeLabel.isDisposed()) {
@@ -140,8 +138,7 @@ final class StatusLine extends Composite {
 	/**
 	 * Update the position status. Displays its decimal and hex value.
 	 *
-	 * @param position
-	 *            position to display
+	 * @param position position to display
 	 */
 	public void updatePosition(long position) {
 		if (position < 0) {
@@ -163,8 +160,7 @@ final class StatusLine extends Composite {
 	 * Update the selection status. Displays its decimal and hex values for start
 	 * and end selection
 	 *
-	 * @param rangeSelection
-	 *            selection array to display: [0] = start, [1] = end
+	 * @param rangeSelection selection array to display: [0] = start, [1] = end
 	 */
 	public void updateSelection(RangeSelection rangeSelection) {
 		if (rangeSelection == null) {
@@ -200,8 +196,7 @@ final class StatusLine extends Composite {
 	/**
 	 * Update the value status. Displays its decimal, hex and binary value
 	 *
-	 * @param value
-	 *            value to display
+	 * @param value value to display
 	 */
 	public void updateValue(byte value) {
 		if (isDisposed() || valueLabel.isDisposed()) {

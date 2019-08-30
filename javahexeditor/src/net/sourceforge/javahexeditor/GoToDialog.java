@@ -213,7 +213,7 @@ final class GoToDialog extends Dialog {
 		int columns = 35;
 		GC gc = new GC(text);
 		FontMetrics fm = gc.getFontMetrics();
-		int width = columns * fm.getAverageCharWidth();
+		int width = (int)(columns * fm.getAverageCharacterWidth());
 		gc.dispose();
 		text.setLayoutData(new GridData(width, SWT.DEFAULT));
 		text.addModifyListener(new ModifyListener() {

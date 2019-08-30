@@ -156,15 +156,15 @@ public final class PreferencesManager {
 		GridData gridData6 = new GridData();
 		gridData6.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
 		GC gc = new GC(composite);
-		int averageCharWidth = gc.getFontMetrics().getAverageCharWidth();
+		double averageCharWidth = gc.getFontMetrics().getAverageCharacterWidth();
 		gc.dispose();
-		gridData6.widthHint = averageCharWidth * 6;
+		gridData6.widthHint = (int)(averageCharWidth * 6);
 		text2.setLayoutData(gridData6);
 
 		list = new org.eclipse.swt.widgets.List(composite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
 		GridData gridData52 = new GridData();
 		gridData52.heightHint = itemsDisplayed * list.getItemHeight();
-		gridData52.widthHint = averageCharWidth * 40;
+		gridData52.widthHint = (int)(averageCharWidth * 40);
 		list.setLayoutData(gridData52);
 		list.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -185,7 +185,7 @@ public final class PreferencesManager {
 		for (String text : texts) {
 			maxLenght = Math.max(maxLenght, text.length());
 		}
-		gridData21.widthHint = averageCharWidth * maxLenght * 2;
+		gridData21.widthHint = (int)(averageCharWidth * maxLenght * 2);
 		list1.setLayoutData(gridData21);
 		list1.setItems(texts);
 		list1.addSelectionListener(new SelectionAdapter() {

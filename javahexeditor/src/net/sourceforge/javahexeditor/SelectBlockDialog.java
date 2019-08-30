@@ -190,7 +190,7 @@ final class SelectBlockDialog extends Dialog {
 		int columns = 35;
 		GC gc = new GC(startText);
 		FontMetrics fm = gc.getFontMetrics();
-		int width = columns * fm.getAverageCharWidth();
+		int width = (int)(columns * fm.getAverageCharacterWidth());
 		gc.dispose();
 		startText.setLayoutData(new GridData(width, SWT.DEFAULT));
 		startTextListener = new MyModifyListener();
@@ -200,7 +200,7 @@ final class SelectBlockDialog extends Dialog {
 		endText.setTextLimit(30);
 		gc = new GC(endText);
 		fm = gc.getFontMetrics();
-		width = columns * fm.getAverageCharWidth();
+		width = (int)(columns * fm.getAverageCharacterWidth());
 		gc.dispose();
 		endText.setLayoutData(new GridData(width, SWT.DEFAULT));
 		endTextListener = new MyModifyListener();

@@ -150,7 +150,7 @@ final class FindReplaceDialog extends Dialog {
 			int columns = 35;
 			GC gc = new GC(textCombo);
 			FontMetrics fm = gc.getFontMetrics();
-			int width = columns * fm.getAverageCharWidth();
+			int width = (int)(columns * fm.getAverageCharacterWidth());
 			gc.dispose();
 			textCombo.setLayoutData(new GridData(width, SWT.DEFAULT));
 			textCombo.addVerifyListener(new VerifyListener() {

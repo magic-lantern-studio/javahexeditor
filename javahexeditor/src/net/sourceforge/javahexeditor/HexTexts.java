@@ -116,7 +116,7 @@ public final class HexTexts extends Composite {
 	private boolean delayedInQueue = false;
 	private Runnable delayedWaiting;
 	boolean dragging = false;
-	int fontCharWidth = -1;
+	double fontCharWidth = -1;
 	private List<Integer> highlightRangesInScreen;
 	private List<Long> mergeChangeRanges;
 	private List<Integer> mergeHighlightRanges;
@@ -256,8 +256,7 @@ public final class HexTexts extends Composite {
 	 * Converts a hex String to byte[]. Will convert full bytes only, odd number of
 	 * hex characters will have a leading '0' added. Big endian.
 	 *
-	 * @param hexString
-	 *            an hex string (ie. "0fdA1").
+	 * @param hexString an hex string (ie. "0fdA1").
 	 * @return the byte[] value of the hex string
 	 */
 	public static byte[] hexStringToByte(String hexString) {
@@ -375,7 +374,7 @@ public final class HexTexts extends Composite {
 			}
 			int textOffset = 0;
 			try {
-				textOffset = ((StyledText) e.widget).getOffsetAtLocation(new Point(e.x, e.y));
+				textOffset = ((StyledText) e.widget).getOffsetAtPoint(new Point(e.x, e.y));
 			} catch (IllegalArgumentException ex) {
 				textOffset = ((StyledText) e.widget).getCharCount();
 			}
@@ -422,14 +421,14 @@ public final class HexTexts extends Composite {
 			int rightHalfWidth = 0; // is 1, but better to tread on leftmost
 			// char pixel than rightmost one
 			if (hexContent) {
-				lineWidth = fontCharWidth;
+				lineWidth = (int) fontCharWidth;
 				charLen = 3;
 				rightHalfWidth = (lineWidth + 1) / 2; // line spans to both
 				// sides of its position
 			}
 			event.gc.setLineWidth(lineWidth);
 			for (int block = 8; block <= myBytesPerLine; block += 8) {
-				int xPos = (charLen * block) * fontCharWidth - rightHalfWidth;
+				int xPos = (int) (charLen * block * fontCharWidth) - rightHalfWidth;
 				event.gc.drawLine(xPos, event.y, xPos, event.y + event.height);
 			}
 		}
@@ -548,10 +547,8 @@ public final class HexTexts extends Composite {
 	/**
 	 * Create a binary text editor
 	 *
-	 * @param parent
-	 *            parent in the widget hierarchy
-	 * @param style
-	 *            not used for the moment
+	 * @param parent parent in the widget hierarchy
+	 * @param style  not used for the moment
 	 */
 	public HexTexts(final Composite parent, int style) {
 		super(parent, style | SWT.BORDER | SWT.V_SCROLL);
@@ -624,8 +621,7 @@ public final class HexTexts extends Composite {
 	 * ((long)event.width) << 32 | (event.x & 0x0ffffffffL) Similarly for the end
 	 * point: long end = ((long)event.height) << 32 | (event.y & 0x0ffffffffL)
 	 *
-	 * @param listener
-	 *            the listener
+	 * @param listener the listener
 	 * @see StyledText#addSelectionListener(org.eclipse.swt.events.SelectionListener)
 	 */
 	public void addLongSelectionListener(SelectionListener listener) {
@@ -677,7 +673,7 @@ public final class HexTexts extends Composite {
 		fontCurrent = fontDefault;
 		styledText.setFont(fontCurrent);
 		GC styledTextGC = new GC(styledText);
-		fontCharWidth = styledTextGC.getFontMetrics().getAverageCharWidth();
+		fontCharWidth = styledTextGC.getFontMetrics().getAverageCharacterWidth();
 		styledTextGC.dispose();
 		GridData gridDataAddresses = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
 		gridDataAddresses.heightHint = numberOfLines * styledText.getLineHeight();
@@ -719,7 +715,7 @@ public final class HexTexts extends Composite {
 		styledText1 = new StyledText(column1, SWT.MULTI);
 		styledText1.setFont(fontCurrent);
 		styledText1GC = new GC(styledText1);
-		int width = myBytesPerLine * 3 * fontCharWidth;
+		int width = (int) (myBytesPerLine * 3 * fontCharWidth);
 		gridData5 = new GridData();
 		gridData5.horizontalIndent = 1;
 		gridData5.verticalAlignment = SWT.FILL;
@@ -782,8 +778,7 @@ public final class HexTexts extends Composite {
 
 		styledText2 = new StyledText(column2, SWT.MULTI);
 		styledText2.setFont(fontCurrent);
-		width = myBytesPerLine * fontCharWidth + 1; // one pixel for caret in
-		// last column
+		width = (int) (myBytesPerLine * fontCharWidth + 1); // one pixel for caret in last column
 		gridData6 = new GridData();
 		gridData6.verticalAlignment = SWT.FILL;
 		gridData6.widthHint = styledText2.computeTrim(0, 0, width, 0).width;
@@ -1200,16 +1195,12 @@ public final class HexTexts extends Composite {
 	 * Performs a find on the text and sets the selection accordingly. The find
 	 * starts at the current caret position.
 	 *
-	 * @param findString
-	 *            the literal to find
-	 * @param isHexString
-	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
-	 *            binary finds. Will search full bytes only, odd number of hex
-	 *            characters will have a leading '0' added.
-	 * @param searchForward
-	 *            look for matches after current position
-	 * @param ignoreCase
-	 *            match upper case with lower case characters
+	 * @param findString    the literal to find
+	 * @param isHexString   consider the literal as an hex string (ie. "0fdA1").
+	 *                      Used for binary finds. Will search full bytes only, odd
+	 *                      number of hex characters will have a leading '0' added.
+	 * @param searchForward look for matches after current position
+	 * @param ignoreCase    match upper case with lower case characters
 	 * @return whether a match was found
 	 */
 	public Match findAndSelect(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase) {
@@ -1726,12 +1717,10 @@ public final class HexTexts extends Composite {
 	 * or, if there is no selection, inserts at the current caret offset. Overwrite
 	 * mode replaces contents at the current selection start.
 	 *
-	 * @param replaceString
-	 *            the new string
-	 * @param isHexString
-	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
-	 *            binary finds. Will replace full bytes only, odd number of hex
-	 *            characters will have a leading '0' added.
+	 * @param replaceString the new string
+	 * @param isHexString   consider the literal as an hex string (ie. "0fdA1").
+	 *                      Used for binary finds. Will replace full bytes only, odd
+	 *                      number of hex characters will have a leading '0' added.
 	 */
 	public void replace(String replaceString, boolean isHexString) {
 		if (replaceString == null) {
@@ -1759,22 +1748,18 @@ public final class HexTexts extends Composite {
 	 * Replaces all occurrences of findString with replaceString. The find starts at
 	 * the current caret position.
 	 *
-	 * @param findString
-	 *            the literal to find
-	 * @param isFindHexString
-	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
-	 *            binary finds. Will search full bytes only, odd number of hex
-	 *            characters will have a leading '0' added.
-	 * @param searchForward
-	 *            look for matches after current position
-	 * @param ignoreCase
-	 *            match upper case with lower case characters
-	 * @param replaceString
-	 *            the new string
-	 * @param isReplaceHexString
-	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
-	 *            binary finds. Will replace full bytes only, odd number of hex
-	 *            characters will have a leading '0' added.
+	 * @param findString         the literal to find
+	 * @param isFindHexString    consider the literal as an hex string (ie.
+	 *                           "0fdA1"). Used for binary finds. Will search full
+	 *                           bytes only, odd number of hex characters will have
+	 *                           a leading '0' added.
+	 * @param searchForward      look for matches after current position
+	 * @param ignoreCase         match upper case with lower case characters
+	 * @param replaceString      the new string
+	 * @param isReplaceHexString consider the literal as an hex string (ie.
+	 *                           "0fdA1"). Used for binary finds. Will replace full
+	 *                           bytes only, odd number of hex characters will have
+	 *                           a leading '0' added.
 	 * @return An array with [0]=number of replacements, [1]=last replaced start
 	 *         position
 	 * @throws IOException
@@ -1886,7 +1871,7 @@ public final class HexTexts extends Composite {
 	}
 
 	private void setAddressesGridDataWidthHint() {
-		((GridData) styledText.getLayoutData()).widthHint = charsForAddress * fontCharWidth;
+		((GridData) styledText.getLayoutData()).widthHint = (int) (charsForAddress * fontCharWidth);
 	}
 
 	public void setInsertMode(boolean insert) {
@@ -1894,7 +1879,7 @@ public final class HexTexts extends Composite {
 		int width = 0;
 		int height = styledText1.getCaret().getSize().y;
 		if (!myInserting) {
-			width = fontCharWidth;
+			width = (int)fontCharWidth;
 		}
 
 		styledText1.getCaret().setSize(width, height);
@@ -1906,8 +1891,7 @@ public final class HexTexts extends Composite {
 	 * display area in the same position, but only if it falls within the new
 	 * content's limits.
 	 *
-	 * @param newContent
-	 *            the content to be displayed
+	 * @param newContent the content to be displayed
 	 */
 	public void setContentProvider(BinaryContent newContent) {
 		boolean firstContent = (myContent == null);
@@ -1953,8 +1937,7 @@ public final class HexTexts extends Composite {
 	/**
 	 * @see Control#setFont(org.eclipse.swt.graphics.Font) Font height must not be 1
 	 *      or 2.
-	 * @throws IllegalArgumentException
-	 *             if font height is 1 or 2
+	 * @throws IllegalArgumentException if font height is 1 or 2
 	 */
 	@Override
 	public void setFont(Font font) {
@@ -1976,7 +1959,7 @@ public final class HexTexts extends Composite {
 		header1Text.setFont(fontCurrent);
 		header1Text.pack(true);
 		GC gc = new GC(header1Text);
-		fontCharWidth = gc.getFontMetrics().getAverageCharWidth();
+		fontCharWidth = gc.getFontMetrics().getAverageCharacterWidth();
 		gc.dispose();
 		makeFirstRowSameHeight();
 		styledText.setFont(fontCurrent);
@@ -1996,10 +1979,8 @@ public final class HexTexts extends Composite {
 	 * selection point (if it was at the start of the selection it will move to the
 	 * new start, otherwise to the new end point). The new selection is made visible
 	 *
-	 * @param start
-	 *            inclusive start selection position
-	 * @param end
-	 *            exclusive end selection position
+	 * @param start inclusive start selection position
+	 * @param end   exclusive end selection position
 	 */
 	public void setSelection(long start, long end) {
 		select(start, end);
@@ -2021,8 +2002,7 @@ public final class HexTexts extends Composite {
 	/**
 	 * Shows the position on screen.
 	 *
-	 * @param position
-	 *            where relocation should go
+	 * @param position where relocation should go
 	 */
 	public void showMark(long position) {
 		myLastLocationPosition = position;
@@ -2113,14 +2093,14 @@ public final class HexTexts extends Composite {
 
 	void updateTextsMetrics() {
 		int width = getClientArea().width - styledText.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
-		int displayedNumberWidth = fontCharWidth * 4; // styledText1 and
+		int displayedNumberWidth = (int) (fontCharWidth * 4); // styledText1 and
 		// styledText2
 		myBytesPerLine = (width / displayedNumberWidth) & 0xfffffff8; // 0, 8, 16, 24, etc.
 		if (myBytesPerLine < 16) {
 			myBytesPerLine = 16;
 		}
-		gridData5.widthHint = styledText1.computeTrim(0, 0, myBytesPerLine * 3 * fontCharWidth, 100).width;
-		gridData6.widthHint = styledText2.computeTrim(0, 0, myBytesPerLine * fontCharWidth, 100).width;
+		gridData5.widthHint = styledText1.computeTrim(0, 0, (int) (myBytesPerLine * 3 * fontCharWidth), 100).width;
+		gridData6.widthHint = styledText2.computeTrim(0, 0, (int) (myBytesPerLine * fontCharWidth), 100).width;
 		updateNumberOfLines();
 		layout(new Control[] { header1Text, styledText, styledText1, styledText2 }, SWT.DEFER);
 		updateScrollBar();
