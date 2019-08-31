@@ -15,12 +15,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.filesystem
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Jordi Bergenthal, Peter Dell, Andrey Loskutov
-Export-Package: images,
- net.sourceforge.javahexeditor,
- net.sourceforge.javahexeditor.common,
- net.sourceforge.javahexeditor.plugin,
- net.sourceforge.javahexeditor.plugin.actions,
- net.sourceforge.javahexeditor.plugin.editors,
- net.sourceforge.javahexeditor.test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: net.sourceforge.javahexeditor
