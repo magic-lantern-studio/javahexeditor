@@ -10,6 +10,7 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sourceforge.javahexeditor.standalone.HexEditor"/>
+<stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="net.sourceforge.javahexeditor.standalone"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="net.sourceforge.javahexeditor.standalone"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Duser.language=en"/>
 </launchConfiguration>

@@ -1,4 +1,4 @@
-<project name="Site" basedir="." default="build_daily">
+<project name="Site" basedir="." default="build_plugin_daily">
 
 	<target name="_clean_folder">
 		<echo message="Cleaning ${folder}" />
@@ -28,8 +28,8 @@
 		</copy>
 
 	</target>
-	
-	<target name="build_daily">
+
+	<target name="build_plugin_daily">
 		<antcall target="_clean_folder">
 			<param name="folder" value="daily" />
 		</antcall>
@@ -39,7 +39,11 @@
 		<echo>Open daily/site.xml and press "Build All".</echo>
 	</target>
 
-	<target name="publish_daily_to_stable_and_main">
+	<target name="build_standlone_binaries_daily">
+		<ant antfile="JavaHexEditor-Makefile.ant" dir="C:\jac\system\Java\Programming\Repositories\JavaHexEditor\javahexeditor.standalone\build" />
+	</target>
+
+	<target name="publish_plugin_daily_to_stable_and_main">
 		<echo>Copying daily to stable and main.</echo>
 		<antcall target="_copy_folder">
 			<param name="source" value="daily" />
@@ -54,7 +58,7 @@
 	</target>
 
 	<target name="upload_all">
-		<echo>Uploading builds from ${basedir}.</echo>
+		<echo>Uploading all plugin builds and binary builds from ${basedir}.</echo>
 		<exec executable="C:\jac\system\Windows\Tools\NET\WinSCP\WinSCP.com">
 			<arg value="/script=site.scp"/>
 		</exec>
