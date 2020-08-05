@@ -20,7 +20,6 @@
 package net.sourceforge.javahexeditor;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 
 import net.sourceforge.javahexeditor.BinaryContent.RangeSelection;
 import net.sourceforge.javahexeditor.common.NumberUtility;
+import net.sourceforge.javahexeditor.common.SWTUtility;
 import net.sourceforge.javahexeditor.common.TextUtility;
 
 /**
@@ -101,9 +101,7 @@ final class StatusLine extends Composite {
 
 	private GridData createGridData(int maxLength) {
 		GC gc = new GC(this);
-		FontMetrics fontMetrics = gc.getFontMetrics();
-
-		int width = (int) (maxLength * fontMetrics.getAverageCharacterWidth());
+		int width = (int) (maxLength * SWTUtility.getAverageCharacterWidth(gc));
 		GridData gridData = new GridData(width, SWT.DEFAULT);
 		gridData.grabExcessVerticalSpace = true;
 		gc.dispose();

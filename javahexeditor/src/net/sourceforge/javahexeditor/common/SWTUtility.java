@@ -20,7 +20,13 @@
 
 package net.sourceforge.javahexeditor.common;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
@@ -38,8 +44,7 @@ public final class SWTUtility {
 	 * Blocks the caller until the task is finished. Does not block the user
 	 * interface thread.
 	 *
-	 * @param task
-	 *            independent of the user interface thread (no widgets used)
+	 * @param task independent of the user interface thread (no widgets used)
 	 */
 	public static void blockUntilFinished(Runnable task) {
 		Thread thread = new Thread(task);
@@ -69,8 +74,7 @@ public final class SWTUtility {
 	 *
 	 * * @param movingShell shell to be relocated, not <code>null</code>
 	 * 
-	 * @param fixedShell
-	 *            shell to be used as reference, not <code>null</code>
+	 * @param fixedShell shell to be used as reference, not <code>null</code>
 	 * 
 	 */
 	public static void placeInCenterOf(Shell movingShell, Shell fixedShell) {
@@ -103,5 +107,71 @@ public final class SWTUtility {
 	public static int showErrorMessage(Shell shell, String title, String message, String... parameters) {
 		return showMessage(shell, SWT.ERROR | SWT.OK, title, message, parameters);
 
+	}
+
+	/**
+	 * Compatibility between old and new SWT versions.
+	 * 
+	 * @param gc The graphics context, not <code>null</code>
+	 * @return The average character width, a positive integer.
+	 */
+	public static double getAverageCharacterWidth(GC gc) {
+		if (gc == null) {
+			throw new IllegalArgumentException();
+		}
+		FontMetrics fm = gc.getFontMetrics();
+		Method method = getMethod(FontMetrics.class, "getAverageCharacterWidth", "getAverageCharWidth");
+		Double result = null;
+		try {
+			result = (Double) method.invoke(fm);
+		} catch (IllegalAccessException e) {
+			System.exit(-3);
+		} catch (IllegalArgumentException e) {
+			System.exit(-4);
+
+		} catch (InvocationTargetException e) {
+			System.exit(-5);
+		}
+		return result.doubleValue();
+	}
+
+	/**
+	 * Compatibility between old and new SWT versions.
+	 * 
+	 * @param styledText The styled text, not <code>null</code>
+	 * @param point      The point, not <code>null</code>
+	 * @return The offset at location point.
+	 */
+	public static int getOffsetAtPoint(StyledText styledText, Point point) {
+		if (styledText == null) {
+			throw new IllegalArgumentException();
+		}
+		Method method = getMethod(StyledText.class, "getOffsetAtPoint", "getOffsetAtLocation");
+		Integer result = null;
+		try {
+			result = (Integer) method.invoke(styledText);
+		} catch (IllegalAccessException e) {
+			System.exit(-3);
+		} catch (IllegalArgumentException e) {
+			System.exit(-4);
+
+		} catch (InvocationTargetException e) {
+			System.exit(-5);
+		}
+		return result.intValue();
+	}
+
+	private static Method getMethod(Class<?> clazz, String newMethod, String oldMethod) {
+		Method method = null;
+		try {
+			method = clazz.getMethod(newMethod);
+		} catch (NoSuchMethodException ex1) {
+			try {
+				method = clazz.getMethod(oldMethod);
+			} catch (NoSuchMethodException ex2) {
+				System.exit(-2); // No method
+			}
+		}
+		return method;
 	}
 }
