@@ -25,12 +25,8 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
@@ -79,7 +75,7 @@ final class SelectBlockDialog extends Dialog {
 
 	Shell shell;
 	private Composite compositeRadio;
-	private Composite compositeRadioAndText;
+	private Composite compositeTexts;
 	private Composite compositeButtons;
 	Button hexRadioButton;
 	private Button decRadioButton;
@@ -112,18 +108,14 @@ final class SelectBlockDialog extends Dialog {
 		lastEndText = Texts.EMPTY;
 	}
 
+
 	/**
-	 * This method initializes composite
+	 * This method initializes composite1
 	 */
-	private void createComposite() {
-		RowLayout rowLayout1 = new RowLayout();
-		// rowLayout1.marginHeight = 5;
-		rowLayout1.marginTop = 2;
-		rowLayout1.marginBottom = 2;
-		// rowLayout1.marginWidth = 5;
-		rowLayout1.type = SWT.VERTICAL;
-		compositeRadio = new Composite(compositeRadioAndText, SWT.NONE);
-		compositeRadio.setLayout(rowLayout1);
+	private void createComposite1() {
+		compositeRadio = new Composite(shell, SWT.NONE);
+		compositeRadio.setLayout(new GridLayout());
+
 
 		SelectionAdapter hexTextSelectionAdapter = new SelectionAdapter() {
 			@Override
@@ -169,65 +161,54 @@ final class SelectBlockDialog extends Dialog {
 		decRadioButton = new Button(compositeRadio, SWT.RADIO);
 		decRadioButton.setText(Texts.SELECTION_BLOCK_DIALOG_DEC_LABEL);
 		decRadioButton.addSelectionListener(defaultSelectionAdapter);
-		// decRadioButton.addSelectionListener(decTextSelectionAdapter);
 		hexRadioButton.addSelectionListener(hexTextSelectionAdapter);
+
 	}
-
+	
 	/**
-	 * This method initializes composite1
+	 * This method initializes composite2
+	 *
 	 */
-	private void createComposite1() {
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 3;
-
-		compositeRadioAndText = new Composite(shell, SWT.NONE);
-		compositeRadioAndText.setLayout(gridLayout);
-
-		createComposite();
-
-		startText = new Text(compositeRadioAndText, SWT.BORDER | SWT.SINGLE);
+	private void createComposite2() {
+		compositeTexts = new Composite(shell, SWT.NONE);
+		compositeTexts.setLayout(new GridLayout(2, false));
+		
+		startText = new Text(compositeTexts, SWT.BORDER | SWT.SINGLE);
+		GridData gridData_startText = new GridData(SWT.FILL, SWT.CENTER, true, true);
 		startText.setTextLimit(30);
 		int columns = 35;
 		GC gc = new GC(startText);
 		FontMetrics fm = gc.getFontMetrics();
 		int width = (int)(columns * fm.getAverageCharacterWidth());
 		gc.dispose();
-		startText.setLayoutData(new GridData(width, SWT.DEFAULT));
+		gridData_startText.widthHint = width;
+		startText.setLayoutData(gridData_startText);
 		startTextListener = new MyModifyListener();
 		startText.addModifyListener(startTextListener);
 
-		endText = new Text(compositeRadioAndText, SWT.BORDER | SWT.SINGLE);
+		endText = new Text(compositeTexts, SWT.BORDER | SWT.SINGLE);
+		GridData gridData_endText = new GridData(SWT.FILL, SWT.CENTER, true, true);
 		endText.setTextLimit(30);
 		gc = new GC(endText);
 		fm = gc.getFontMetrics();
 		width = (int)(columns * fm.getAverageCharacterWidth());
 		gc.dispose();
-		endText.setLayoutData(new GridData(width, SWT.DEFAULT));
+		gridData_endText.widthHint = width;
+		endText.setLayoutData(gridData_endText);
 		endTextListener = new MyModifyListener();
 		endText.addModifyListener(endTextListener);
-
-		FormData formData = new FormData();
-		formData.top = new FormAttachment(label);
-		compositeRadioAndText.setLayoutData(formData);
 	}
 
 	/**
-	 * This method initializes composite2
+	 * This method initializes composite3
 	 *
 	 */
-	private void createComposite2() {
-		RowLayout rowLayout1 = new RowLayout();
-		rowLayout1.type = org.eclipse.swt.SWT.VERTICAL;
-		rowLayout1.marginHeight = 10;
-		rowLayout1.marginWidth = 10;
-		rowLayout1.fill = true;
+	private void createComposite3() {
 		compositeButtons = new Composite(shell, SWT.NONE);
-		FormData formData = new FormData();
-		formData.left = new FormAttachment(compositeRadioAndText);
-		formData.right = new FormAttachment(100);
-		compositeButtons.setLayoutData(formData);
-		compositeButtons.setLayout(rowLayout1);
+		compositeButtons.setLayout(new GridLayout());
+		
 		button = new Button(compositeButtons, SWT.NONE);
+		button.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		button.setText(Texts.SELECTION_BLOCK_DIALOG_SELECT_BUTTON_LABEL);
 		button.addSelectionListener(defaultSelectionAdapter);
 		button.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -240,8 +221,11 @@ final class SelectBlockDialog extends Dialog {
 				shell.close();
 			}
 		});
+		
 		shell.setDefaultButton(button);
+		
 		button1 = new Button(compositeButtons, SWT.NONE);
+		button1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		button1.setText(Texts.BUTTON_CLOSE_LABEL);
 		button1.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			@Override
@@ -258,25 +242,21 @@ final class SelectBlockDialog extends Dialog {
 	private void createShell() {
 		shell = new Shell(getParent(), SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
 		shell.setText(Texts.SELECTION_BLOCK_DIALOG_TITLE);
-		FormLayout formLayout = new FormLayout();
-		formLayout.marginHeight = 4;
-		formLayout.marginWidth = 3;
-		shell.setLayout(formLayout);
+		shell.setLayout(new  GridLayout(3, false));
+		
 		label = new Label(shell, SWT.NONE);
-		FormData formData = new FormData();
-		formData.left = new FormAttachment(0, 5);
-		formData.right = new FormAttachment(100);
-		label.setLayoutData(formData);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+		
 		createComposite1();
 		createComposite2();
+		createComposite3();
+		
 		statusLabel = new Label(shell, SWT.CENTER);
-		FormData formData2 = new FormData();
-		formData2.left = new FormAttachment(0);
-		formData2.right = new FormAttachment(100);
-		formData2.top = new FormAttachment(compositeRadioAndText);
-		formData2.bottom = new FormAttachment(100, -10);
-		statusLabel.setLayoutData(formData2);
+		statusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
 	}
+
+
+
 
 	public boolean open(Shell parentShell, RangeSelection rangeSelection, long aLimit) {
 		if (rangeSelection == null) {

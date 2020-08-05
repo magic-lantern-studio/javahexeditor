@@ -1,4 +1,4 @@
-<project name="Site" basedir=".">
+<project name="Site" basedir="." default="build_daily">
 
 	<target name="_clean_folder">
 		<echo message="Cleaning ${folder}" />
@@ -29,7 +29,7 @@
 
 	</target>
 	
-	<target name="clean_daily">
+	<target name="build_daily">
 		<antcall target="_clean_folder">
 			<param name="folder" value="daily" />
 		</antcall>
