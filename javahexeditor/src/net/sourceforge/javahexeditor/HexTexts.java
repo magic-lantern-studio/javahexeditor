@@ -69,6 +69,7 @@ import org.eclipse.swt.widgets.Text;
 
 import net.sourceforge.javahexeditor.BinaryContent.RangeSelection;
 import net.sourceforge.javahexeditor.BinaryContentFinder.Match;
+import net.sourceforge.javahexeditor.common.ByteArrayUtility;
 import net.sourceforge.javahexeditor.common.SWTUtility;
 import net.sourceforge.javahexeditor.common.TextUtility;
 
@@ -252,26 +253,6 @@ public final class HexTexts extends Composite {
 		composeByteToCharMap();
 	}
 
-	/**
-	 * Converts a hex String to byte[]. Will convert full bytes only, odd number of
-	 * hex characters will have a leading '0' added. Big endian.
-	 *
-	 * @param hexString an hex string (ie. "0fdA1").
-	 * @return the byte[] value of the hex string
-	 */
-	public static byte[] hexStringToByte(String hexString) {
-		if ((hexString.length() & 1) == 1) {
-			hexString = '0' + hexString;
-		}
-		byte[] tmp = new byte[hexString.length() / 2];
-		for (int i = 0; i < tmp.length; ++i) {
-			String hexByte = hexString.substring(i * 2, i * 2 + 2);
-			tmp[i] = (byte) Integer.parseInt(hexByte, 16);
-		}
-
-		return tmp;
-	}
-
 	private class MyKeyAdapter extends KeyAdapter {
 		public MyKeyAdapter() {
 		}
@@ -374,7 +355,7 @@ public final class HexTexts extends Composite {
 			}
 			int textOffset = 0;
 			try {
-				textOffset = ((StyledText) e.widget).getOffsetAtPoint(new Point(e.x, e.y));
+				textOffset = SWTUtility.getOffsetAtPoint(((StyledText) e.widget), new Point(e.x, e.y));
 			} catch (IllegalArgumentException ex) {
 				textOffset = ((StyledText) e.widget).getCharCount();
 			}
@@ -673,7 +654,7 @@ public final class HexTexts extends Composite {
 		fontCurrent = fontDefault;
 		styledText.setFont(fontCurrent);
 		GC styledTextGC = new GC(styledText);
-		fontCharWidth = styledTextGC.getFontMetrics().getAverageCharacterWidth();
+		fontCharWidth = SWTUtility.getAverageCharacterWidth(styledTextGC);
 		styledTextGC.dispose();
 		GridData gridDataAddresses = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
 		gridDataAddresses.heightHint = numberOfLines * styledText.getLineHeight();
@@ -1203,7 +1184,8 @@ public final class HexTexts extends Composite {
 	 * @param ignoreCase    match upper case with lower case characters
 	 * @return whether a match was found
 	 */
-	public Match findAndSelect(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase) {
+	public Match findAndSelect(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase)
+			throws NumberFormatException {
 		if (findString == null) {
 			throw new IllegalArgumentException("Parameter 'findString' must not be null.");
 		}
@@ -1212,8 +1194,9 @@ public final class HexTexts extends Composite {
 		return result;
 	}
 
+	// Used by "find" and by "replace".
 	private Match findAndSelectInternal(String findString, boolean isHexString, boolean searchForward,
-			boolean ignoreCase, boolean updateGui) {
+			boolean ignoreCase, boolean updateGui) throws NumberFormatException {
 		if (findString == null) {
 			throw new IllegalArgumentException("Parameter 'findString' must not be null.");
 		}
@@ -1324,7 +1307,16 @@ public final class HexTexts extends Composite {
 		return oldPos;
 	}
 
-	private void initFinder(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase) {
+	/**
+	 * 
+	 * @param findString
+	 * @param isHexString
+	 * @param searchForward
+	 * @param ignoreCase
+	 * @throws NumberFormatException if the replace string is not a valid hex string
+	 */
+	private void initFinder(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase)
+			throws NumberFormatException {
 		if (!searchForward) {
 			myCaretStickToStart = true;
 		}
@@ -1335,7 +1327,8 @@ public final class HexTexts extends Composite {
 			myPreviousFindIgnoredCase = ignoreCase;
 
 			if (isHexString) {
-				myFinder = new BinaryContentFinder(hexStringToByte(findString), myContent);
+				byte[] byteArray = ByteArrayUtility.parseString(findString);
+				myFinder = new BinaryContentFinder(byteArray, myContent);
 			} else {
 				myFinder = new BinaryContentFinder(findString, myContent);
 				if (ignoreCase) {
@@ -1721,15 +1714,16 @@ public final class HexTexts extends Composite {
 	 * @param isHexString   consider the literal as an hex string (ie. "0fdA1").
 	 *                      Used for binary finds. Will replace full bytes only, odd
 	 *                      number of hex characters will have a leading '0' added.
+	 * @throws NumberFormatException if the replace string is not a valid hex string
 	 */
-	public void replace(String replaceString, boolean isHexString) {
+	public void replace(String replaceString, boolean isHexString) throws NumberFormatException {
 		if (replaceString == null) {
 			throw new IllegalArgumentException("Parameter 'replaceString' must not be null.");
 		}
 		handleSelectedPreModify();
 		byte[] replaceData = replaceString.getBytes();
 		if (isHexString) {
-			replaceData = hexStringToByte(replaceString);
+			replaceData = ByteArrayUtility.parseString(replaceString);
 		}
 		ByteBuffer newSelection = ByteBuffer.wrap(replaceData);
 		if (myInserting) {
@@ -1763,9 +1757,10 @@ public final class HexTexts extends Composite {
 	 * @return An array with [0]=number of replacements, [1]=last replaced start
 	 *         position
 	 * @throws IOException
+	 * @throws NumberFormatException
 	 */
 	public long[] replaceAll(String findString, boolean isFindHexString, boolean searchForward, boolean ignoreCase,
-			String replaceString, boolean isReplaceHexString) throws IOException {
+			String replaceString, boolean isReplaceHexString) throws IOException, NumberFormatException {
 		if (findString == null) {
 			throw new IllegalArgumentException("Parameter 'findString' must not be null.");
 		}
@@ -1879,7 +1874,7 @@ public final class HexTexts extends Composite {
 		int width = 0;
 		int height = styledText1.getCaret().getSize().y;
 		if (!myInserting) {
-			width = (int)fontCharWidth;
+			width = (int) fontCharWidth;
 		}
 
 		styledText1.getCaret().setSize(width, height);
@@ -1959,7 +1954,7 @@ public final class HexTexts extends Composite {
 		header1Text.setFont(fontCurrent);
 		header1Text.pack(true);
 		GC gc = new GC(header1Text);
-		fontCharWidth = gc.getFontMetrics().getAverageCharacterWidth();
+		fontCharWidth = SWTUtility.getAverageCharacterWidth(gc);
 		gc.dispose();
 		makeFirstRowSameHeight();
 		styledText.setFont(fontCurrent);

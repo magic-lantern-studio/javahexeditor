@@ -30,6 +30,9 @@ public final class Texts extends NLS {
 	public static String BUTTON_CANCEL_LABEL;
 	public static String BUTTON_CLOSE_LABEL;
 
+	// ByteArrayUtility
+	public static String BYTE_ARRAY_UTILITY_INVALID_HEX_STRING;
+
 	public static String DIALOG_ERROR_NOT_A_NUMBER_MESSAGE;
 	public static String DIALOG_ERROR_LOCATION_OUT_OF_RANGE_MESSAGE;
 	public static String DIALOG_ERROR_END_SMALLER_THAN_OR_EQUAL_TO_START_MESSAGE;
@@ -87,7 +90,7 @@ public final class Texts extends NLS {
 	public static String MANAGER_OPEN_MESSAGE_CANNOT_OPEN_FILE;
 	public static String MANAGER_OPEN_MESSAGE_CANNOT_DETERMINE_CHARSET_OF_FILE;
 	public static String MANAGER_OPEN_TITLE_FILE_FROM_HISTORY;
-	
+
 	public static String MANAGER_SAVE_DIALOG_TITLE_SAVE_SELECTION_AS;
 	public static String MANAGER_SAVE_DIALOG_TITLE_SAVE_AS;
 	public static String MANAGER_SAVE_DIALOG_TITLE_FILE_ALREADY_EXISTS;
