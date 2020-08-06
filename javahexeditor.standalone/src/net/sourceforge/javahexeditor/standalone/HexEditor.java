@@ -27,6 +27,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 
+import javax.swing.JOptionPane;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -86,7 +88,16 @@ public final class HexEditor {
 	 */
 	public static void main(String[] args) {
 		HexEditor instance = new HexEditor();
-		instance.run(args);
+		try {
+			instance.run(args);
+		} catch (Throwable th) {
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printWriter = new PrintWriter(stringWriter);
+			printWriter.println(th.getMessage());
+			th.printStackTrace(printWriter);
+			JOptionPane.showMessageDialog(null, stringWriter.toString());
+			throw th;
+		}
 	}
 
 	/**

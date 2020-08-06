@@ -44,7 +44,8 @@ public final class SWTUtility {
 	 * Blocks the caller until the task is finished. Does not block the user
 	 * interface thread.
 	 *
-	 * @param task independent of the user interface thread (no widgets used)
+	 * @param task
+	 *            independent of the user interface thread (no widgets used)
 	 */
 	public static void blockUntilFinished(Runnable task) {
 		Thread thread = new Thread(task);
@@ -74,7 +75,8 @@ public final class SWTUtility {
 	 *
 	 * * @param movingShell shell to be relocated, not <code>null</code>
 	 * 
-	 * @param fixedShell shell to be used as reference, not <code>null</code>
+	 * @param fixedShell
+	 *            shell to be used as reference, not <code>null</code>
 	 * 
 	 */
 	public static void placeInCenterOf(Shell movingShell, Shell fixedShell) {
@@ -112,7 +114,8 @@ public final class SWTUtility {
 	/**
 	 * Compatibility between old and new SWT versions.
 	 * 
-	 * @param gc The graphics context, not <code>null</code>
+	 * @param gc
+	 *            The graphics context, not <code>null</code>
 	 * @return The average character width, a positive integer.
 	 */
 	public static double getAverageCharacterWidth(GC gc) {
@@ -120,17 +123,32 @@ public final class SWTUtility {
 			throw new IllegalArgumentException();
 		}
 		FontMetrics fm = gc.getFontMetrics();
-		Method method = getMethod(FontMetrics.class, "getAverageCharacterWidth", "getAverageCharWidth");
-		Double result = null;
-		try {
-			result = (Double) method.invoke(fm);
-		} catch (IllegalAccessException e) {
-			System.exit(-3);
-		} catch (IllegalArgumentException e) {
-			System.exit(-4);
+		Method method = getMethod(FontMetrics.class, "getAverageCharacterWidth");
+		if (method != null) {
 
+			Double result = null;
+			try {
+				result = (Double) method.invoke(fm);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException(e);
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			}
+			return result.doubleValue();
+		}
+
+		method = getMethod(FontMetrics.class, "getAverageCharWidth");
+		Integer result = null;
+		try {
+			result = (Integer) method.invoke(fm);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
 		} catch (InvocationTargetException e) {
-			System.exit(-5);
+			throw new RuntimeException(e);
 		}
 		return result.doubleValue();
 	}
@@ -138,39 +156,39 @@ public final class SWTUtility {
 	/**
 	 * Compatibility between old and new SWT versions.
 	 * 
-	 * @param styledText The styled text, not <code>null</code>
-	 * @param point      The point, not <code>null</code>
+	 * @param styledText
+	 *            The styled text, not <code>null</code>
+	 * @param point
+	 *            The point, not <code>null</code>
 	 * @return The offset at location point.
 	 */
 	public static int getOffsetAtPoint(StyledText styledText, Point point) {
 		if (styledText == null) {
 			throw new IllegalArgumentException();
 		}
-		Method method = getMethod(StyledText.class, "getOffsetAtPoint", "getOffsetAtLocation");
+		Method method = getMethod(StyledText.class, "getOffsetAtPoint");
+		if (method == null) {
+			method = getMethod(StyledText.class, "getOffsetAtLocation");
+		}
 		Integer result = null;
 		try {
 			result = (Integer) method.invoke(styledText);
 		} catch (IllegalAccessException e) {
-			System.exit(-3);
+			throw new RuntimeException(e);
 		} catch (IllegalArgumentException e) {
-			System.exit(-4);
-
+			throw new RuntimeException(e);
 		} catch (InvocationTargetException e) {
-			System.exit(-5);
+			throw new RuntimeException(e);
 		}
 		return result.intValue();
 	}
 
-	private static Method getMethod(Class<?> clazz, String newMethod, String oldMethod) {
+	private static Method getMethod(Class<?> clazz, String methodName) {
 		Method method = null;
 		try {
-			method = clazz.getMethod(newMethod);
+			method = clazz.getMethod(methodName);
 		} catch (NoSuchMethodException ex1) {
-			try {
-				method = clazz.getMethod(oldMethod);
-			} catch (NoSuchMethodException ex2) {
-				System.exit(-2); // No method
-			}
+			method = null;
 		}
 		return method;
 	}
