@@ -25,7 +25,7 @@
     <fileVersion>@VERSION@</fileVersion>
     <txtFileVersion>@VERSION_TEXT@</txtFileVersion>
     <fileDescription>Java Hex Editor - Windows @RUNTIME_BITS@-Bit (@PLATFORM_ID@)</fileDescription>
-    <copyright>(C) 2006 - 2017 Jordi Bergenthal and Peter Dell</copyright>
+    <copyright>(C) 2006 - 2020 Jordi Bergenthal and Peter Dell</copyright>
     <productVersion>@VERSION@</productVersion>
     <txtProductVersion>@VERSION_TEXT@</txtProductVersion>
     <productName>Java Hex Editor</productName>
