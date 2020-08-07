@@ -19,6 +19,7 @@
  */
 package net.sourceforge.javahexeditor.standalone;
 
+import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
 
+import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 import org.eclipse.core.runtime.CoreException;
@@ -95,7 +97,8 @@ public final class HexEditor {
 			PrintWriter printWriter = new PrintWriter(stringWriter);
 			printWriter.println(th.getMessage());
 			th.printStackTrace(printWriter);
-			JOptionPane.showMessageDialog(null, stringWriter.toString());
+			JOptionPane.showMessageDialog(null, stringWriter.toString(), "Unexpected Fatal Error",
+					JOptionPane.ERROR_MESSAGE);
 			throw th;
 		}
 	}
