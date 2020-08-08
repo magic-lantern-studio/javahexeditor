@@ -187,12 +187,15 @@ public final class SWTUtility {
 		Integer result = null;
 		try {
 			result = (Integer) method.invoke(styledText, point);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
+		} catch (IllegalAccessException ex) {
+			throw new RuntimeException(ex);
+		} catch (IllegalArgumentException ex) {
+			throw new RuntimeException(ex);
+		} catch (InvocationTargetException ex) {
+			if (ex.getCause() instanceof IllegalArgumentException) {
+				throw (IllegalArgumentException) ex.getCause();
+			}
+			throw new RuntimeException(ex);
 		}
 		return result.intValue();
 	}
