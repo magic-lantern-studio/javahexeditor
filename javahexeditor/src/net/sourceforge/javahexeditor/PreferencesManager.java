@@ -482,16 +482,16 @@ public final class PreferencesManager {
 	}
 
 	/**
-	 * Set preferences to show a font. Use null to show default font.
+	 * Set preferences to show a font.
 	 *
-	 * @param aFontData
-	 *            the font to be shown.
+	 * @param fontData
+	 *            the font to be shown.  Use <code>null</code> to show default font.
 	 */
-	public void setFontData(FontData aFontData) {
-		if (aFontData == null) {
-			aFontData = HexTexts.fontDataDefault;
+	public void setFontData(FontData fontData) {
+		if (fontData == null) {
+			fontData = Preferences.getDefaultFontData();
 		}
-		sampleFontData = aFontData;
+		sampleFontData = fontData;
 		refreshWidgets();
 	}
 

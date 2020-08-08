@@ -53,7 +53,6 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -99,7 +98,6 @@ public final class HexTexts extends Composite {
 	private final Color colorBlue = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
 	final Color colorLightShadow = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	private final Color colorNormalShadow = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
-	static final FontData fontDataDefault = new FontData("Courier New", 10, SWT.NORMAL);
 	private static String headerRow = null;
 	private static final byte[] hexToNibble = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12,
 			13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -650,7 +648,7 @@ public final class HexTexts extends Composite {
 		styledText.setBackground(colorLightShadow);
 		Display display = Display.getCurrent();
 		styledText.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
-		fontDefault = new Font(display, fontDataDefault);
+		fontDefault = new Font(display, Preferences.getDefaultFontData());
 		fontCurrent = fontDefault;
 		styledText.setFont(fontCurrent);
 		GC styledTextGC = new GC(styledText);

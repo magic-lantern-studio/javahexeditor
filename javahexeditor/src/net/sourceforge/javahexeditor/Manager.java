@@ -70,7 +70,7 @@ public final class Manager {
 
 	// Logic components
 	private FileToucher fileToucher;
-	
+
 	// State
 	private BinaryContent content;
 	private File contentFile;
@@ -91,13 +91,14 @@ public final class Manager {
 	private GoToDialog goToDialog;
 	private SelectBlockDialog selectBlockDialog;
 
-	public Manager(FileToucher fileToucher){
+	public Manager(FileToucher fileToucher) {
 		if (fileToucher == null) {
 			throw new IllegalArgumentException("Parameter 'fileToucher' must not be null.");
 		}
-		this.fileToucher=fileToucher;
-		
+		this.fileToucher = fileToucher;
+
 	}
+
 	/**
 	 * Gets the build OS .
 	 *
@@ -663,7 +664,6 @@ public final class Manager {
 		hexTexts.setContentProvider(content);
 	}
 
-
 	/**
 	 * Sets Find/Replace combo lists pre-exisiting values.
 	 *
@@ -725,7 +725,7 @@ public final class Manager {
 	 */
 	public void setTextFont(FontData aFont) {
 		fontData = aFont;
-		if (HexTexts.fontDataDefault.equals(fontData)) {
+		if (Preferences.getDefaultFontData().equals(aFont)) {
 			fontData = null;
 		}
 		// dispose it after setting new one
