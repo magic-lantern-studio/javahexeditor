@@ -352,8 +352,11 @@ final class FindReplaceDialog extends Dialog {
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			}
-			for (int i = 0; i < selectionLength; ++i) {
+			for (int i = 0; i < selectionLength; i++) {
 				selectedText.append(HexTexts.byteToHex[selection[i] & 0x0ff]);
+				if (i < selectionLength - 1) {
+					selectedText.append(' ');
+				}
 			}
 			findGroup.textCombo.setText(selectedText.toString());
 			findGroup.selectText();
