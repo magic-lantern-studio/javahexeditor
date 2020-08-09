@@ -128,7 +128,6 @@ public final class HexTexts extends Composite {
 	boolean myCaretStickToStart = false; // stick to end
 	BinaryContentClipboard myClipboard;
 	BinaryContent myContent;
-	long myEnd = 0L;
 	BinaryContentFinder myFinder;
 	boolean myInserting = false;
 	private KeyListener myKeyAdapter = new MyKeyAdapter();
@@ -142,7 +141,9 @@ public final class HexTexts extends Composite {
 	private int myPreviousLine = -1;
 	private long myPreviousRedrawStart = -1;
 	long myStart = 0L;
-	long myTextAreasStart = -1L;
+	long myTextAreasStart = 0L;
+	long myEnd = 0L;
+
 	private final MyTraverseAdapter myTraverseAdapter = new MyTraverseAdapter();
 	int myUpANibble = 0; // always 0 or 1
 	private final MyVerifyKeyAdapter myVerifyKeyAdapter = new MyVerifyKeyAdapter();
@@ -272,8 +273,9 @@ public final class HexTexts extends Composite {
 					long newPos = doNavigateKeyPressed(ctrlKey, e.keyCode, getCaretPos(), false);
 					shiftStartAndEnd(newPos);
 				} else { // if no modifier or control or alt
-					myEnd = myStart = doNavigateKeyPressed(ctrlKey, e.keyCode, getCaretPos(),
+					long position = doNavigateKeyPressed(ctrlKey, e.keyCode, getCaretPos(),
 							e.widget == styledText1 && !myInserting);
+					setStartAndEnd(position, position);
 					myCaretStickToStart = false;
 				}
 				ensureCaretIsVisible();
@@ -357,15 +359,17 @@ public final class HexTexts extends Composite {
 			} catch (IllegalArgumentException ex) {
 				textOffset = ((StyledText) e.widget).getCharCount();
 			}
+			if (textOffset<0) {
+				return;
+			}
 			int byteOffset = textOffset / charLen;
 			((StyledText) e.widget).setTopIndex(0);
 			if (e.button == 1 && (e.stateMask & SWT.MODIFIER_MASK & ~SWT.SHIFT) == 0) {// no
-				// modif
-				// or
-				// shift
+				// modifier or shift
 				if ((e.stateMask & SWT.MODIFIER_MASK) == 0) {
 					myCaretStickToStart = false;
-					myStart = myEnd = myTextAreasStart + byteOffset;
+					long position = myTextAreasStart + byteOffset;
+					setStartAndEnd(position, position);
 				} else { // shift
 					shiftStartAndEnd(myTextAreasStart + byteOffset);
 				}
@@ -471,11 +475,13 @@ public final class HexTexts extends Composite {
 			if ((e.character == SWT.DEL || e.character == SWT.BS) && myInserting) {
 				if (!deleteSelected()) {
 					if (e.character == SWT.BS) {
-						myStart += myUpANibble;
-						if (myStart > 0L) {
-							myContent.delete(myStart - 1L, 1L);
-							myEnd = --myStart;
+						long newStart = myStart + myUpANibble;
+						long newEnd = myEnd;
+						if (newStart > 0L) {
+							myContent.delete(newStart - 1L, 1L);
+							newEnd = --newStart;
 						}
+						setStartAndEnd(newStart, newEnd);
 					} else { // e.character == SWT.DEL
 						myContent.delete(myStart, 1L);
 					}
@@ -928,6 +934,20 @@ public final class HexTexts extends Composite {
 		deleteSelected();
 	}
 
+	private void setStartAndEnd(long start, long end) {
+
+		if (start < 0) {
+			throw new IllegalArgumentException(
+					"Parameter start must not be negative. Specifed value is " + start + ".");
+		}
+		if (end < 0) {
+			throw new IllegalArgumentException("Parameter end must not be negative. Specifed value is " + end + ".");
+		}
+		myStart = start;
+		myEnd = end;
+
+	}
+
 	/**
 	 * While in insert mode, trims the selection
 	 *
@@ -940,8 +960,7 @@ public final class HexTexts extends Composite {
 
 		myContent.delete(myEnd, myContent.length() - myEnd);
 		myContent.delete(0L, myStart);
-		myStart = 0L;
-		myEnd = myContent.length();
+		setStartAndEnd(0, myContent.length());
 
 		myUpANibble = 0;
 		ensureWholeScreenIsVisible();
@@ -1005,7 +1024,9 @@ public final class HexTexts extends Composite {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		myStart = myEnd = incrementPosWithinLimits(getCaretPos(), event.widget == styledText1);
+		long position = incrementPosWithinLimits(getCaretPos(), event.widget == styledText1);
+		setStartAndEnd(position, position);
+
 		Runnable delayed = new Runnable() {
 			@Override
 			public void run() {
@@ -1518,8 +1539,7 @@ public final class HexTexts extends Composite {
 		handleSelectedPreModify();
 		long caretPos = getCaretPos();
 		long total = myClipboard.getContents(myContent, caretPos, myInserting);
-		myStart = caretPos;
-		myEnd = caretPos + total;
+		setStartAndEnd(caretPos, caretPos + total);
 		myCaretStickToStart = false;
 		redrawTextAreas(true);
 		restoreStateAfterModify();
@@ -1840,25 +1860,26 @@ public final class HexTexts extends Composite {
 
 	void select(long start, long end) {
 		myUpANibble = 0;
-		boolean selection = myStart != myEnd;
-		myStart = 0L;
+		boolean selection = (myStart != myEnd);
+		long newStart = 0L;
 		if (start > 0L) {
-			myStart = start;
-			if (myStart > myContent.length()) {
-				myStart = myContent.length();
+			newStart = start;
+			if (newStart > myContent.length()) {
+				newStart = myContent.length();
 			}
 		}
 
-		myEnd = myStart;
-		if (end > myStart) {
-			myEnd = end;
-			if (myEnd > myContent.length()) {
-				myEnd = myContent.length();
+		long newEnd = newStart;
+		if (end > newStart) {
+			newEnd = end;
+			if (newEnd > myContent.length()) {
+				newEnd = myContent.length();
 			}
 		}
-
+		setStartAndEnd(newStart, newEnd);
 		notifyLongSelectionListeners();
-		if (selection != (myStart != myEnd)) {
+		boolean newSelection = (myStart != myEnd);
+		if (selection != newSelection) {
 			notifyListeners(SWT.Modify, null);
 		}
 	}
@@ -1898,7 +1919,8 @@ public final class HexTexts extends Composite {
 		}
 
 		if (firstContent || myEnd > myContent.length() || myTextAreasStart >= myContent.length()) {
-			myTextAreasStart = myStart = myEnd = 0L;
+			myTextAreasStart = 0L;
+			setStartAndEnd(myTextAreasStart, myTextAreasStart);
 			myCaretStickToStart = false;
 		}
 
@@ -1982,13 +2004,16 @@ public final class HexTexts extends Composite {
 	}
 
 	void shiftStartAndEnd(long newPos) {
+		long newStart;
+		long newEnd;
 		if (myCaretStickToStart) {
-			myStart = Math.min(newPos, myEnd);
-			myEnd = Math.max(newPos, myEnd);
+			newStart = Math.min(newPos, myEnd);
+			newEnd = Math.max(newPos, myEnd);
 		} else {
-			myEnd = Math.max(newPos, myStart);
-			myStart = Math.min(newPos, myStart);
+			newStart = Math.min(newPos, myStart);
+			newEnd = Math.max(newPos, myStart);
 		}
+		setStartAndEnd(newStart, newEnd);
 		myCaretStickToStart = myEnd != newPos;
 	}
 
@@ -2048,8 +2073,7 @@ public final class HexTexts extends Composite {
 		}
 
 		myUpANibble = 0;
-		myStart = selection[0];
-		myEnd = selection[1];
+		setStartAndEnd(selection[0], selection[1]);
 		myCaretStickToStart = false;
 		ensureWholeScreenIsVisible();
 		restoreStateAfterModify();
