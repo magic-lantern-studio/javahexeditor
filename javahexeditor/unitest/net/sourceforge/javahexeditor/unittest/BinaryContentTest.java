@@ -64,7 +64,7 @@ public final class BinaryContentTest extends TestCase {
 
 			File longFile = AllTests.setUpLongData(length * 3);
 			BinaryContent longContent = new BinaryContent(longFile);
-			File file = new File("tempTestFile.tmp");
+			File file = File.createTempFile("JavaHexEditor", ".tmp");
 			longContent.get(file);
 			assertEquals(longFile.length(), file.length());
 			longContent.dispose();
