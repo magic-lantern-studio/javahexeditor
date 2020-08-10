@@ -26,7 +26,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -70,8 +72,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import net.sourceforge.javahexeditor.BinaryContent;
-import net.sourceforge.javahexeditor.FileToucher;
 import net.sourceforge.javahexeditor.BinaryContent.RangeSelection;
+import net.sourceforge.javahexeditor.FileToucher;
 import net.sourceforge.javahexeditor.HexTexts;
 import net.sourceforge.javahexeditor.Manager;
 import net.sourceforge.javahexeditor.Preferences;
@@ -379,6 +381,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		// but we need an editor to fill the status bar.
 		site.getActionBarContributor().setActiveEditor(this);
 		site.setSelectionProvider(this);
+
 	}
 
 	@Override
@@ -510,7 +513,12 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		if (action != null) {
 			action.setEnabled(filled);
 		}
-
+	
+		action = bars.getGlobalActionHandler(ActionFactory.FIND.getId());
+		if (action != null) {
+			action.setEnabled(filled);
+		}
+		
 		bars.updateActionBars();
 	}
 }
