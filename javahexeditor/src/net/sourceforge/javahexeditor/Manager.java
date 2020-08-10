@@ -329,6 +329,10 @@ public final class Manager {
 	 * Open find dialog
 	 */
 	public void doFind() {
+		if (hexTexts == null) {
+			return;
+		}
+
 		if (findDialog == null) {
 			findDialog = new FindReplaceDialog(textsParent.getShell());
 			if (findReplaceHistory == null) {
@@ -559,7 +563,8 @@ public final class Manager {
 	/**
 	 * Open file for editing
 	 *
-	 * @param contentFile the input file or <code>null</code> if this will be a new file
+	 * @param contentFile the input file or <code>null</code> if this will be a new
+	 *                    file
 	 * @param charset     the charset, not <code>null</code>
 	 * @throws CoreException if the input file cannot be read
 	 */
@@ -686,15 +691,20 @@ public final class Manager {
 		if (statusLine != null) {
 			statusLine.updateInsertMode(hexTexts == null ? true : !hexTexts.isOverwriteMode());
 			if (hexTexts != null && hexTexts.getContent() != null) {
+				long size = hexTexts.getContent().length();
+				statusLine.updatePositionWidth(size);
+				statusLine.updateSizeWidth(size);
 				if (hexTexts.isSelected()) {
 					statusLine.updateSelection(hexTexts.getSelection());
 				} else {
 					statusLine.updatePosition(hexTexts.getCaretPos());
 				}
 				statusLine.updateValue(hexTexts.getActualValue());
-				statusLine.updateSize(hexTexts.getContent().length());
+				statusLine.updateSize(size);
 
 			} else {
+				statusLine.updatePositionWidth(0);
+				statusLine.updateSizeWidth(0);
 				statusLine.clearPosition();
 				statusLine.clearValue();
 				statusLine.clearSize();
