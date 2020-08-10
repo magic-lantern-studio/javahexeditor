@@ -155,7 +155,7 @@
 			<fileset file="${xml}" />
 			<filterset>
 				<filter token="JAVAHEXEDTOR_STANDALONE_DIR" value="${basedir}/.." />
-				<filter token="VERSION" value="0.5.1.0" />
+				<filter token="VERSION" value="0.5.2.0" />
 				<filter token="VERSION_TEXT" value="${version}" />
 				<filter token="PLATFORM_ID" value="${platform}" />
 				<filter token="RUNTIME_BITS" value="${runtime_bits}" />

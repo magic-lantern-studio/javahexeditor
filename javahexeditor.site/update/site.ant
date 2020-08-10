@@ -47,7 +47,7 @@
 		<echo>Copying daily to stable and main.</echo>
 		<antcall target="_copy_folder">
 			<param name="source" value="daily" />
-			<param name="target" value="0.5.1" />
+			<param name="target" value="0.5.2" />
 		</antcall>
 		<antcall target="_copy_folder">
 			<param name="source" value="daily" />
