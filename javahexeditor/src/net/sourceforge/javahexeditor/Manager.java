@@ -130,8 +130,8 @@ public final class Manager {
 	 * Creates editor part of parent application. Can only be called once per
 	 * Manager object.
 	 *
-	 * @param parent
-	 *            Composite where the part will be created, not <code>null</code>.
+	 * @param parent Composite where the part will be created, not
+	 *               <code>null</code>.
 	 */
 	public HexTexts createEditorPart(Composite parent) {
 		if (parent == null) {
@@ -194,8 +194,7 @@ public final class Manager {
 	 * Add a listener to changes of the 'dirty', 'insert/overwrite', 'selection' and
 	 * 'canUndo/canRedo' status
 	 *
-	 * @param listener
-	 *            the listener to be notified of changes
+	 * @param listener the listener to be notified of changes
 	 */
 	public void addListener(Listener listener) {
 		if (listener == null) {
@@ -217,8 +216,7 @@ public final class Manager {
 	 * and end points.
 	 *
 	 * @see HexTexts#addLongSelectionListener(SelectionListener)
-	 * @param listener
-	 *            the listener
+	 * @param listener the listener
 	 * @see StyledText#addSelectionListener(org.eclipse.swt.events.SelectionListener)
 	 */
 	public void addLongSelectionListener(SelectionListener listener) {
@@ -242,8 +240,7 @@ public final class Manager {
 	 * int and event.x as the least significant int. The end point is similarly
 	 * formed by event.height and event.y
 	 *
-	 * @param event
-	 *            an event with long selection start and end points
+	 * @param event an event with long selection start and end points
 	 * @return
 	 * @see #addLongSelectionListener(org.eclipse.swt.events.SelectionListener)
 	 */
@@ -254,6 +251,10 @@ public final class Manager {
 
 	public boolean isValid() {
 		return hexTexts != null && hexTexts.isValid();
+	}
+
+	public boolean hasContent() {
+		return hexTexts != null && hexTexts.getContent().length() > 0;
 	}
 
 	public boolean isEditable() {
@@ -281,10 +282,10 @@ public final class Manager {
 	/**
 	 * Creates status part of parent application.
 	 *
-	 * @param parent
-	 *            Composite where the part will be created, not <code>null</code>.
-	 * @param withLeftSeparator
-	 *            so it can be put besides other status items (for plugin)
+	 * @param parent            Composite where the part will be created, not
+	 *                          <code>null</code>.
+	 * @param withLeftSeparator so it can be put besides other status items (for
+	 *                          plugin)
 	 */
 	public Composite createStatusPart(Composite parent, boolean withLeftSeparator) {
 		if (parent == null) {
@@ -429,11 +430,9 @@ public final class Manager {
 	/**
 	 * Perform save-selected-as action on selected data
 	 *
-	 * @param file
-	 *            The file, not <code>null</code>.
+	 * @param file The file, not <code>null</code>.
 	 *
-	 * @throws IOException
-	 *             If the operation fails
+	 * @throws IOException If the operation fails
 	 */
 	public void doSaveSelectionAs(File file) throws IOException {
 		if (isFileBeingRead(file)) {
@@ -563,12 +562,9 @@ public final class Manager {
 	/**
 	 * Open file for editing
 	 *
-	 * @param contentFile
-	 *            the input file, not <code>null</code>
-	 * @param charset
-	 *            the charset, not <code>null</code>
-	 * @throws CoreException
-	 *             if the input file cannot be read
+	 * @param contentFile the input file, not <code>null</code>
+	 * @param charset     the charset, not <code>null</code>
+	 * @throws CoreException if the input file cannot be read
 	 */
 	public void openFile(File contentFile, String charset) throws CoreException {
 		this.contentFile = contentFile;
@@ -588,8 +584,7 @@ public final class Manager {
 	 * Reuse the status line control from another manager. Useful for multiple open
 	 * editors
 	 *
-	 * @param other
-	 *            manager to copy its control from
+	 * @param other manager to copy its control from
 	 */
 	public void reuseStatusLinelFrom(Manager other) {
 		if (other == null) {
@@ -601,12 +596,10 @@ public final class Manager {
 	/**
 	 * Perform save-as action on opened file
 	 *
-	 * @param file
-	 *            The new file, not <code>null</code>.
+	 * @param file    The new file, not <code>null</code>.
 	 * @param monitor
 	 *
-	 * @throws IOException
-	 *             If the operation fails
+	 * @throws IOException If the operation fails
 	 */
 	public void saveAsFile(File file, IProgressMonitor monitor) throws IOException {
 		if (file == null) {
@@ -642,11 +635,9 @@ public final class Manager {
 	/**
 	 * Perform save action on opened file
 	 * 
-	 * @param monitor
-	 *            the progress monitor or <code>null</code>
+	 * @param monitor the progress monitor or <code>null</code>
 	 *
-	 * @throws IOException
-	 *             If the operation fails
+	 * @throws IOException If the operation fails
 	 */
 	public void saveFile(IProgressMonitor monitor) throws IOException {
 		try {
@@ -667,8 +658,8 @@ public final class Manager {
 	/**
 	 * Sets Find/Replace combo lists pre-exisiting values.
 	 *
-	 * @param findReplaceHistory
-	 *            The modifiable find-replace history, not <code>null</code>.
+	 * @param findReplaceHistory The modifiable find-replace history, not
+	 *                           <code>null</code>.
 	 */
 	public void setFindReplaceHistory(FindReplaceHistory findReplaceHistory) {
 		if (findReplaceHistory == null) {
@@ -719,9 +710,8 @@ public final class Manager {
 	/**
 	 * Set the editor text font.
 	 *
-	 * @param aFont
-	 *            new font to be used; should be a constant char width font. Use
-	 *            <code>null</code> to set to the default font.
+	 * @param aFont new font to be used; should be a constant char width font. Use
+	 *              <code>null</code> to set to the default font.
 	 */
 	public void setTextFont(FontData aFont) {
 		fontData = aFont;
@@ -746,8 +736,7 @@ public final class Manager {
 	/**
 	 * Show a file dialog with a save-as message
 	 *
-	 * @param aShell
-	 *            parent of the dialog
+	 * @param aShell    parent of the dialog
 	 * @param selection
 	 * @return
 	 */
