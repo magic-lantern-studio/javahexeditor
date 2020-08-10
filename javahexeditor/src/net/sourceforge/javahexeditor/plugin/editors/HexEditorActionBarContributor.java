@@ -59,6 +59,7 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 		public void fill(Menu parent, int index) {
 			boolean textSelected = activeEditor == null ? false : activeEditor.getManager().isTextSelected();
 			myMenuItem = new MenuItem(parent, SWT.PUSH, index);
+
 			if (MenuIds.SAVE_SELECTION_AS.equals(getId())) {
 				myMenuItem.setText(Texts.EDITOR_SAVE_SELECTION_AS_MENU_ITEM_LABEL);
 				myMenuItem.setEnabled(textSelected);
@@ -97,6 +98,13 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 					}
 				});
 			}
+		}
+		
+		@Override
+		public void update() {
+			 if (MenuIds.SELECT_BLOCK.equals(getId())) {
+				 myMenuItem.setEnabled(activeEditor.getManager().isFilled());
+			 }
 		}
 	}
 
@@ -140,13 +148,13 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 	}
 
 	private static final class MenuIds {
-		private static final String SAVE_SELECTION_AS = "saveSelectionAs";
-		private static final String TRIM = "trim";
-		private static final String SELECT_BLOCK = "selectBlock";
-		private static final String SAVE_AS = "saveAs";
-		private static final String DELETE = "delete";
-		private static final String SELECT_ALL = "selectAll";
-		private static final String ADDITIONS = "additions";
+		public static final String SAVE_SELECTION_AS = "saveSelectionAs";
+		public static final String TRIM = "trim";
+		public static final String SELECT_BLOCK = "selectBlock";
+		public static final String SAVE_AS = "saveAs";
+		public static final String DELETE = "delete";
+		public static final String SELECT_ALL = "selectAll";
+		public static final String ADDITIONS = "additions";
 	}
 
 	private static final String STATUS_LINE_ITEM_ID = "AllHexEditorStatusItemsItem";
