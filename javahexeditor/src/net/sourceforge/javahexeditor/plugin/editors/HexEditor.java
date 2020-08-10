@@ -513,12 +513,12 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		if (action != null) {
 			action.setEnabled(filled);
 		}
-	
+
 		action = bars.getGlobalActionHandler(ActionFactory.FIND.getId());
 		if (action != null) {
 			action.setEnabled(filled);
 		}
-		
+
 		bars.updateActionBars();
 	}
 }

@@ -120,7 +120,6 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 			if (menuItem != null) {
 				menuItem.setEnabled(filled);
 			}
-
 		}
 
 		private MenuItem getMenuItem(String prefix, String menuId) {
@@ -189,6 +188,12 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 		menu = menuManager.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
 		if (menu != null) {
 			Action goToAction = new Action() {
+				
+				@Override
+				public boolean isEnabled() {
+					return activeEditor.getManager().isFilled();
+				}
+				
 				@Override
 				public void run() {
 					activeEditor.getManager().doGoTo();
