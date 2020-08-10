@@ -307,11 +307,11 @@ public final class HexEditor {
 		menu.pushUndo.setEnabled(manager.canUndo());
 		menu.pushRedo.setEnabled(manager.canRedo());
 
-		menu.pushSelectAll.setEnabled(manager.hasContent());
-		menu.pushSelectBlock.setEnabled(manager.hasContent());
+		menu.pushSelectAll.setEnabled(manager.isFilled());
+		menu.pushSelectBlock.setEnabled(manager.isFilled());
 
-		menu.pushGoTo.setEnabled(manager.hasContent());
-		menu.pushFind.setEnabled(manager.hasContent());
+		menu.pushGoTo.setEnabled(manager.isFilled());
+		menu.pushFind.setEnabled(manager.isFilled());
 	}
 
 	void performAction(int actionId) {

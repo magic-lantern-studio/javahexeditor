@@ -479,6 +479,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 	void updateActionsStatus() {
 		boolean textSelected = getManager().isTextSelected();
 		boolean lengthModifiable = textSelected && !manager.isOverwriteMode();
+		boolean filled = getManager().isFilled();
 		IActionBars bars = getEditorSite().getActionBars();
 		IAction action = bars.getGlobalActionHandler(ActionFactory.UNDO.getId());
 		if (action != null) {
@@ -503,6 +504,11 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		action = bars.getGlobalActionHandler(ActionFactory.DELETE.getId());
 		if (action != null) {
 			action.setEnabled(lengthModifiable);
+		}
+
+		action = bars.getGlobalActionHandler(ActionFactory.SELECT_ALL.getId());
+		if (action != null) {
+			action.setEnabled(filled);
 		}
 
 		bars.updateActionBars();

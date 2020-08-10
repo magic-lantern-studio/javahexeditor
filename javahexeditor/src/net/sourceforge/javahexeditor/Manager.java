@@ -253,7 +253,7 @@ public final class Manager {
 		return hexTexts != null && hexTexts.isValid();
 	}
 
-	public boolean hasContent() {
+	public boolean isFilled() {
 		return hexTexts != null && hexTexts.getContent().length() > 0;
 	}
 
@@ -689,9 +689,12 @@ public final class Manager {
 					statusLine.updatePosition(hexTexts.getCaretPos());
 				}
 				statusLine.updateValue(hexTexts.getActualValue());
+				statusLine.updateSize(hexTexts.getContent().length());
+
 			} else {
 				statusLine.clearPosition();
 				statusLine.clearValue();
+				statusLine.clearSize();
 			}
 		}
 	}
