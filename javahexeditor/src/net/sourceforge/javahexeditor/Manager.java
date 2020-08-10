@@ -407,9 +407,6 @@ public final class Manager {
 		}
 
 		hexTexts.setFocus();
-		if (createNewFile) {
-			hexTexts.setInsertMode(true);
-		}
 	}
 
 	public boolean canPaste() {
@@ -562,7 +559,7 @@ public final class Manager {
 	/**
 	 * Open file for editing
 	 *
-	 * @param contentFile the input file, not <code>null</code>
+	 * @param contentFile the input file or <code>null</code> if this will be a new file
 	 * @param charset     the charset, not <code>null</code>
 	 * @throws CoreException if the input file cannot be read
 	 */
@@ -577,6 +574,12 @@ public final class Manager {
 		}
 		hexTexts.setCharset(charset);
 		hexTexts.setContentProvider(content);
+		if (contentFile == null || getContent().length() == 0) {
+			hexTexts.setInsertMode(true);
+		} else if (contentFile != null) {
+			hexTexts.setInsertMode(false);
+		}
+		updateStatusLine();
 
 	}
 
