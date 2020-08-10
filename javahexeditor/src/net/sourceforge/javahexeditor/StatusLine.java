@@ -153,7 +153,7 @@ final class StatusLine extends Composite {
 		}
 		long sizeMinusOne = (size > 1 ? size - 1 : size);
 		int maxLength = Math.max(getPositionText(size).length(),
-				getSelectionText(new RangeSelection(sizeMinusOne, size)).length());
+				getSelectionText(new RangeSelection(sizeMinusOne, size)).length())+2;
 		((GridData) positionLabel.getLayoutData()).widthHint = getWidthHint(maxLength);
 	}
 
@@ -241,7 +241,7 @@ final class StatusLine extends Composite {
 		if (isDisposed() || sizeLabel.isDisposed()) {
 			return;
 		}
-		int maxLength = getSizeText(size).length();
+		int maxLength = getSizeText(size).length()+1;
 		((GridData) sizeLabel.getLayoutData()).widthHint = getWidthHint(maxLength);
 	}
 
