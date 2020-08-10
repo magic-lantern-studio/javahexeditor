@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package net.sourceforge.javahexeditor.test;
+package net.sourceforge.javahexeditor.unittest;
 
 import java.io.File;
 import java.io.IOException;

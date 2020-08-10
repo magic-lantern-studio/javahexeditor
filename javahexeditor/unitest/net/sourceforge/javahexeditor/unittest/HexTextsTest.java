@@ -1,4 +1,4 @@
-package net.sourceforge.javahexeditor.test;
+package net.sourceforge.javahexeditor.unittest;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

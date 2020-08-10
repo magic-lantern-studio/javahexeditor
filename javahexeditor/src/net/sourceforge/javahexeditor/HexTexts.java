@@ -269,12 +269,13 @@ public final class HexTexts extends Composite {
 			case SWT.PAGE_DOWN:
 				boolean selection = myStart != myEnd;
 				boolean ctrlKey = (e.stateMask & SWT.CONTROL) != 0;
+				boolean countNibbles = (e.widget == styledText1 );
 				if ((e.stateMask & SWT.SHIFT) != 0) { // shift mod2
 					long newPos = doNavigateKeyPressed(ctrlKey, e.keyCode, getCaretPos(), false);
 					shiftStartAndEnd(newPos);
 				} else { // if no modifier or control or alt
 					long position = doNavigateKeyPressed(ctrlKey, e.keyCode, getCaretPos(),
-							e.widget == styledText1 && !myInserting);
+							countNibbles && !myInserting);
 					setStartAndEnd(position, position);
 					myCaretStickToStart = false;
 				}
@@ -2117,7 +2118,7 @@ public final class HexTexts extends Composite {
 			myBytesPerLine = 16;
 		}
 		gridData5.widthHint = styledText1.computeTrim(0, 0, (int) (myBytesPerLine * 3 * fontCharWidth), 100).width;
-		gridData6.widthHint = styledText2.computeTrim(0, 0, (int) (myBytesPerLine * fontCharWidth), 100).width;
+		gridData6.widthHint = styledText2.computeTrim(0, 0, (int) (myBytesPerLine * fontCharWidth ), 100).width;
 		updateNumberOfLines();
 		layout(new Control[] { header1Text, styledText, styledText1, styledText2 }, SWT.DEFER);
 		updateScrollBar();
