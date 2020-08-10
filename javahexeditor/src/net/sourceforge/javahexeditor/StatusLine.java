@@ -32,14 +32,15 @@ import net.sourceforge.javahexeditor.common.SWTUtility;
 import net.sourceforge.javahexeditor.common.TextUtility;
 
 /**
- * Status line component of the editor. Displays the current position and the
- * insert/overwrite status.
+ * Status line component of the editor. Displays the current position, value at
+ * position, the insert/overwrite status and the file size.
  */
 final class StatusLine extends Composite {
 
 	private Label positionLabel;
 	private Label valueLabel;
 	private Label insertModeLabel;
+	private Label sizeLabel;
 
 	/**
 	 * Create a status line part
@@ -61,7 +62,7 @@ final class StatusLine extends Composite {
 		// Every control in a Composite that is
 		// managed by a GridLayout must have a unique GridData instance
 		GridLayout statusLayout = new GridLayout();
-		statusLayout.numColumns = withSeparator ? 6 : 5;
+		statusLayout.numColumns = withSeparator ? 8 : 7;
 		statusLayout.marginHeight = 0;
 		setLayout(statusLayout);
 
@@ -81,8 +82,7 @@ final class StatusLine extends Composite {
 
 		valueLabel = new Label(this, SWT.SHADOW_NONE);
 		maxLength = getValueText(Byte.MAX_VALUE).length();
-		GridData gridData2 = createGridData(maxLength);
-		valueLabel.setLayoutData(gridData2);
+		valueLabel.setLayoutData(createGridData(maxLength));
 
 		Label separator3 = new Label(this, SWT.SEPARATOR);
 		separator3.setLayoutData(createGridData());
@@ -90,6 +90,14 @@ final class StatusLine extends Composite {
 		insertModeLabel = new Label(this, SWT.SHADOW_NONE);
 		maxLength = Math.max(Texts.STATUS_LINE_MODE_INSERT.length(), Texts.STATUS_LINE_MODE_OVERWRITE.length());
 		insertModeLabel.setLayoutData(createGridData(maxLength));
+
+		Label separator4 = new Label(this, SWT.SEPARATOR);
+		separator4.setLayoutData(createGridData());
+
+		sizeLabel = new Label(this, SWT.SHADOW_NONE);
+		maxLength = getSizeText(MAX_FILE_SIZE).length();
+		sizeLabel.setLayoutData(createGridData(maxLength));
+
 	}
 
 	private GridData createGridData() {
@@ -210,6 +218,36 @@ final class StatusLine extends Composite {
 
 		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_VALUE, NumberUtility.getDecimalString(unsignedValue),
 				NumberUtility.getHexString(unsignedValue), binaryText);
+		return text;
+	}
+
+	/**
+	 * Clear the size status.
+	 */
+	public void clearSize() {
+		if (isDisposed() || valueLabel.isDisposed()) {
+			return;
+		}
+		sizeLabel.setText(Texts.EMPTY);
+	}
+
+	/**
+	 * Update the size status. Displays its decimal and hex value.
+	 *
+	 * @param size size to display
+	 */
+	public void updateSize(long size) {
+		if (size < 0) {
+			throw new IllegalArgumentException("Parameter 'size' must not be negative.");
+		}
+		if (isDisposed() || sizeLabel.isDisposed()) {
+			return;
+		}
+		sizeLabel.setText(getSizeText(size));
+	}
+
+	private String getSizeText(long size) {
+		String text = TextUtility.format(Texts.STATUS_LINE_MESSAGE_SIZE, NumberUtility.getDecimalAndHexString(size));
 		return text;
 	}
 

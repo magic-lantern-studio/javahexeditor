@@ -129,6 +129,7 @@ public final class Texts extends NLS {
 	public static String STATUS_LINE_MESSAGE_SELECTION;
 	public static String STATUS_LINE_MESSAGE_POSITION;
 	public static String STATUS_LINE_MESSAGE_VALUE;
+	public static String STATUS_LINE_MESSAGE_SIZE;
 
 	public static String STATUS_LINE_MODE_INSERT;
 	public static String STATUS_LINE_MODE_OVERWRITE;
