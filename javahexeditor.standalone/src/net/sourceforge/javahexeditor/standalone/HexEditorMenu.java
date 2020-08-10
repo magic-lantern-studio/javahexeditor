@@ -141,12 +141,13 @@ public final class HexEditorMenu {
 		pushSelectBlock.setAccelerator(SWT.CONTROL | 'E');
 
 		createMenuSeparator(editSubMenu);
+		pushFind = createMenuItem(editSubMenu, Texts.HEX_EDITOR_FIND_MENU_ITEM_LABEL, Actions.FIND);
+		pushFind.setAccelerator(SWT.CONTROL | 'F');
+
 		pushGoTo = createMenuItem(editSubMenu, net.sourceforge.javahexeditor.Texts.EDITOR_GO_TO_MENU_ITEM_LABEL,
 				Actions.GO_TO);
 		pushGoTo.setAccelerator(SWT.CONTROL | 'L');
 
-		pushFind = createMenuItem(editSubMenu, Texts.HEX_EDITOR_FIND_MENU_ITEM_LABEL, Actions.FIND);
-		pushFind.setAccelerator(SWT.CONTROL | 'F');
 
 		createMenuSeparator(editSubMenu);
 		createMenuItem(editSubMenu, Texts.HEX_EDITOR_PREFERENCES_MENU_ITEM_LABEL, Actions.PREFERENCES);
