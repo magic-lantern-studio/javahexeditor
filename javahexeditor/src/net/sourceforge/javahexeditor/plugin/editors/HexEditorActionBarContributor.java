@@ -57,12 +57,11 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 
 		@Override
 		public void fill(Menu parent, int index) {
-			boolean textSelected = activeEditor == null ? false : activeEditor.getManager().isTextSelected();
 			myMenuItem = new MenuItem(parent, SWT.PUSH, index);
+			myMenuItem.setEnabled(false);
 
 			if (MenuIds.SAVE_SELECTION_AS.equals(getId())) {
 				myMenuItem.setText(Texts.EDITOR_SAVE_SELECTION_AS_MENU_ITEM_LABEL);
-				myMenuItem.setEnabled(textSelected);
 				myMenuItem.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
@@ -71,7 +70,6 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 				});
 			} else if (MenuIds.TRIM.equals(getId())) {
 				myMenuItem.setText(Texts.EDITOR_TRIM_MENU_ITEM_LABEL);
-				myMenuItem.setEnabled(textSelected && !activeEditor.getManager().isOverwriteMode());
 				myMenuItem.addSelectionListener(new SelectionAdapter() {
 
 					@Override
@@ -86,7 +84,6 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 				myMenuItem.setText(Texts.EDITOR_SELECT_BLOCK_MENU_ITEM_LABEL);
 				// TODO This only works after the "Edit" menu was shown once
 				myMenuItem.setAccelerator(SWT.CONTROL | 'E');
-				myMenuItem.setEnabled(true);
 				myMenuItem.addSelectionListener(new SelectionAdapter() {
 
 					@Override
@@ -99,13 +96,6 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 				});
 			}
 		}
-		
-		@Override
-		public void update() {
-			 if (MenuIds.SELECT_BLOCK.equals(getId())) {
-				 myMenuItem.setEnabled(activeEditor.getManager().isFilled());
-			 }
-		}
 	}
 
 	private final class MyMenuListener implements IMenuListener {
@@ -116,21 +106,32 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 		public void menuAboutToShow(IMenuManager menu) {
 			boolean textSelected = activeEditor.getManager().isTextSelected();
 			boolean lengthModifiable = textSelected && !activeEditor.getManager().isOverwriteMode();
+			boolean filled = activeEditor.getManager().isFilled();
+
+			MenuItem menuItem = getMenuItem(IWorkbenchActionConstants.M_FILE, MenuIds.SAVE_SELECTION_AS);
+			if (menuItem != null) {
+				menuItem.setEnabled(textSelected);
+			}
+			menuItem = getMenuItem(IWorkbenchActionConstants.M_EDIT, MenuIds.TRIM);
+			if (menuItem != null) {
+				menuItem.setEnabled(lengthModifiable);
+			}
+			menuItem = getMenuItem(IWorkbenchActionConstants.M_EDIT, MenuIds.SELECT_BLOCK);
+			if (menuItem != null) {
+				menuItem.setEnabled(filled);
+			}
+
+		}
+
+		private MenuItem getMenuItem(String prefix, String menuId) {
 			IActionBars bars = getActionBars();
 
-			IContributionItem contributionItem = bars.getMenuManager()
-					.findUsingPath(IWorkbenchActionConstants.M_FILE + '/' + MenuIds.SAVE_SELECTION_AS);
+			IContributionItem contributionItem = bars.getMenuManager().findUsingPath(prefix + '/' + menuId);
 			if (contributionItem != null && ((MyMenuContributionItem) contributionItem).myMenuItem != null
 					&& !((MyMenuContributionItem) contributionItem).myMenuItem.isDisposed()) {
-				((MyMenuContributionItem) contributionItem).myMenuItem.setEnabled(textSelected);
+				return ((MyMenuContributionItem) contributionItem).myMenuItem;
 			}
-
-			contributionItem = bars.getMenuManager()
-					.findUsingPath(IWorkbenchActionConstants.M_EDIT + '/' + MenuIds.TRIM);
-			if (contributionItem != null && ((MyMenuContributionItem) contributionItem).myMenuItem != null
-					&& !((MyMenuContributionItem) contributionItem).myMenuItem.isDisposed()) {
-				((MyMenuContributionItem) contributionItem).myMenuItem.setEnabled(lengthModifiable);
-			}
+			return null;
 		}
 	}
 
