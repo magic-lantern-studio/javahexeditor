@@ -55,7 +55,7 @@
 		<copy tofile="daily\site.xml" preservelastmodified="true" overwrite="true">
 			<fileset file="daily/site-template.xml" />
 		</copy>
-		<input>Open daily/site.xml and press "Build All" and hit RETURN.</input>
+		<input>Open daily/site.xml and press "Build All" and hit "Return" or press "Cancel" to stop the build.</input>
 	</target>
 
 	<target name="build_standlone_binaries" depends="_init">
