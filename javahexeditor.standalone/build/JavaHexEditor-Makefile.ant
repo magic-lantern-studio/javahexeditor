@@ -2,24 +2,16 @@
 <project default="create_run_jars" name="Create Runnable Jars for Project net.sourceforge.javahexeditor.standalone with Jar-in-Jar Loader">
 	<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" />
 
-	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
-	<!--ANT 1.7 is required                                        -->
+	<!--this file was created by Eclipse Runnable JAR Export Wizard                   -->
+	<!--ANT 1.7 is required                                                           -->
 	<target name="create_run_jars">
 
-		<!-- Set version property and create version file -->
-		<tstamp>
-			<format property="version" pattern="yyyy-MM-dd HH:mm:ss" locale="en,GB" />
-		</tstamp>
-		<echo file="..\..\javahexeditor\bin\net\sourceforge\javahexeditor\Manager.version"> "${version}"</echo>
+		<!--It requires the "year", "release" (x.y.z format) and the "version" information passed as properties. -->
+		<fail unless="year"/>
+		<fail unless="release"/>
+		<fail unless="version"/>
 
-		<!-- Copy built-in documentation to web site folder for upload -->
-		<!-- The destination folders are excluded from source code versioning -->
-		<copy file="../../javahexeditor/src/index.html" todir="../../javahexeditor.site" overwrite="true" />
-		<replace file="../../javahexeditor.site/index.html" token="&lt;p id=&quot;version&quot;&gt;" value="&lt;p&gt;This is version ${version} of the program. " />
-		<mkdir dir="../../javahexeditor.site/images" />
-		<copy todir="../../javahexeditor.site/images" overwrite="true">
-			<fileset dir="../../javahexeditor/src/images" />
-		</copy>
+		<echo message="Creating version '${version}' of release ${release} in year ${year}." />
 
 		<mkdir dir="../out" />
 
@@ -142,7 +134,7 @@
 		<mkdir dir="../out/${platform}/javahexeditor.app" />
 		<!-- See the "build/jarbundler.txt" fie for details on the task -->
 		<!-- The ".icns" file was created using http://iconverticons.com/online -->
-		<jarbundler dir="../out/${platform}/" name="javahexeditor" copyright="(C) 2006 - 2017 Jordi Bergenthal and Peter Dell" shortname="Java Hex Editor" build="$${version}" icon="../../javahexeditor/src/images/javahexeditor-48x48.icns" useJavaXKey="true" mainclass="net.sourceforge.javahexeditor.standalone.HexEditor" jar="../out/${platform}/JavaHexEditor.jar" jvmversion="1.8+" vmoptions="-Xms256M -Xmx256M">
+		<jarbundler dir="../out/${platform}/" name="javahexeditor" copyright="(C) 2006 - ${year} Jordi Bergenthal and Peter Dell" shortname="Java Hex Editor" build="$${version}" icon="../../javahexeditor/src/images/javahexeditor-48x48.icns" useJavaXKey="true" mainclass="net.sourceforge.javahexeditor.standalone.HexEditor" jar="../out/${platform}/JavaHexEditor.jar" jvmversion="1.8+" vmoptions="-Xms256M -Xmx256M">
 		</jarbundler>
 		<copy todir="../out/${platform}/javahexeditor.app/Contents/MacOS" overwrite="true">
 			<fileset file="./JavaApplicationStub" />
@@ -155,8 +147,9 @@
 			<fileset file="${xml}" />
 			<filterset>
 				<filter token="JAVAHEXEDTOR_STANDALONE_DIR" value="${basedir}/.." />
-				<filter token="VERSION" value="0.5.2.0" />
-				<filter token="VERSION_TEXT" value="${version}" />
+				<filter token="YEAR" value="${year}" />
+				<filter token="RELEASE" value="${release}" />
+				<filter token="VERSION" value="${version}" />
 				<filter token="PLATFORM_ID" value="${platform}" />
 				<filter token="RUNTIME_BITS" value="${runtime_bits}" />
 			</filterset>
