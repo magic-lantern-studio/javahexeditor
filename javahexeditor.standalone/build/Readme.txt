@@ -29,5 +29,5 @@ Files
 * JavaApplicationStub - The old native stub previously used by the Mac OS build, only keep for archiving purposes
 * JavaHexEditor-Makefile.ant - The ANT makefile to build the binaries for all platforms
 * stub.sh - The executable /bin/sh shell stub script used by the Linux build
-* universalJavaApplicationStub - The executable /bin/bash shell stub script used by the Mac OS X build
+* universalJavaApplicationStub - The executable /bin/bash shell stub script used by the Mac OS X build. The file is encoded in UTF-8 without BOM.
 
