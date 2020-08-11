@@ -274,7 +274,7 @@ final class FindReplaceDialog extends Dialog {
 			@Override
 			public void run() {
 				if (searching && !progressComposite.isDisposed()) {
-					progressComposite.setVisible(true);
+					setProgressCompositeVisible(true);
 				}
 			}
 		});
@@ -449,7 +449,7 @@ final class FindReplaceDialog extends Dialog {
 		progressBarStopButton = new Button(progressComposite, SWT.NONE);
 		progressBarStopButton.setText(Texts.FIND_REPLACE_DIALOG_STOP_SEARCHING_BUTTON_LABEL);
 
-		progressComposite.setVisible(false);
+		setProgressCompositeVisible(false);
 		progressBarStopButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -457,6 +457,13 @@ final class FindReplaceDialog extends Dialog {
 			}
 		});
 
+	}
+
+
+	private void setProgressCompositeVisible(boolean visible) {
+		progressComposite.setVisible(visible);
+		((GridData) progressComposite.getLayoutData()).exclude = !visible;
+		progressComposite.getParent().pack();
 	}
 
 	private void createButtonBarComposite() {
@@ -664,7 +671,7 @@ final class FindReplaceDialog extends Dialog {
 			return;
 		}
 
-		progressComposite.setVisible(false);
+		setProgressCompositeVisible(false);
 		dataToUI();
 	}
 
