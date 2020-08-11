@@ -88,23 +88,23 @@ public final class HexTexts extends Composite {
 	 * for a '.' char. There are differences on which chars can correctly be
 	 * displayed in each operating system, charset encoding, or font system.
 	 */
-	public static final char[] byteToChar = new char[256];
+	public static final char[] byteToChar = new char[256]; // TODO should not be static
 
 	static final String[] byteToHex = new String[256];
 
-	private static final int charsForAddress = 12; // Files up to 16 Ters: 11
+	private static final int CHARS_FOR_ADDRESS = 12; // Files up to 16 Ters: 11
 	// hex digits
 	// + ':'
 	private final Color colorBlue = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
-	final Color colorLightShadow = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+	private final Color colorLightShadow = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	private final Color colorNormalShadow = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
-	private static String headerRow = null;
-	private static final byte[] hexToNibble = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12,
+
+	private static final byte[] HEX_TO_NIBBLE = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12,
 			13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 			-1, -1, 10, 11, 12, 13, 14, 15 };
-	private static final int maxScreenResolution = 1920;
-	private static final int minCharSize = 5;
-	private static final char[] nibbleToHex = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+	private static final int MAX_SCREEN_RESOLUTION = 1920;
+	private static final int MIN_CHAR_SIZE = 5;
+	private static final char[] NIBBLE_TO_HEX = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
 			'E', 'F' };
 	private static final int SET_TEXT = 0;
 	private static final int SHIFT_FORWARD = 1; // frame
@@ -116,6 +116,8 @@ public final class HexTexts extends Composite {
 	private Runnable delayedWaiting;
 	boolean dragging = false;
 	double fontCharWidth = -1;
+	private String headerRow; // Computed based on MAX_SCREEN_RESOLUTION
+
 	private List<Integer> highlightRangesInScreen;
 	private List<Long> mergeChangeRanges;
 	private List<Integer> mergeHighlightRanges;
@@ -150,37 +152,39 @@ public final class HexTexts extends Composite {
 	private int numberOfLines = 16;
 	private int numberOfLines_1 = numberOfLines - 1;
 	private boolean stopSearching = false;
-	private byte[] tmpRawBuffer = new byte[maxScreenResolution / minCharSize / 3 * maxScreenResolution / minCharSize];
-	int verticalBarFactor = 0;
+	private byte[] tmpRawBuffer = new byte[MAX_SCREEN_RESOLUTION / MIN_CHAR_SIZE / 3 * MAX_SCREEN_RESOLUTION
+			/ MIN_CHAR_SIZE];
+	private int verticalBarFactor = 0;
 
 	// visual components
-	Color colorCaretLine;
-	Color colorHighlight;
+	private Color colorCaretLine;
+	private Color colorHighlight;
 	private Font fontCurrent; // disposed externally
-	Font fontDefault; // disposed internally
-	private GridData gridData5;
-	private GridData gridData6;
-	private GC styledText1GC;
-	private GC styledText2GC;
-	// indentation means containment (ie. 'textSeparator' and 'styledText' are
-	// contained within 'column')
-	private Composite column;
-	private Text textSeparator;
-	private StyledText styledText;
+	private Font fontDefault; // disposed internally
+
+	private Composite column0;
+	private Text textSeparator0;
+	private StyledText styledText0;
+
 	private Composite column1;
 	private Composite column1Header;
 	private StyledText header1Text;
-	StyledText styledText1;
+	private StyledText styledText1;
+	private GridData styledText1GridData;
+	private GC styledText1GC;
+
 	private Composite column2;
 	private Text textSeparator2;
-	StyledText styledText2;
+	private StyledText styledText2;
+	private GridData styledText2GridData;
+	private GC styledText2GC;
 
 	/**
 	 * compose byte-to-hex map
 	 */
 	private void composeByteToHexMap() {
 		for (int i = 0; i < 256; ++i) {
-			byteToHex[i] = Character.toString(nibbleToHex[i >>> 4]) + nibbleToHex[i & 0x0f];
+			byteToHex[i] = Character.toString(NIBBLE_TO_HEX[i >>> 4]) + NIBBLE_TO_HEX[i & 0x0f];
 		}
 	}
 
@@ -230,7 +234,7 @@ public final class HexTexts extends Composite {
 	 */
 	private void composeHeaderRow() {
 		StringBuilder rowChars = new StringBuilder();
-		for (int i = 0; i < maxScreenResolution / minCharSize / 3; ++i) {
+		for (int i = 0; i < MAX_SCREEN_RESOLUTION / MIN_CHAR_SIZE / 3; ++i) {
 			rowChars.append(byteToHex[i & 0x0ff]).append(' ');
 		}
 		headerRow = rowChars.toString().toUpperCase();
@@ -269,7 +273,7 @@ public final class HexTexts extends Composite {
 			case SWT.PAGE_DOWN:
 				boolean selection = myStart != myEnd;
 				boolean ctrlKey = (e.stateMask & SWT.CONTROL) != 0;
-				boolean countNibbles = (e.widget == styledText1 );
+				boolean countNibbles = (e.widget == styledText1);
 				if ((e.stateMask & SWT.SHIFT) != 0) { // shift mod2
 					long newPos = doNavigateKeyPressed(ctrlKey, e.keyCode, getCaretPos(), false);
 					shiftStartAndEnd(newPos);
@@ -360,7 +364,7 @@ public final class HexTexts extends Composite {
 			} catch (IllegalArgumentException ex) {
 				textOffset = ((StyledText) e.widget).getCharCount();
 			}
-			if (textOffset<0) {
+			if (textOffset < 0) {
 				return;
 			}
 			int byteOffset = textOffset / charLen;
@@ -390,29 +394,47 @@ public final class HexTexts extends Composite {
 		}
 	}
 
-	private class MyPaintAdapter implements PaintListener {
-		boolean hexContent = false;
-
-		MyPaintAdapter(boolean isHexText) {
-			hexContent = isHexText;
-		}
+	/**
+	 * Draws the separate lines on the right of every 8 byte block in the hex area.
+	 */
+	private class MyPaintAdapter1 implements PaintListener {
 
 		@Override
 		public void paintControl(PaintEvent event) {
 			event.gc.setForeground(colorLightShadow);
-			int lineWidth = 1;
-			int charLen = 1;
-			int rightHalfWidth = 0; // is 1, but better to tread on leftmost
-			// char pixel than rightmost one
-			if (hexContent) {
-				lineWidth = (int) fontCharWidth;
-				charLen = 3;
-				rightHalfWidth = (lineWidth + 1) / 2; // line spans to both
-				// sides of its position
-			}
-			event.gc.setLineWidth(lineWidth);
+
+			int lineWidth = (int) fontCharWidth;
+			int charLen = 3;
+			int rightHalfWidth = (lineWidth + 1) / 2; // line spans to both
+
 			for (int block = 8; block <= myBytesPerLine; block += 8) {
-				int xPos = (int) (charLen * block * fontCharWidth) - rightHalfWidth;
+				int width = lineWidth;
+				int xPos = (int) (charLen * block * fontCharWidth);
+				if (block < myBytesPerLine) {
+					xPos = xPos - rightHalfWidth;
+				} else {
+					width += (int) fontCharWidth;
+				}
+				event.gc.setLineWidth(width);
+				event.gc.drawLine(xPos, event.y, xPos, event.y + event.height);
+			}
+			event.gc.setLineWidth(0);
+
+		}
+	}
+
+	/**
+	 * Draws the separate lines on the right of every 8 byte block in the text area.
+	 */
+	private class MyPaintAdapter2 implements PaintListener {
+
+		@Override
+		public void paintControl(PaintEvent event) {
+			event.gc.setForeground(colorLightShadow);
+			event.gc.setLineWidth(1);
+
+			for (int block = 8; block <= myBytesPerLine; block += 8) {
+				int xPos = (int) (block * fontCharWidth);
 				event.gc.drawLine(xPos, event.y, xPos, event.y + event.height);
 			}
 		}
@@ -533,8 +555,10 @@ public final class HexTexts extends Composite {
 	/**
 	 * Create a binary text editor
 	 *
-	 * @param parent parent in the widget hierarchy
-	 * @param style  not used for the moment
+	 * @param parent
+	 *            parent in the widget hierarchy
+	 * @param style
+	 *            not used for the moment
 	 */
 	public HexTexts(final Composite parent, int style) {
 		super(parent, style | SWT.BORDER | SWT.V_SCROLL);
@@ -607,7 +631,8 @@ public final class HexTexts extends Composite {
 	 * ((long)event.width) << 32 | (event.x & 0x0ffffffffL) Similarly for the end
 	 * point: long end = ((long)event.height) << 32 | (event.y & 0x0ffffffffL)
 	 *
-	 * @param listener the listener
+	 * @param listener
+	 *            the listener
 	 * @see StyledText#addSelectionListener(org.eclipse.swt.events.SelectionListener)
 	 */
 	public void addLongSelectionListener(SelectionListener listener) {
@@ -623,49 +648,52 @@ public final class HexTexts extends Composite {
 	 * This method initializes composite
 	 */
 	private void initialize() {
-		GridLayout gridLayout1 = new GridLayout();
-		gridLayout1.numColumns = 3;
-		gridLayout1.marginHeight = 0;
-		gridLayout1.verticalSpacing = 0;
-		gridLayout1.horizontalSpacing = 0;
-		gridLayout1.marginWidth = 0;
-		setLayout(gridLayout1);
+		GridLayout mainGridLayout = new GridLayout();
+		mainGridLayout.numColumns = 3;
+		mainGridLayout.marginHeight = 0;
+		mainGridLayout.verticalSpacing = 0;
+		mainGridLayout.horizontalSpacing = 0;
+		mainGridLayout.marginWidth = 0;
+		setLayout(mainGridLayout);
 
-		column = new Composite(this, SWT.NONE);
-		GridLayout columnLayout = new GridLayout();
-		columnLayout.marginHeight = 0;
-		columnLayout.verticalSpacing = 1;
-		columnLayout.horizontalSpacing = 0;
-		columnLayout.marginWidth = 0;
-		column.setLayout(columnLayout);
-		column.setBackground(colorLightShadow);
+		Display display = Display.getCurrent();
+		fontDefault = new Font(display, Preferences.getDefaultFontData());
+		fontCurrent = fontDefault;
+
+		column0 = new Composite(this, SWT.NONE);
+		GridLayout column0Layout = new GridLayout();
+		column0Layout.marginHeight = 0;
+		column0Layout.verticalSpacing = 1;
+		column0Layout.horizontalSpacing = 0;
+		column0Layout.marginWidth = 0;
+		column0.setLayout(column0Layout);
+		column0.setBackground(colorLightShadow);
 		GridData gridDataColumn = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
-		column.setLayoutData(gridDataColumn);
+		column0.setLayoutData(gridDataColumn);
 
 		GridData gridDataTextSeparator = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
 		gridDataTextSeparator.widthHint = 10;
-		textSeparator = new Text(column, SWT.SEPARATOR);
-		textSeparator.setEnabled(false);
-		textSeparator.setBackground(colorLightShadow);
-		textSeparator.setLayoutData(gridDataTextSeparator);
+		textSeparator0 = new Text(column0, SWT.SEPARATOR);
+		textSeparator0.setEnabled(false);
+		textSeparator0.setBackground(colorLightShadow);
+		textSeparator0.setLayoutData(gridDataTextSeparator);
 
-		styledText = new StyledText(column, SWT.MULTI | SWT.READ_ONLY);
-		styledText.setEditable(false);
-		styledText.setEnabled(false);
-		styledText.setBackground(colorLightShadow);
-		Display display = Display.getCurrent();
-		styledText.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
-		fontDefault = new Font(display, Preferences.getDefaultFontData());
-		fontCurrent = fontDefault;
-		styledText.setFont(fontCurrent);
-		GC styledTextGC = new GC(styledText);
+		styledText0 = new StyledText(column0, SWT.MULTI | SWT.READ_ONLY);
+		styledText0.setEditable(false);
+		styledText0.setEnabled(false);
+		styledText0.setBackground(colorLightShadow);
+		styledText0.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
+		styledText0.setFont(fontCurrent);
+
+		GC styledTextGC = new GC(styledText0);
 		fontCharWidth = SWTUtility.getAverageCharacterWidth(styledTextGC);
 		styledTextGC.dispose();
+
 		GridData gridDataAddresses = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
-		gridDataAddresses.heightHint = numberOfLines * styledText.getLineHeight();
-		styledText.setLayoutData(gridDataAddresses);
+		gridDataAddresses.heightHint = numberOfLines * styledText0.getLineHeight();
+		styledText0.setLayoutData(gridDataAddresses);
 		setAddressesGridDataWidthHint();
-		styledText.setContent(new DisplayedContent(charsForAddress, numberOfLines));
+		styledText0.setContent(new DisplayedContent(CHARS_FOR_ADDRESS, numberOfLines));
 
 		column1 = new Composite(this, SWT.NONE);
 		GridLayout column1Layout = new GridLayout();
@@ -675,6 +703,8 @@ public final class HexTexts extends Composite {
 		column1Layout.marginWidth = 0;
 		column1.setLayout(column1Layout);
 		column1.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+		column1.setBackground(colorLightShadow);
+
 		GridData gridDataColumn1 = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
 		column1.setLayoutData(gridDataColumn1);
 
@@ -688,12 +718,12 @@ public final class HexTexts extends Composite {
 		column1Header.setLayoutData(gridDataColumn1Header);
 
 		GridData gridData = new GridData();
-		gridData.horizontalIndent = 1;
+		gridData.horizontalIndent = 1; // because of small line left
 		header1Text = new StyledText(column1Header, SWT.SINGLE | SWT.READ_ONLY);
 		header1Text.setEditable(false);
 		header1Text.setEnabled(false);
-		header1Text.setBackground(colorLightShadow);
 		header1Text.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
+		header1Text.setBackground(colorLightShadow);
 		header1Text.setLayoutData(gridData);
 		header1Text.setFont(fontCurrent);
 		refreshHeader();
@@ -701,13 +731,13 @@ public final class HexTexts extends Composite {
 		styledText1 = new StyledText(column1, SWT.MULTI);
 		styledText1.setFont(fontCurrent);
 		styledText1GC = new GC(styledText1);
-		int width = (int) (myBytesPerLine * 3 * fontCharWidth);
-		gridData5 = new GridData();
-		gridData5.horizontalIndent = 1;
-		gridData5.verticalAlignment = SWT.FILL;
-		gridData5.widthHint = styledText1.computeTrim(0, 0, width, 0).width;
-		gridData5.grabExcessVerticalSpace = true;
-		styledText1.setLayoutData(gridData5);
+
+		styledText1GridData = new GridData();
+		styledText1GridData.horizontalIndent = 1;
+		styledText1GridData.verticalAlignment = SWT.FILL;
+
+		styledText1GridData.grabExcessVerticalSpace = true;
+		styledText1.setLayoutData(styledText1GridData);
 		styledText1.addKeyListener(myKeyAdapter);
 		FocusListener myFocusAdapter = new FocusAdapter() {
 			@Override
@@ -727,7 +757,7 @@ public final class HexTexts extends Composite {
 		};
 		styledText1.addFocusListener(myFocusAdapter);
 		styledText1.addMouseListener(new MyMouseAdapter(true));
-		styledText1.addPaintListener(new MyPaintAdapter(true));
+		styledText1.addPaintListener(new MyPaintAdapter1());
 		styledText1.addTraverseListener(myTraverseAdapter);
 		styledText1.addVerifyKeyListener(myVerifyKeyAdapter);
 		styledText1.setContent(new DisplayedContent(myBytesPerLine * 3, numberOfLines));
@@ -764,16 +794,14 @@ public final class HexTexts extends Composite {
 
 		styledText2 = new StyledText(column2, SWT.MULTI);
 		styledText2.setFont(fontCurrent);
-		width = (int) (myBytesPerLine * fontCharWidth + 1); // one pixel for caret in last column
-		gridData6 = new GridData();
-		gridData6.verticalAlignment = SWT.FILL;
-		gridData6.widthHint = styledText2.computeTrim(0, 0, width, 0).width;
-		gridData6.grabExcessVerticalSpace = true;
-		styledText2.setLayoutData(gridData6);
+		styledText2GridData = new GridData();
+		styledText2GridData.verticalAlignment = SWT.FILL;
+		styledText2GridData.grabExcessVerticalSpace = true;
+		styledText2.setLayoutData(styledText2GridData);
 		styledText2.addKeyListener(myKeyAdapter);
 		styledText2.addFocusListener(myFocusAdapter);
 		styledText2.addMouseListener(new MyMouseAdapter(false));
-		styledText2.addPaintListener(new MyPaintAdapter(false));
+		styledText2.addPaintListener(new MyPaintAdapter2());
 		styledText2.addTraverseListener(myTraverseAdapter);
 		styledText2.addVerifyKeyListener(myVerifyKeyAdapter);
 		styledText2.setContent(new DisplayedContent(myBytesPerLine, numberOfLines));
@@ -788,6 +816,10 @@ public final class HexTexts extends Composite {
 		styledText2.setCaret(nonDefaultCaret);
 		styledText2GC = new GC(styledText2);
 		setCharset(null);
+		
+		// TODO: For debugging layout issues
+		// styledText2.setBackground(colorBlue);
+		adaptWidthToBytesPerLine();
 
 		super.setFont(fontCurrent);
 		ScrollBar vertical = getVerticalBar();
@@ -839,6 +871,14 @@ public final class HexTexts extends Composite {
 		});
 	}
 
+	private void adaptWidthToBytesPerLine() {
+		int width = (int) (myBytesPerLine * 3 * fontCharWidth);
+		styledText1GridData.widthHint = styledText1.computeTrim(0, 0, width, 0).width;
+
+		width = (int) (myBytesPerLine * fontCharWidth + 1); // one pixel for caret in last column
+		styledText2GridData.widthHint = styledText2.computeTrim(0, 0, width, 0).width;
+	}
+
 	public boolean isValid() {
 		return myContent != null;
 	}
@@ -883,7 +923,7 @@ public final class HexTexts extends Composite {
 		StringBuilder theText = new StringBuilder();
 		for (int i = 0; i < limit; i += myBytesPerLine, address += myBytesPerLine) {
 			boolean indenting = true;
-			for (int j = (charsForAddress - 2) * 4; j > 0; j -= 4) {
+			for (int j = (CHARS_FOR_ADDRESS - 2) * 4; j > 0; j -= 4) {
 				int nibble = ((int) (address >>> j)) & 0x0f;
 				if (nibble != 0) {
 					indenting = false;
@@ -895,10 +935,10 @@ public final class HexTexts extends Composite {
 						theText.append('0');
 					}
 				} else {
-					theText.append(nibbleToHex[nibble]);
+					theText.append(NIBBLE_TO_HEX[nibble]);
 				}
 			}
-			theText.append(nibbleToHex[((int) address) & 0x0f]).append(':');
+			theText.append(NIBBLE_TO_HEX[((int) address) & 0x0f]).append(':');
 		}
 
 		return theText;
@@ -1005,15 +1045,15 @@ public final class HexTexts extends Composite {
 				if (event.widget == styledText2) {
 					myContent.insert((byte) aChar, getCaretPos());
 				} else if (myUpANibble == 0) {
-					myContent.insert((byte) (hexToNibble[aChar - '0'] << 4), getCaretPos());
+					myContent.insert((byte) (HEX_TO_NIBBLE[aChar - '0'] << 4), getCaretPos());
 				} else {
-					myContent.overwrite(hexToNibble[aChar - '0'], 4, 4, getCaretPos());
+					myContent.overwrite(HEX_TO_NIBBLE[aChar - '0'], 4, 4, getCaretPos());
 				}
 			} else {
 				if (event.widget == styledText2) {
 					myContent.overwrite((byte) aChar, getCaretPos());
 				} else {
-					myContent.overwrite(hexToNibble[aChar - '0'], myUpANibble * 4, 4, getCaretPos());
+					myContent.overwrite(HEX_TO_NIBBLE[aChar - '0'], myUpANibble * 4, 4, getCaretPos());
 				}
 				myContent.get(ByteBuffer.wrap(tmpRawBuffer, 0, 1), null, getCaretPos());
 				int offset = (int) (getCaretPos() - myTextAreasStart);
@@ -1196,12 +1236,16 @@ public final class HexTexts extends Composite {
 	 * Performs a find on the text and sets the selection accordingly. The find
 	 * starts at the current caret position.
 	 *
-	 * @param findString    the literal to find
-	 * @param isHexString   consider the literal as an hex string (ie. "0fdA1").
-	 *                      Used for binary finds. Will search full bytes only, odd
-	 *                      number of hex characters will have a leading '0' added.
-	 * @param searchForward look for matches after current position
-	 * @param ignoreCase    match upper case with lower case characters
+	 * @param findString
+	 *            the literal to find
+	 * @param isHexString
+	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
+	 *            binary finds. Will search full bytes only, odd number of hex
+	 *            characters will have a leading '0' added.
+	 * @param searchForward
+	 *            look for matches after current position
+	 * @param ignoreCase
+	 *            match upper case with lower case characters
 	 * @return whether a match was found
 	 */
 	public Match findAndSelect(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase)
@@ -1333,7 +1377,8 @@ public final class HexTexts extends Composite {
 	 * @param isHexString
 	 * @param searchForward
 	 * @param ignoreCase
-	 * @throws NumberFormatException if the replace string is not a valid hex string
+	 * @throws NumberFormatException
+	 *             if the replace string is not a valid hex string
 	 */
 	private void initFinder(String findString, boolean isHexString, boolean searchForward, boolean ignoreCase)
 			throws NumberFormatException {
@@ -1373,7 +1418,7 @@ public final class HexTexts extends Composite {
 	}
 
 	private void makeFirstRowSameHeight() {
-		((GridData) textSeparator.getLayoutData()).heightHint = header1Text.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+		((GridData) textSeparator0.getLayoutData()).heightHint = header1Text.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 		((GridData) textSeparator2.getLayoutData()).heightHint = header1Text.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 	}
 
@@ -1558,23 +1603,23 @@ public final class HexTexts extends Composite {
 		styledText1.getCaret().setVisible(false);
 		styledText2.getCaret().setVisible(false);
 		if (mode == SET_TEXT) {
-			styledText.getContent().setText(newText.toString());
+			styledText0.getContent().setText(newText.toString());
 			styledText1.getContent().setText(resultHex.toString());
 			styledText2.getContent().setText(resultChar.toString());
 			myPreviousLine = -1;
 		} else {
 			boolean forward = mode == SHIFT_FORWARD;
-			styledText.setRedraw(false);
+			styledText0.setRedraw(false);
 			styledText1.setRedraw(false);
 			styledText2.setRedraw(false);
-			((DisplayedContent) styledText.getContent()).shiftLines(newText.toString(), forward);
+			((DisplayedContent) styledText0.getContent()).shiftLines(newText.toString(), forward);
 			((DisplayedContent) styledText1.getContent()).shiftLines(resultHex.toString(), forward);
 			((DisplayedContent) styledText2.getContent()).shiftLines(resultChar.toString(), forward);
-			styledText.setRedraw(true);
+			styledText0.setRedraw(true);
 			styledText1.setRedraw(true);
 			styledText2.setRedraw(true);
 			if (myPreviousLine >= 0 && myPreviousLine < numberOfLines) {
-				myPreviousLine += newText.length() / charsForAddress * (forward ? 1 : -1);
+				myPreviousLine += newText.length() / CHARS_FOR_ADDRESS * (forward ? 1 : -1);
 			}
 			if (myPreviousLine < -1 || myPreviousLine >= numberOfLines) {
 				myPreviousLine = -1;
@@ -1675,7 +1720,7 @@ public final class HexTexts extends Composite {
 	}
 
 	private void refreshHeader() {
-		header1Text.setText(headerRow.substring(0, Math.min(myBytesPerLine * 3, headerRow.length())));
+		header1Text.setText(headerRow.substring(0, Math.min(myBytesPerLine * 3, headerRow.length())) + " ");
 	}
 
 	void refreshSelections() {
@@ -1729,11 +1774,14 @@ public final class HexTexts extends Composite {
 	 * or, if there is no selection, inserts at the current caret offset. Overwrite
 	 * mode replaces contents at the current selection start.
 	 *
-	 * @param replaceString the new string
-	 * @param isHexString   consider the literal as an hex string (ie. "0fdA1").
-	 *                      Used for binary finds. Will replace full bytes only, odd
-	 *                      number of hex characters will have a leading '0' added.
-	 * @throws NumberFormatException if the replace string is not a valid hex string
+	 * @param replaceString
+	 *            the new string
+	 * @param isHexString
+	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
+	 *            binary finds. Will replace full bytes only, odd number of hex
+	 *            characters will have a leading '0' added.
+	 * @throws NumberFormatException
+	 *             if the replace string is not a valid hex string
 	 */
 	public void replace(String replaceString, boolean isHexString) throws NumberFormatException {
 		if (replaceString == null) {
@@ -1761,18 +1809,22 @@ public final class HexTexts extends Composite {
 	 * Replaces all occurrences of findString with replaceString. The find starts at
 	 * the current caret position.
 	 *
-	 * @param findString         the literal to find
-	 * @param isFindHexString    consider the literal as an hex string (ie.
-	 *                           "0fdA1"). Used for binary finds. Will search full
-	 *                           bytes only, odd number of hex characters will have
-	 *                           a leading '0' added.
-	 * @param searchForward      look for matches after current position
-	 * @param ignoreCase         match upper case with lower case characters
-	 * @param replaceString      the new string
-	 * @param isReplaceHexString consider the literal as an hex string (ie.
-	 *                           "0fdA1"). Used for binary finds. Will replace full
-	 *                           bytes only, odd number of hex characters will have
-	 *                           a leading '0' added.
+	 * @param findString
+	 *            the literal to find
+	 * @param isFindHexString
+	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
+	 *            binary finds. Will search full bytes only, odd number of hex
+	 *            characters will have a leading '0' added.
+	 * @param searchForward
+	 *            look for matches after current position
+	 * @param ignoreCase
+	 *            match upper case with lower case characters
+	 * @param replaceString
+	 *            the new string
+	 * @param isReplaceHexString
+	 *            consider the literal as an hex string (ie. "0fdA1"). Used for
+	 *            binary finds. Will replace full bytes only, odd number of hex
+	 *            characters will have a leading '0' added.
 	 * @return An array with [0]=number of replacements, [1]=last replaced start
 	 *         position
 	 * @throws IOException
@@ -1886,7 +1938,7 @@ public final class HexTexts extends Composite {
 	}
 
 	private void setAddressesGridDataWidthHint() {
-		((GridData) styledText.getLayoutData()).widthHint = (int) (charsForAddress * fontCharWidth);
+		((GridData) styledText0.getLayoutData()).widthHint = (int) (CHARS_FOR_ADDRESS * fontCharWidth);
 	}
 
 	public void setInsertMode(boolean insert) {
@@ -1906,7 +1958,8 @@ public final class HexTexts extends Composite {
 	 * display area in the same position, but only if it falls within the new
 	 * content's limits.
 	 *
-	 * @param newContent the content to be displayed
+	 * @param newContent
+	 *            the content to be displayed
 	 */
 	public void setContentProvider(BinaryContent newContent) {
 		boolean firstContent = (myContent == null);
@@ -1953,7 +2006,8 @@ public final class HexTexts extends Composite {
 	/**
 	 * @see Control#setFont(org.eclipse.swt.graphics.Font) Font height must not be 1
 	 *      or 2.
-	 * @throws IllegalArgumentException if font height is 1 or 2
+	 * @throws IllegalArgumentException
+	 *             if font height is 1 or 2
 	 */
 	@Override
 	public void setFont(Font font) {
@@ -1978,9 +2032,9 @@ public final class HexTexts extends Composite {
 		fontCharWidth = SWTUtility.getAverageCharacterWidth(gc);
 		gc.dispose();
 		makeFirstRowSameHeight();
-		styledText.setFont(fontCurrent);
+		styledText0.setFont(fontCurrent);
 		setAddressesGridDataWidthHint();
-		styledText.pack(true);
+		styledText0.pack(true);
 		styledText1.setFont(fontCurrent);
 		styledText1.pack(true);
 		styledText2.setFont(fontCurrent);
@@ -1995,8 +2049,10 @@ public final class HexTexts extends Composite {
 	 * selection point (if it was at the start of the selection it will move to the
 	 * new start, otherwise to the new end point). The new selection is made visible
 	 *
-	 * @param start inclusive start selection position
-	 * @param end   exclusive end selection position
+	 * @param start
+	 *            inclusive start selection position
+	 * @param end
+	 *            exclusive end selection position
 	 */
 	public void setSelection(long start, long end) {
 		select(start, end);
@@ -2021,7 +2077,8 @@ public final class HexTexts extends Composite {
 	/**
 	 * Shows the position on screen.
 	 *
-	 * @param position where relocation should go
+	 * @param position
+	 *            where relocation should go
 	 */
 	public void showMark(long position) {
 		myLastLocationPosition = position;
@@ -2083,14 +2140,14 @@ public final class HexTexts extends Composite {
 	private void updateNumberOfLines() {
 		int height = getClientArea().height - header1Text.computeSize(SWT.DEFAULT, SWT.DEFAULT, false).y;
 
-		numberOfLines = height / styledText.getLineHeight();
+		numberOfLines = height / styledText0.getLineHeight();
 		if (numberOfLines < 1) {
 			numberOfLines = 1;
 		}
 
 		numberOfLines_1 = numberOfLines - 1;
 
-		((DisplayedContent) styledText.getContent()).setDimensions(charsForAddress, numberOfLines);
+		((DisplayedContent) styledText0.getContent()).setDimensions(CHARS_FOR_ADDRESS, numberOfLines);
 		((DisplayedContent) styledText1.getContent()).setDimensions(myBytesPerLine * 3, numberOfLines);
 		((DisplayedContent) styledText2.getContent()).setDimensions(myBytesPerLine, numberOfLines);
 	}
@@ -2110,17 +2167,17 @@ public final class HexTexts extends Composite {
 	}
 
 	void updateTextsMetrics() {
-		int width = getClientArea().width - styledText.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
+		int width = getClientArea().width - styledText0.computeSize(SWT.DEFAULT, SWT.DEFAULT).x;
 		int displayedNumberWidth = (int) (fontCharWidth * 4); // styledText1 and
 		// styledText2
 		myBytesPerLine = (width / displayedNumberWidth) & 0xfffffff8; // 0, 8, 16, 24, etc.
 		if (myBytesPerLine < 8) {
 			myBytesPerLine = 8;
 		}
-		gridData5.widthHint = styledText1.computeTrim(0, 0, (int) (myBytesPerLine * 3 * fontCharWidth), 100).width;
-		gridData6.widthHint = styledText2.computeTrim(0, 0, (int) (myBytesPerLine * fontCharWidth ), 100).width;
+		adaptWidthToBytesPerLine();
+
 		updateNumberOfLines();
-		layout(new Control[] { header1Text, styledText, styledText1, styledText2 }, SWT.DEFER);
+		layout(new Control[] { header1Text, styledText0, styledText1, styledText2 }, SWT.DEFER);
 		updateScrollBar();
 		refreshHeader();
 		myTextAreasStart = (((long) getVerticalBar().getSelection()) * myBytesPerLine) << verticalBarFactor;
