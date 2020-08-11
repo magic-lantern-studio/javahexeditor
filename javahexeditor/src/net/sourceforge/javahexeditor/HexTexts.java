@@ -2114,8 +2114,8 @@ public final class HexTexts extends Composite {
 		int displayedNumberWidth = (int) (fontCharWidth * 4); // styledText1 and
 		// styledText2
 		myBytesPerLine = (width / displayedNumberWidth) & 0xfffffff8; // 0, 8, 16, 24, etc.
-		if (myBytesPerLine < 16) {
-			myBytesPerLine = 16;
+		if (myBytesPerLine < 8) {
+			myBytesPerLine = 8;
 		}
 		gridData5.widthHint = styledText1.computeTrim(0, 0, (int) (myBytesPerLine * 3 * fontCharWidth), 100).width;
 		gridData6.widthHint = styledText2.computeTrim(0, 0, (int) (myBytesPerLine * fontCharWidth ), 100).width;
