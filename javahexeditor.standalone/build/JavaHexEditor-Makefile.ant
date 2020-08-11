@@ -7,9 +7,9 @@
 	<target name="create_run_jars">
 
 		<!--It requires the "year", "release" (x.y.z format) and the "version" information passed as properties. -->
-		<fail unless="year"/>
-		<fail unless="release"/>
-		<fail unless="version"/>
+		<fail unless="year" />
+		<fail unless="release" />
+		<fail unless="version" />
 
 		<echo message="Creating version '${version}' of release ${release} in year ${year}." />
 
@@ -131,6 +131,7 @@
 	</target>
 
 	<target name="create_macosx_app">
+		<fail unless="platform" />
 		<mkdir dir="../out/${platform}/javahexeditor.app" />
 		<!-- See the "build/jarbundler.txt" fie for details on the task -->
 		<!-- The ".icns" file was created using http://iconverticons.com/online -->
@@ -142,6 +143,12 @@
 	</target>
 
 	<target name="create_windows_executable">
+		<fail unless="basedir" />
+		<fail unless="basedir" />
+		<fail unless="year" />
+		<fail unless="version" />
+		<fail unless="platform" />
+	
 		<property name="xml" value="JavaHexEditor.launch4j.xml" />
 		<copy todir="../out">
 			<fileset file="${xml}" />
@@ -161,8 +168,10 @@
 	</target>
 
 	<target name="create_platform_zip">
-		<delete file="../out/${platform}/javahexeditor-${platform}.zip" />
+		<fail unless="platform" />
 
+		<delete file="../out/javahexeditor-${platform}.zip"/>
+		
 		<!-- ZIP code and source from Eclipse workspace to "out" folder -->
 		<!-- The regular ZIP task cannot preserve the executable flags for Unix, therefore we use a native Unix zip 
 		 	 <zip destfile="../out/javahexeditor-${platform}.zip" basedir="../out/${platform}" />
