@@ -60,9 +60,9 @@ public final class PreferencesManager {
 	private static final int itemsDisplayed = 9; // Number of font names
 	// displayed in list
 	private static final Set<Integer> scalableSizes = new TreeSet<Integer>(
-			Arrays.asList(new Integer[] { new Integer(6), new Integer(7), new Integer(8), new Integer(9),
-					new Integer(10), new Integer(11), new Integer(12), new Integer(13), new Integer(14),
-					new Integer(16), new Integer(18), new Integer(22), new Integer(32), new Integer(72) }));
+			Arrays.asList(new Integer[] { Integer.valueOf(6), Integer.valueOf(7), Integer.valueOf(8), Integer.valueOf(9),
+					Integer.valueOf(10), Integer.valueOf(11), Integer.valueOf(12), Integer.valueOf(13), Integer.valueOf(14),
+					Integer.valueOf(16), Integer.valueOf(18), Integer.valueOf(22), Integer.valueOf(32), Integer.valueOf(72) }));
 
 	int dialogResult = SWT.CANCEL;
 	private List<FontData> fontsListCurrent;
@@ -424,7 +424,7 @@ public final class PreferencesManager {
 						heights = new TreeSet<Integer>();
 						fontsSorted.put(aData.getName(), heights);
 					}
-					heights.add(new Integer(aData.getHeight()));
+					heights.add(Integer.valueOf(aData.getHeight()));
 				}
 				if (!list.isDisposed()) {
 					list.setItems(fontsSorted.keySet().toArray(new String[0]));

@@ -251,7 +251,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
 				long[] longSelection = manager.getLongSelection(e);
 				SelectionChangedEvent event = new SelectionChangedEvent(HexEditor.this, new StructuredSelection(
-						new Object[] { new Long(longSelection[0]), new Long(longSelection[1]) }));
+						new Object[] { Long.valueOf(longSelection[0]), Long.valueOf(longSelection[1]) }));
 				for (ISelectionChangedListener listener : selectionListeners) {
 					listener.selectionChanged(event);
 				}
@@ -361,7 +361,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 	@Override
 	public ISelection getSelection() {
 		RangeSelection rangeSelection = getManager().getSelection();
-		return new StructuredSelection(new Object[] { new Long(rangeSelection.start), new Long(rangeSelection.end) });
+		return new StructuredSelection(new Object[] { Long.valueOf(rangeSelection.start), Long.valueOf(rangeSelection.end) });
 	}
 
 	@Override

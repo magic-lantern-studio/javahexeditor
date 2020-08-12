@@ -1316,8 +1316,8 @@ public final class HexTexts extends Composite {
 	private void getHighlightRangesInScreen(long start, int length) {
 		highlightRangesInScreen.clear();
 		if (myLastLocationPosition >= start && myLastLocationPosition < start + length) {
-			highlightRangesInScreen.add(new Integer((int) (myLastLocationPosition - myTextAreasStart)));
-			highlightRangesInScreen.add(new Integer(1));
+			highlightRangesInScreen.add(Integer.valueOf((int) (myLastLocationPosition - myTextAreasStart)));
+			highlightRangesInScreen.add(Integer.valueOf(1));
 		}
 	}
 

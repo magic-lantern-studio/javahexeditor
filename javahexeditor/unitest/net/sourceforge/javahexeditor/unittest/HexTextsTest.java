@@ -53,37 +53,37 @@ public final class HexTextsTest extends TestCase {
 		// _
 		assertTrue(merged == null || merged.isEmpty());
 
-		changes.add(new Long(0));
-		changes.add(new Long(1));
+		changes.add(Long.valueOf(0));
+		changes.add(Long.valueOf(1));
 		merged = hexTexts.mergeRanges(changes, highlights); // C _ _ _
 		assertEquals(1, merged.size());
 		assertEquals(0, (merged.get(0)).start);
 		assertEquals(1, (merged.get(0)).length);
 
-		changes.set(0, new Long(1));
-		changes.set(1, new Long(2));
+		changes.set(0, Long.valueOf(1));
+		changes.set(1, Long.valueOf(2));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ C C _
 		assertEquals(1, merged.size());
 		assertEquals(1, (merged.get(0)).start);
 		assertEquals(2, (merged.get(0)).length);
 
 		changes.clear();
-		highlights.add(new Integer(0));
-		highlights.add(new Integer(1));
+		highlights.add(Integer.valueOf(0));
+		highlights.add(Integer.valueOf(1));
 		merged = hexTexts.mergeRanges(changes, highlights); // H _ _ _
 		assertEquals(1, merged.size());
 		assertEquals(0, (merged.get(0)).start);
 		assertEquals(1, (merged.get(0)).length);
 
-		highlights.set(0, new Integer(1));
-		highlights.set(1, new Integer(2));
+		highlights.set(0, Integer.valueOf(1));
+		highlights.set(1, Integer.valueOf(2));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ H H _
 		assertEquals(1, merged.size());
 		assertEquals(1, (merged.get(0)).start);
 		assertEquals(2, (merged.get(0)).length);
 
-		changes.add(new Long(0));
-		changes.add(new Long(1));
+		changes.add(Long.valueOf(0));
+		changes.add(Long.valueOf(1));
 		merged = hexTexts.mergeRanges(changes, highlights); // C H H _
 		assertEquals(2, merged.size());
 		assertEquals(0, (merged.get(0)).start);
@@ -91,8 +91,8 @@ public final class HexTextsTest extends TestCase {
 		assertEquals(1, (merged.get(1)).start);
 		assertEquals(2, (merged.get(1)).length);
 
-		changes.set(0, new Long(3));
-		changes.set(1, new Long(1));
+		changes.set(0, Long.valueOf(3));
+		changes.set(1, Long.valueOf(1));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ H H C _
 		assertEquals(2, merged.size());
 		assertEquals(1, (merged.get(0)).start);
@@ -100,8 +100,8 @@ public final class HexTextsTest extends TestCase {
 		assertEquals(3, (merged.get(1)).start);
 		assertEquals(1, (merged.get(1)).length);
 
-		changes.set(0, new Long(4));
-		changes.set(1, new Long(2));
+		changes.set(0, Long.valueOf(4));
+		changes.set(1, Long.valueOf(2));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ H H _ C C _
 		assertEquals(2, merged.size());
 		assertEquals(1, (merged.get(0)).start);
@@ -109,15 +109,15 @@ public final class HexTextsTest extends TestCase {
 		assertEquals(4, (merged.get(1)).start);
 		assertEquals(2, (merged.get(1)).length);
 
-		changes.set(0, new Long(1));
-		changes.set(1, new Long(2));
+		changes.set(0, Long.valueOf(1));
+		changes.set(1, Long.valueOf(2));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ CH CH _
 		assertEquals(1, merged.size());
 		assertEquals(1, (merged.get(0)).start);
 		assertEquals(2, (merged.get(0)).length);
 
-		changes.set(0, new Long(1));
-		changes.set(1, new Long(1));
+		changes.set(0, Long.valueOf(1));
+		changes.set(1, Long.valueOf(1));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ CH H _
 		assertEquals(2, merged.size());
 		assertEquals(1, (merged.get(0)).start);
@@ -125,8 +125,8 @@ public final class HexTextsTest extends TestCase {
 		assertEquals(2, (merged.get(1)).start);
 		assertEquals(1, (merged.get(1)).length);
 
-		changes.set(0, new Long(2));
-		changes.set(1, new Long(1));
+		changes.set(0, Long.valueOf(2));
+		changes.set(1, Long.valueOf(1));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ H CH _
 		assertEquals(2, merged.size());
 		assertEquals(1, (merged.get(0)).start);
@@ -134,8 +134,8 @@ public final class HexTextsTest extends TestCase {
 		assertEquals(2, (merged.get(1)).start);
 		assertEquals(1, (merged.get(1)).length);
 
-		changes.set(0, new Long(2));
-		changes.set(1, new Long(2));
+		changes.set(0, Long.valueOf(2));
+		changes.set(1, Long.valueOf(2));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ H CH C _
 		assertEquals(3, merged.size());
 		assertEquals(1, (merged.get(0)).start);
@@ -145,7 +145,7 @@ public final class HexTextsTest extends TestCase {
 		assertEquals(3, (merged.get(2)).start);
 		assertEquals(1, (merged.get(2)).length);
 
-		highlights.set(1, new Integer(4));
+		highlights.set(1, Integer.valueOf(4));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ H CH CH H _
 		assertEquals(3, merged.size());
 		assertEquals(1, (merged.get(0)).start);
@@ -155,7 +155,7 @@ public final class HexTextsTest extends TestCase {
 		assertEquals(4, (merged.get(2)).start);
 		assertEquals(1, (merged.get(2)).length);
 
-		highlights.set(0, new Integer(2));
+		highlights.set(0, Integer.valueOf(2));
 		merged = hexTexts.mergeRanges(changes, highlights); // _ _ CH CH H H _
 		assertEquals(2, merged.size());
 		assertEquals(2, (merged.get(0)).start);

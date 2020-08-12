@@ -74,9 +74,9 @@ final class BinaryContentActionHistory {
 	/**
 	 * Action types
 	 */
-	static final Integer TYPE_DELETE = new Integer(0);
-	static final Integer TYPE_INSERT = new Integer(1);
-	static final Integer TYPE_OVERWRITE = new Integer(2);
+	static final Integer TYPE_DELETE = Integer.valueOf(0);
+	static final Integer TYPE_INSERT = Integer.valueOf(1);
+	static final Integer TYPE_OVERWRITE = Integer.valueOf(2);
 
 	private BinaryContent content;
 	private Range myLastActionRange;
