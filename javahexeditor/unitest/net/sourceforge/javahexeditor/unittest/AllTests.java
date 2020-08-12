@@ -25,6 +25,7 @@ import java.io.RandomAccessFile;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import net.sourceforge.javahexeditor.RandomAccessFileFactory;
 
 public class AllTests {
 
@@ -45,7 +46,7 @@ public class AllTests {
 	public static File setUpLongData(long size) {
 		File longFile = new File(AllTests.class.getResource(resourceLongData).getPath());
 		try {
-			RandomAccessFile file = new RandomAccessFile(longFile, "rws");
+			RandomAccessFile file = RandomAccessFileFactory.createRandomAccessFile(longFile, "rws");
 			file.setLength(size);
 			file.close();
 		} catch (IOException e) {

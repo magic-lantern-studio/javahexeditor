@@ -115,7 +115,7 @@ public final class BinaryContent {
 			}
 
 			this.file = file;
-			data = new RandomAccessFile(this.file, "r");
+			data = RandomAccessFileFactory.createRandomAccessFile(this.file, "r");
 			dirty = isDirty;
 		}
 
@@ -612,7 +612,7 @@ public final class BinaryContent {
 			actions.endAction();
 		}
 		commitChanges();
-		RandomAccessFile dst = new RandomAccessFile(destinationFile, "rws");
+		RandomAccessFile dst = RandomAccessFileFactory.createRandomAccessFile(destinationFile, "rws");
 		IOException preCloseException = null;
 		try {
 			dst.setLength(length);
