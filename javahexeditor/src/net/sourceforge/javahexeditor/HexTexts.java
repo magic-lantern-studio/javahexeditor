@@ -98,6 +98,7 @@ public final class HexTexts extends Composite {
 	private final Color colorBlue = Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);
 	private final Color colorLightShadow = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 	private final Color colorNormalShadow = Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW);
+	private final Color black = Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
 
 	private static final byte[] HEX_TO_NIBBLE = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12,
 			13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -167,7 +168,6 @@ public final class HexTexts extends Composite {
 	private StyledText styledText0;
 
 	private Composite column1;
-	private Composite column1Header;
 	private StyledText header1Text;
 	private StyledText styledText1;
 	private GridData styledText1GridData;
@@ -410,11 +410,7 @@ public final class HexTexts extends Composite {
 			for (int block = 8; block <= myBytesPerLine; block += 8) {
 				int width = lineWidth;
 				int xPos = (int) (charLen * block * fontCharWidth);
-				if (block < myBytesPerLine) {
 					xPos = xPos - rightHalfWidth;
-				} else {
-					width += (int) fontCharWidth;
-				}
 				event.gc.setLineWidth(width);
 				event.gc.drawLine(xPos, event.y, xPos, event.y + event.height);
 			}
@@ -682,7 +678,7 @@ public final class HexTexts extends Composite {
 		styledText0.setEditable(false);
 		styledText0.setEnabled(false);
 		styledText0.setBackground(colorLightShadow);
-		styledText0.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
+		styledText0.setForeground(black);
 		styledText0.setFont(fontCurrent);
 
 		GC styledTextGC = new GC(styledText0);
@@ -702,29 +698,19 @@ public final class HexTexts extends Composite {
 		column1Layout.horizontalSpacing = 0;
 		column1Layout.marginWidth = 0;
 		column1.setLayout(column1Layout);
-		column1.setBackground(display.getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 		column1.setBackground(colorLightShadow);
 
 		GridData gridDataColumn1 = new GridData(SWT.BEGINNING, SWT.FILL, false, true);
 		column1.setLayoutData(gridDataColumn1);
 
-		column1Header = new Composite(column1, SWT.NONE);
-		column1Header.setBackground(colorLightShadow);
-		GridLayout column1HeaderLayout = new GridLayout();
-		column1HeaderLayout.marginHeight = 0;
-		column1HeaderLayout.marginWidth = 0;
-		column1Header.setLayout(column1HeaderLayout);
-		GridData gridDataColumn1Header = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
-		column1Header.setLayoutData(gridDataColumn1Header);
-
-		GridData gridData = new GridData();
-		gridData.horizontalIndent = 1; // because of small line left
-		header1Text = new StyledText(column1Header, SWT.SINGLE | SWT.READ_ONLY);
+		header1Text = new StyledText(column1, SWT.SINGLE | SWT.READ_ONLY);
+		GridData gridData_header1Text = new GridData();
+		gridData_header1Text.horizontalIndent = 1; // because of small line left
+		header1Text.setLayoutData(gridData_header1Text);
 		header1Text.setEditable(false);
 		header1Text.setEnabled(false);
-		header1Text.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
+		header1Text.setForeground(black);
 		header1Text.setBackground(colorLightShadow);
-		header1Text.setLayoutData(gridData);
 		header1Text.setFont(fontCurrent);
 		refreshHeader();
 
@@ -871,11 +857,15 @@ public final class HexTexts extends Composite {
 		});
 	}
 
+	/**
+	 * Calculate the width of the styled text containing the hex values 
+	 * and the styled text containing the utf-8 values.
+	 */
 	private void adaptWidthToBytesPerLine() {
-		int width = (int) (myBytesPerLine * 3 * fontCharWidth);
+		int width = (int) (((myBytesPerLine * 3) -1 ) * fontCharWidth);
 		styledText1GridData.widthHint = styledText1.computeTrim(0, 0, width, 0).width;
 
-		width = (int) (myBytesPerLine * fontCharWidth + 1); // one pixel for caret in last column
+		width = (int) ((myBytesPerLine - 1) * fontCharWidth + 1); // one pixel for caret in last column
 		styledText2GridData.widthHint = styledText2.computeTrim(0, 0, width, 0).width;
 	}
 
@@ -1417,6 +1407,10 @@ public final class HexTexts extends Composite {
 		return !myInserting;
 	}
 
+	/**
+	 *Adapts the heights of the spacers left and right of the adresses to
+	 *the same height as the adresses text field.
+	 */
 	private void makeFirstRowSameHeight() {
 		((GridData) textSeparator0.getLayoutData()).heightHint = header1Text.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 		((GridData) textSeparator2.getLayoutData()).heightHint = header1Text.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
@@ -1719,8 +1713,11 @@ public final class HexTexts extends Composite {
 		}
 	}
 
+	/**
+	 * Sets the nummber of addresses in header1Text.
+	 */
 	private void refreshHeader() {
-		header1Text.setText(headerRow.substring(0, Math.min(myBytesPerLine * 3, headerRow.length())) + " ");
+		header1Text.setText(headerRow.substring(0, Math.min(myBytesPerLine * 3, headerRow.length())));
 	}
 
 	void refreshSelections() {
