@@ -392,7 +392,8 @@ public final class Manager {
 	public void doOpen(File forceThisFile, boolean createNewFile, String charset) throws CoreException {
 		String filePath = "";
 		if (forceThisFile == null && !createNewFile) {
-			filePath = new FileDialog(shell, SWT.OPEN).open();
+			FileDialog fileDialog = createFileDialog(shell, SWT.OPEN);
+			filePath = fileDialog.open();
 			if (filePath == null) {
 				return;
 			}
@@ -758,14 +759,7 @@ public final class Manager {
 	 * @return
 	 */
 	public File showSaveAsDialog(Shell aShell, boolean selection) {
-		FileDialog dialog = new FileDialog(aShell, SWT.SAVE);
-		String filterPath;
-		if (contentFile != null) {
-			filterPath = contentFile.getParentFile().getAbsolutePath();
-		} else {
-			filterPath = System.getProperty("user.dir");
-		}
-		dialog.setFilterPath(filterPath);
+		FileDialog dialog = createFileDialog(aShell, SWT.SAVE);
 
 		if (selection) {
 			dialog.setText(Texts.MANAGER_SAVE_DIALOG_TITLE_SAVE_SELECTION_AS);
@@ -786,6 +780,18 @@ public final class Manager {
 			}
 		}
 		return file;
+	}
+
+	private FileDialog createFileDialog(Shell aShell, int style) {
+		FileDialog dialog = new FileDialog(aShell, style);
+		String filterPath;
+		if (contentFile != null) {
+			filterPath = contentFile.getParentFile().getAbsolutePath();
+		} else {
+			filterPath = System.getProperty("user.dir");
+		}
+		dialog.setFilterPath(filterPath);
+		return dialog;
 	}
 
 	/**
