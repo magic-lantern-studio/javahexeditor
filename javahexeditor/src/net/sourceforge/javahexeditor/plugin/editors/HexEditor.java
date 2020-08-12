@@ -349,7 +349,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 			try {
 				// throws IllegalAccessException, InstantiationException,
 				// ClassNotFoundException
-				result = (IContentOutlinePage) aBundle.loadClass(className).newInstance();
+				result = (IContentOutlinePage) aBundle.loadClass(className).getConstructor().newInstance();
 			} catch (Exception e) {
 				return null;
 			}
@@ -361,7 +361,8 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 	@Override
 	public ISelection getSelection() {
 		RangeSelection rangeSelection = getManager().getSelection();
-		return new StructuredSelection(new Object[] { Long.valueOf(rangeSelection.start), Long.valueOf(rangeSelection.end) });
+		return new StructuredSelection(
+				new Object[] { Long.valueOf(rangeSelection.start), Long.valueOf(rangeSelection.end) });
 	}
 
 	@Override
