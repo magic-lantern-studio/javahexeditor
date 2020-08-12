@@ -754,9 +754,14 @@ public final class Manager {
 	 */
 	public File showSaveAsDialog(Shell aShell, boolean selection) {
 		FileDialog dialog = new FileDialog(aShell, SWT.SAVE);
+		String filterPath;
 		if (contentFile != null) {
-			dialog.setFilterPath(contentFile.getParentFile().getAbsolutePath());
+			filterPath = contentFile.getParentFile().getAbsolutePath();
+		} else {
+			filterPath = System.getProperty("user.dir");
 		}
+		dialog.setFilterPath(filterPath);
+
 		if (selection) {
 			dialog.setText(Texts.MANAGER_SAVE_DIALOG_TITLE_SAVE_SELECTION_AS);
 		} else {
