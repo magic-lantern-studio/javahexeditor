@@ -41,6 +41,24 @@
 
 	</target>
 
+	<target name="_configure_default_download">
+		<echo>Configure default download "${defaultFile}" for "${defaultOS}".</echo>
+		<!-- From https://sourceforge.net/p/forge/documentation/Using%20the%20Release%20API/ -->
+		<property environment="env" />
+		<property name="api_key" value="${env.SOURCEFORGE_API_KEY}" />
+		<exec executable="curl.exe">
+			<arg value="-H" />
+			<arg value="Accept: application/json" />
+			<arg value="-X" />
+			<arg value="PUT" />
+			<arg value="-d" />
+			<arg value="default=${defaultOS}" />
+			<arg value="-d" />
+			<arg value="api_key=${api_key}" />
+			<arg value="https://sourceforge.net/projects/javahexeditor/files/javahexeditor/current/${defaultFile}" />
+		</exec>
+	</target>
+
 	<target name="build_and_upload_all">
 		<antcall target="build_plugin" />
 		<antcall target="build_standlone_binaries" />
@@ -93,6 +111,20 @@
 		<exec executable="C:\jac\system\Windows\Tools\NET\WinSCP\WinSCP.com">
 			<arg value="/script=site.scp" />
 		</exec>
+		<echo>Upload completed.</echo>
+
+		<antcall target="_configure_default_download">
+			<param name="defaultOS" value="linux" />
+			<param name="defaultFile" value="javahexeditor-linux-x86_64.zip" />
+		</antcall>
+		<antcall target="_configure_default_download">
+			<param name="defaultOS" value="mac" />
+			<param name="defaultFile" value="javahexeditor-macosx-x86_64.zip" />
+		</antcall>
+		<antcall target="_configure_default_download">
+			<param name="defaultOS" value="windows" />
+			<param name="defaultFile" value="javahexeditor-win32-x86_64.zip" />
+		</antcall>
 		<echo>Upload completed.</echo>
 	</target>
 
