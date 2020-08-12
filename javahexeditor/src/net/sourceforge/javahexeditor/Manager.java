@@ -577,12 +577,17 @@ public final class Manager {
 	 */
 	public void openFile(File contentFile, String charset) throws CoreException {
 		this.contentFile = contentFile;
-		try {
-			content = new BinaryContent(contentFile);
-		} catch (IOException ex) {
-			throw new CoreException(new Status(IStatus.ERROR, HexEditorPlugin.ID,
-					TextUtility.format(Texts.MANAGER_OPEN_MESSAGE_CANNOT_OPEN_FILE, contentFile.getAbsolutePath()),
-					ex));
+		if (contentFile == null) {
+			content = new BinaryContent();
+		} else {
+			try {
+				content = new BinaryContent(contentFile);
+			} catch (IOException ex) {
+				this.contentFile = null;
+				throw new CoreException(new Status(IStatus.ERROR, HexEditorPlugin.ID,
+						TextUtility.format(Texts.MANAGER_OPEN_MESSAGE_CANNOT_OPEN_FILE, contentFile.getAbsolutePath()),
+						ex));
+			}
 		}
 		hexTexts.setCharset(charset);
 		hexTexts.setContentProvider(content);
