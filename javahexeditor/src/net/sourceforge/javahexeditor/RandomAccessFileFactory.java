@@ -33,8 +33,10 @@ import java.util.*;
 public final class RandomAccessFileFactory {
 
 	private static final List<RandomAccessFile> instances = new ArrayList<RandomAccessFile>(3);
+	private static final boolean debug = false;
 
-	public static RandomAccessFile createRandomAccessFile(final File file, final String mode) throws FileNotFoundException {
+	public static RandomAccessFile createRandomAccessFile(final File file, final String mode)
+			throws FileNotFoundException {
 		RandomAccessFile raf = new RandomAccessFile(file, mode) {
 			@Override
 			public void close() throws IOException {
@@ -42,20 +44,31 @@ public final class RandomAccessFileFactory {
 				synchronized (instances) {
 					instances.remove(this);
 				}
-				log("Closed random access file for '" + file.getAbsolutePath() + "' in mode '" + mode + "'");
-				Thread.dumpStack();
+				logContext("Closed random access file for '" + file.getAbsolutePath());
 
 			}
 		};
+
 		synchronized (instances) {
 			instances.add(raf);
 		}
-		log("Created random access file for '" + file.getAbsolutePath() + "' in mode '" + mode + "'");
-		Thread.dumpStack();
+		logContext("Created random access file for '" + file.getAbsolutePath() + "' in mode '" + mode + "'");
 		return raf;
 	}
 
 	public static void log(String message) {
-		System.out.println("RandomAccessFileFactory: " + message);
+		if (debug) {
+			System.out.println("RandomAccessFileFactory: " + message);
+			System.out.flush();
+		}
+	}
+
+	private static void logContext(String message) {
+		if (debug) {
+			log(message);
+			log(instances.size() + " random access files open");
+			Thread.dumpStack();
+			System.err.flush();
+		}
 	}
 }
