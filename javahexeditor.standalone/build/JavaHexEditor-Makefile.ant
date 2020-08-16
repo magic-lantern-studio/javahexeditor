@@ -135,7 +135,7 @@
 		<mkdir dir="../out/${platform}/javahexeditor.app" />
 		<!-- See the "build/jarbundler.txt" fie for details on the task -->
 		<!-- The ".icns" file was created using http://iconverticons.com/online -->
-		<jarbundler dir="../out/${platform}/" name="javahexeditor" copyright="(C) 2006 - ${year} Jordi Bergenthal and Peter Dell" shortname="Java Hex Editor" build="$${version}" icon="../../javahexeditor/src/images/javahexeditor-48x48.icns" useJavaXKey="true" mainclass="net.sourceforge.javahexeditor.standalone.HexEditor" jar="../out/${platform}/JavaHexEditor.jar" jvmversion="1.8+" vmoptions="-Xms256M -Xmx256M">
+		<jarbundler dir="../out/${platform}/" name="javahexeditor" copyright="(C) 2006 - ${year} Jordi Bergenthal and Peter Dell" shortname="Java Hex Editor" build="$${version}" icon="../icons/javahexeditor-48x48.icns" useJavaXKey="true" mainclass="net.sourceforge.javahexeditor.standalone.HexEditor" jar="../out/${platform}/JavaHexEditor.jar" jvmversion="1.8+" vmoptions="-Xms256M -Xmx256M">
 		</jarbundler>
 		<copy todir="../out/${platform}/javahexeditor.app/Contents/MacOS" overwrite="true">
 			<fileset file="./universalJavaApplicationStub" />
