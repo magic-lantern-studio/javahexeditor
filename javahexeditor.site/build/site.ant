@@ -1,8 +1,12 @@
-<project name="Site" basedir="." default="build_and_upload_all">
+<project name="Site" basedir=".." default="build_and_upload_all">
 
 	<target name="_init">
 		<property name="year" value="2020" />
 		<property name="release" value="0.5.2" />
+		<echo message="${basedir}" />
+		<property name="buildFolder" value="build" />
+		<property name="updateFolder" value="update" />
+		<property name="dailyFolder" value="${updateFolder}/daily" />
 		<!-- Set version property -->
 		<tstamp>
 			<format property="version" pattern="yyyy-MM-dd HH:mm:ss" locale="en,GB" />
@@ -61,34 +65,36 @@
 
 	<target name="build_and_upload_all">
 		<antcall target="build_plugin" />
-		<antcall target="build_standlone_binaries" />
+		<antcall target="build_standlone_executables" />
 		<antcall target="publish_plugin" />
 		<antcall target="upload_all" />
 	</target>
 
 	<target name="build_plugin" depends="_init">
 		<antcall target="_clean_folder">
-			<param name="folder" value="daily" />
+			<param name="folder" value="${dailyFolder}" />
 		</antcall>
-		<copy tofile="daily\site.xml" preservelastmodified="true" overwrite="true">
-			<fileset file="daily/site-template.xml" />
+		<property name="dailyXML" location="${dailyFolder}/site.xml" />
+
+		<copy tofile="${dailyXML}" preservelastmodified="true" overwrite="true">
+			<fileset file="${buildFolder}/site-template.xml" />
 		</copy>
-		<input>Open daily/site.xml and press "Build All" and hit "Return" or press "Cancel" to stop the build.</input>
+		<input>Open ${dailyXML} and press "Build All" and hit "Return" or press "Cancel" to stop the build.</input>
 	</target>
 
-	<target name="build_standlone_binaries" depends="_init">
+	<target name="build_standlone_executables" depends="_init">
 
 		<!-- Copy built-in documentation to web site folder for upload -->
 		<!-- The destination folders are excluded from source code versioning -->
-		<copy file="../../javahexeditor/src/index.html" todir="../../javahexeditor.site" overwrite="true" />
-		<replace file="../../javahexeditor.site/index.html" token="&lt;p id=&quot;version&quot;&gt;" value="&lt;p&gt;This is version ${version} of the program. " />
-		<mkdir dir="../../javahexeditor.site/images" />
-		<copy todir="../../javahexeditor.site/images" overwrite="true">
-			<fileset dir="../../javahexeditor/src/images" />
+		<copy file="../javahexeditor/src/index.html" todir="../../javahexeditor.site" overwrite="true" />
+		<replace file="../javahexeditor.site/index.html" token="&lt;p id=&quot;version&quot;&gt;" value="&lt;p&gt;This is version ${version} of the program. " />
+		<mkdir dir="../javahexeditor.site/images" />
+		<copy todir="../javahexeditor.site/images" overwrite="true">
+			<fileset dir="../javahexeditor/src/images" />
 		</copy>
 
-		<ant antfile="JavaHexEditor-Makefile.ant" dir="C:\jac\system\Java\Programming\Repositories\JavaHexEditor\javahexeditor.standalone\build">
-		</ant>
+
+		<ant antfile="JavaHexEditor-Makefile.ant" dir="C:\jac\system\Java\Programming\Repositories\JavaHexEditor\javahexeditor.standalone\build" />
 	</target>
 
 	<target name="publish_plugin" depends="_init">
@@ -96,12 +102,12 @@
 		<fail unless="release" />
 
 		<antcall target="_copy_folder">
-			<param name="source" value="daily" />
-			<param name="target" value="${release}" />
+			<param name="source" value="${dailyFolder}" />
+			<param name="target" value="${updateFolder}/${release}" />
 		</antcall>
 		<antcall target="_copy_folder">
-			<param name="source" value="daily" />
-			<param name="target" value="." />
+			<param name="source" value="${dailyFolder}" />
+			<param name="target" value="${updateFolder}" />
 		</antcall>
 		<echo>Publishing completed.</echo>
 	</target>
@@ -109,7 +115,7 @@
 	<target name="upload_all">
 		<echo>Uploading all plugin builds and binary builds from ${basedir}.</echo>
 		<exec executable="C:\jac\system\Windows\Tools\NET\WinSCP\WinSCP.com">
-			<arg value="/script=site.scp" />
+			<arg value="/script=${buildFolder}\site.scp" />
 		</exec>
 		<echo>Upload completed.</echo>
 
