@@ -1,8 +1,8 @@
 
 javahexeditor - Java Hex Editor
 
-Copyright (C) 2006 - 2017 Jordi Bergenthal, pestatije(-at_)users.sourceforge.net.
-The official javahexeditor project site is sourceforge.net/projects/javahexeditor.
+Copyright (C) 2006 - 2020 Jordi Bergenthal, pestatije(-at_)users.sourceforge.net.
+The official javahexeditor project site is https://sourceforge.net/projects/javahexeditor.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@ See http://javahexeditor.sourceforge.net.
 
 javahexeditor change log
 ------------------------
+
+10/08/2020 version 0.5.2.
+    See src/index.html for changes from now on.
 
 26/11/2017 version 0.5.1.
     Adapt wrappers for Windows and Mac OS X to Java 1.8.

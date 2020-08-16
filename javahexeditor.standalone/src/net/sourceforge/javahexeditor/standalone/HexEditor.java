@@ -65,7 +65,8 @@ import net.sourceforge.javahexeditor.common.TextUtility;
 import net.sourceforge.javahexeditor.standalone.HexEditorMenu.Actions;
 
 /**
- * Stand-alone wrapper for the Hex Editor.
+ * Stand-alone wrapper for the Hex Editor. The stand-alone version is compiled
+ * with and for Java 1.6.
  *
  * @author Jordi Bergenthal, Peter Dell
  */
@@ -86,7 +87,7 @@ public final class HexEditor {
 	 * @param args
 	 *            optional first String: name of a file to edit
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Throwable {
 		HexEditor instance = new HexEditor();
 		try {
 			instance.run(args);

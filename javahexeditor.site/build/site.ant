@@ -12,7 +12,7 @@
 			<format property="version" pattern="yyyy-MM-dd HH:mm:ss" locale="en,GB" />
 		</tstamp>
 		<!-- Create version file -->
-		<echo file="..\..\javahexeditor\bin\net\sourceforge\javahexeditor\Manager.version"> "${version}"</echo>
+		<echo file="..\javahexeditor\bin\net\sourceforge\javahexeditor\Manager.version"> "${version}"</echo>
 
 	</target>
 

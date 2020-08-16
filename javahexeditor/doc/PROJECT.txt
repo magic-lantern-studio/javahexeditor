@@ -1,5 +1,5 @@
 Project URL https://sourceforge.net/projects/javahexeditor/
-Client: Bitkinex
+Client: WinSCP
 Host: web.sourceforge.net
 Protocol: SFTP
 Port: 22
