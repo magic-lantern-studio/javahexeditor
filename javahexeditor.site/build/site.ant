@@ -114,8 +114,8 @@
 
 	<target name="upload_all">
 		<echo>Uploading all plugin builds and binary builds from ${basedir}.</echo>
-		<exec executable="C:\jac\system\Windows\Tools\NET\WinSCP\WinSCP.com">
-			<arg value="/script=${buildFolder}\site.scp" />
+		<exec executable="C:\jac\system\Windows\Tools\NET\WinSCP\WinSCP.com" failonerror="true">
+			<arg value="/script=build/site.scp" />
 		</exec>
 		<echo>Upload completed.</echo>
 

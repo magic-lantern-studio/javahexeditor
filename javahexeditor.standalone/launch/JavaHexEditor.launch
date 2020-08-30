@@ -9,6 +9,7 @@
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+<listEntry value="org.eclipse.eclemma.ui.launchGroup.coverage"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sourceforge.javahexeditor.standalone.HexEditor"/>
 <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="net.sourceforge.javahexeditor.standalone"/>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jars" name="Create Runnable Jars for Project net.sourceforge.javahexeditor.standalone with Jar-in-Jar Loader">
+	<taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" />
+
+	<!--this file was created by Eclipse Runnable JAR Export Wizard                   -->
+	<!--ANT 1.7 is required                                                           -->
+	<target name="create_run_jars">
+
+		<property name="applicationFolder" location=".." />
+		<property name="applicationName" value="Java Hex Editor" />
+		<property name="applicationNameLowerCase" value="javahexeditor" />
+		<property name="applicationTitle" value="Java Hex Editor" />
+		<property name="applicationSupportURL" value="https://www.wudsn.com" />
+		<property name="applicationHeaderType" value="gui" />
+		<property name="applicationMainClass" value="com.wudsn.tools.base.hello.Hello" />
+		<property name="applicationBinFolder" location="../bin" />
+		<property name="applicationPlatformTextFile" location="${applicationBinFolder}/com/wudsn/tools/base/hello/Hello.os" />
+		<property name="iconFilePath" value="C:\jac\system\Java\Programming\Repositories\WUDSN-Base\com.wudsn.tools.base.standalone\icons\application.ico" />
+		<property name="authors" value="Peter Dell" />
+		<property name="releaseYears" value="2019 - 2020" />
+		<property name="release" value="0.1.2" />
+		<property name="version" value="Test" />
+		<property name="jreMinVersion" value="1.8.0" />
+
+		<ant dir="..\..\com.wudsn.tools.base.standalone\build" antfile="Makefile.ant" target="create_standalone_executables" />
+
+	</target>
+
+</project>

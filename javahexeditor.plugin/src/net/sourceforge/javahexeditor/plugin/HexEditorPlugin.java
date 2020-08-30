@@ -25,6 +25,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import net.sourceforge.javahexeditor.FindReplaceHistory;
+import net.sourceforge.javahexeditor.Manager;
 import net.sourceforge.javahexeditor.common.Log;
 
 /**
@@ -32,7 +33,7 @@ import net.sourceforge.javahexeditor.common.Log;
  */
 public final class HexEditorPlugin extends AbstractUIPlugin implements Log.Delegate {
 
-	public static final String ID = "net.sourceforge.javahexeditor";
+	public static final String ID = Manager.ID;
 
 	// The shared instance.
 	private static HexEditorPlugin plugin;
