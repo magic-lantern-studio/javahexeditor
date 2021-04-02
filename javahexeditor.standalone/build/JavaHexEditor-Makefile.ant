@@ -6,183 +6,24 @@
 	<!--ANT 1.7 is required                                                           -->
 	<target name="create_run_jars">
 
-		<!--It requires the "year", "release" (x.y.z format) and the "version" information passed as properties. -->
-		<fail unless="year" />
-		<fail unless="release" />
-		<fail unless="version" />
+		<property name="applicationFolder" location=".." />
+		<property name="applicationName" value="Java Hex Editor" />
+		<property name="applicationNameLowerCase" value="javahexeditor" />
+		<property name="applicationTitle" value="Java Hex Editor" />
+		<property name="applicationSupportURL" value="https://www.wudsn.com" />
+		<property name="applicationHeaderType" value="gui" />
+		<property name="applicationMainClass" value="com.wudsn.tools.base.hello.Hello" />
+		<property name="applicationBinFolder" location="../bin" />
+		<property name="applicationPlatformTextFile" location="${applicationBinFolder}/com/wudsn/tools/base/hello/Hello.os" />
+		<property name="iconFilePath" value="C:\jac\system\Java\Programming\Repositories\WUDSN-Base\com.wudsn.tools.base.standalone\icons\application.ico" />
+		<property name="authors" value="Peter Dell" />
+		<property name="releaseYears" value="2019 - 2020" />
+		<property name="release" value="0.1.2" />
+		<property name="version" value="Test" />
+		<property name="jreMinVersion" value="1.8.0" />
 
-		<echo message="Creating version '${version}' of release ${release} in year ${year}." />
+		<ant dir="..\..\com.wudsn.tools.base.standalone\build" antfile="Makefile.ant" target="create_standalone_executables" />
 
-		<mkdir dir="../out" />
-
-		<antcall target="create_platform_jar">
-			<param name="platform" value="linux-x86" />
-			<param name="platform_text" value="Linux - x86 (32-bit)" />
-		</antcall>
-		<antcall target="create_platform_jar">
-			<param name="platform" value="linux-x86_64" />
-			<param name="platform_text" value="Linux - x86 (64-bit)" />
-		</antcall>
-		<antcall target="create_platform_jar">
-			<param name="platform" value="macosx-x86" />
-			<param name="platform_text" value="Mac OS X - x86 (32-bit)" />
-		</antcall>
-		<antcall target="create_platform_jar">
-			<param name="platform" value="macosx-x86_64" />
-			<param name="platform_text" value="Mac OS X - x86 (64-bit)" />
-		</antcall>
-		<antcall target="create_platform_jar">
-			<param name="platform" value="win32-x86" />
-			<param name="platform_text" value="Windows - x86 (32-bit)" />
-		</antcall>
-		<antcall target="create_platform_jar">
-			<param name="platform" value="win32-x86_64" />
-			<param name="platform_text" value="Windows - x86 (64-bit)" />
-		</antcall>
-
-		<!-- Create exe wrappers/scripts -->
-
-		<!-- Copy Linux shell script -->
-		<antcall target="create_linux_script">
-			<param name="platform" value="linux-x86" />
-		</antcall>
-		<antcall target="create_linux_script">
-			<param name="platform" value="linux-x86_64" />
-		</antcall>
-
-		<!-- Create Mac OS X app folder -->
-		<antcall target="create_macosx_app">
-			<param name="platform" value="macosx-x86" />
-		</antcall>
-		<antcall target="create_macosx_app">
-			<param name="platform" value="macosx-x86_64" />
-		</antcall>
-
-		<!-- Create Windows executable -->
-		<antcall target="create_windows_executable">
-			<param name="platform" value="win32-x86" />
-			<param name="runtime_bits" value="32" />
-		</antcall>
-		<antcall target="create_windows_executable">
-			<param name="platform" value="win32-x86_64" />
-			<param name="runtime_bits" value="64" />
-		</antcall>
-
-
-		<!-- Remove jars that have been wrapped before zipping -->
-		<delete file="../out/linux-x86/JavaHexEditor.jar" failonerror="true" />
-		<delete file="../out/linux-x86_64/JavaHexEditor.jar" failonerror="true" />
-		<delete file="../out/macosx-x86/JavaHexEditor.jar" failonerror="true" />
-		<delete file="../out/macosx-x86_64/JavaHexEditor.jar" failonerror="true" />
-		<delete file="../out/win32-x86/JavaHexEditor.jar" failonerror="true" />
-		<delete file="../out/win32-x86_64/JavaHexEditor.jar" failonerror="true" />
-
-		<!-- Create zip files for upload -->
-		<antcall target="create_platform_zip">
-			<param name="platform" value="linux-x86" />
-		</antcall>
-		<antcall target="create_platform_zip">
-			<param name="platform" value="linux-x86_64" />
-		</antcall>
-		<antcall target="create_platform_zip">
-			<param name="platform" value="macosx-x86" />
-		</antcall>
-		<antcall target="create_platform_zip">
-			<param name="platform" value="macosx-x86_64" />
-		</antcall>
-		<antcall target="create_platform_zip">
-			<param name="platform" value="win32-x86" />
-		</antcall>
-		<antcall target="create_platform_zip">
-			<param name="platform" value="win32-x86_64" />
-		</antcall>
-
-	</target>
-
-	<target name="create_platform_jar">
-		<echo message="Creating '${platform_text}' as ${platform}." />
-		<echo message="${platform_text}" file="..\..\javahexeditor\bin\net\sourceforge\javahexeditor\Manager.os" />
-		<mkdir dir="../out/${platform}" />
-		<delete file="../out/${platform}/JavaHexEditor.jar" />
-		<jar destfile="../out/${platform}/JavaHexEditor.jar">
-			<manifest>
-				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
-				<attribute name="Class-Path" value="." />
-				<attribute name="Rsrc-Main-Class" value="net.sourceforge.javahexeditor.standalone.HexEditor" />
-				<attribute name="Rsrc-Class-Path" value="./ org.eclipse.equinox.common.jar org.eclipse.osgi.jar swt.jar" />
-			</manifest>
-			<zipfileset src="../lib/jar-in-jar-loader.zip" />
-			<fileset dir="../../javahexeditor/bin">
-				<exclude name="net/sourceforge/javahexeditor/test/**" />
-			</fileset>
-			<fileset dir="../bin" />
-			<zipfileset dir="../lib" includes="org.eclipse.equinox.common.jar" />
-			<zipfileset dir="../lib" includes="org.eclipse.osgi.jar" />
-			<zipfileset dir="../lib/${platform}" includes="swt.jar" />
-		</jar>
-	</target>
-
-	<target name="create_linux_script">
-		<echo>Creating Linux script for ${platform}</echo>
-		<concat destfile="../out/${platform}/JavaHexEditor" binary="yes">
-			<fileset file="../build/stub.sh" />
-			<fileset file="../out/${platform}/JavaHexEditor.jar" />
-		</concat>
-	</target>
-
-	<target name="create_macosx_app">
-		<fail unless="platform" />
-		<mkdir dir="../out/${platform}/javahexeditor.app" />
-		<!-- See the "build/jarbundler.txt" fie for details on the task -->
-		<!-- The ".icns" file was created using http://iconverticons.com/online -->
-		<jarbundler dir="../out/${platform}/" name="javahexeditor" copyright="(C) 2006 - ${year} Jordi Bergenthal and Peter Dell" shortname="Java Hex Editor" build="$${version}" icon="../icons/javahexeditor-48x48.icns" useJavaXKey="true" mainclass="net.sourceforge.javahexeditor.standalone.HexEditor" jar="../out/${platform}/JavaHexEditor.jar" jvmversion="1.8+" vmoptions="-Xms256M -Xmx256M">
-		</jarbundler>
-		<copy todir="../out/${platform}/javahexeditor.app/Contents/MacOS" overwrite="true">
-			<fileset file="./universalJavaApplicationStub" />
-		</copy>
-	</target>
-
-	<target name="create_windows_executable">
-		<fail unless="basedir" />
-		<fail unless="basedir" />
-		<fail unless="year" />
-		<fail unless="version" />
-		<fail unless="platform" />
-	
-		<property name="xml" value="JavaHexEditor.launch4j.xml" />
-		<copy todir="../out">
-			<fileset file="${xml}" />
-			<filterset>
-				<filter token="JAVAHEXEDTOR_STANDALONE_DIR" value="${basedir}/.." />
-				<filter token="YEAR" value="${year}" />
-				<filter token="RELEASE" value="${release}" />
-				<filter token="VERSION" value="${version}" />
-				<filter token="PLATFORM_ID" value="${platform}" />
-				<filter token="RUNTIME_BITS" value="${runtime_bits}" />
-			</filterset>
-		</copy>
-		<exec executable="C:\jac\system\Java\Tools\RUN\launch4j\launch4jc.exe">
-			<arg value="../out/${xml}" />
-		</exec>
-		<delete file="../out/${xml}" />
-	</target>
-
-	<target name="create_platform_zip">
-		<fail unless="platform" />
-
-		<delete file="../out/javahexeditor-${platform}.zip"/>
-		
-		<!-- ZIP code and source from Eclipse workspace to "out" folder -->
-		<!-- The regular ZIP task cannot preserve the executable flags for Unix, therefore we use a native Unix zip 
-		 	 <zip destfile="../out/javahexeditor-${platform}.zip" basedir="../out/${platform}" />
-		-->
-		<exec executable="C:\jac\cygwin\bin\zip.exe" dir="../out/${platform}" failonerror="true">
-			<arg value="../javahexeditor-${platform}.zip" />
-			<arg value="-r" />
-			<arg value="*" />
-		</exec>
-
-		<delete dir="../out/${platform}" />
 	</target>
 
 </project>

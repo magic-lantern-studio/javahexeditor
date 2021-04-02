@@ -8,8 +8,8 @@
   <cmdLine></cmdLine>
   <chdir>.</chdir>
   <priority>normal</priority>
-  <downloadUrl>http://java.com/download</downloadUrl>
-  <supportUrl>http://javahexeditor.sourceforge.net</supportUrl>
+  <downloadUrl>https://java.com/download</downloadUrl>
+  <supportUrl>https://javahexeditor.sourceforge.io</supportUrl>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
   <icon>@JAVAHEXEDTOR_STANDALONE_DIR@\icons\javahexeditor.ico</icon>

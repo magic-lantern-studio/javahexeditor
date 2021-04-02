@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<!-- Create JAR file and copy it to the library folders for the standalone and the plugin version -->
+<project name="Java Hex Editor" basedir=".." default="create_libraries">
+
+	<target name="create_libraries" description="Create Jar file">
+		<property name="jarFileName" value="net.sourceforge.javahexeditor.jar" />
+		<property name="jarFileStandalonePath" location="../javahexeditor.standalone/lib/${jarFileName}" />
+		<property name="jarFilePluginPath" location="../javahexeditor.plugin/lib/${jarFileName}" />
+		<jar jarfile="${jarFileStandalonePath}" basedir="bin" includes="**/*"  />
+		<copy file="${jarFileStandalonePath}" tofile="${jarFilePluginPath}" overwrite="true" />
+	</target>
+
+</project>
