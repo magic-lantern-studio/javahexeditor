@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 javahexeditor installation notes
 --------------------------------
 
-See http://javahexeditor.sourceforge.net.
+See https://javahexeditor.sourceforge.io.
 
 
 javahexeditor change log

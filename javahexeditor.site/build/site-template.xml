@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="Java Hex Editor" url="http://javahexeditor.sourceforge.net/update">
+   <description name="Java Hex Editor" url="https://javahexeditor.sourceforge.io/update">
       Update site of the Java Hex Editor
    </description>
    <feature url="features/net.sourceforge.javahexeditor_0.5.2.qualifier.jar" id="net.sourceforge.javahexeditor" version="0.5.2.qualifier">

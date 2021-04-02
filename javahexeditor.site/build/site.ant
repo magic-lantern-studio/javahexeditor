@@ -64,10 +64,15 @@
 	</target>
 
 	<target name="build_and_upload_all">
+		<antcall target="build_libraries" />
 		<antcall target="build_plugin" />
 		<antcall target="build_standlone_executables" />
 		<antcall target="publish_plugin" />
 		<antcall target="upload_all" />
+	</target>
+
+	<target name="build_libraries">
+		<ant dir="../javahexeditor/build" antfile="Makefile.ant" target="create_libraries" />
 	</target>
 
 	<target name="build_plugin" depends="_init">

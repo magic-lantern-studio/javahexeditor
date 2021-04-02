@@ -17,6 +17,22 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Jordi Bergenthal, Peter Dell, Andrey Loskutov
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: net.sourceforge.javahexeditor
-Export-Package: net.sourceforge.javahexeditor.plugin,
- net.sourceforge.javahexeditor.plugin.actions,
- net.sourceforge.javahexeditor.plugin.editors
+Export-Package: net.sourceforge.javahexeditor.plugin;
+  uses:="org.osgi.framework,
+   net.sourceforge.javahexeditor.common,
+   net.sourceforge.javahexeditor,
+   org.eclipse.ui.plugin",
+ net.sourceforge.javahexeditor.plugin.actions;uses:="org.eclipse.ui,org.eclipse.jface.action,org.eclipse.jface.viewers",
+ net.sourceforge.javahexeditor.plugin.editors;
+  uses:="org.eclipse.jface.action,
+   org.eclipse.swt.graphics,
+   org.eclipse.swt.widgets,
+   net.sourceforge.javahexeditor,
+   org.eclipse.jface.viewers,
+   org.eclipse.ui,
+   org.eclipse.core.runtime,
+   org.eclipse.jface.preference,
+   org.eclipse.ui.views.contentoutline,
+   org.eclipse.ui.part"
+Bundle-ClassPath: .,
+ lib/net.sourceforge.javahexditor.jar

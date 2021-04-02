@@ -6,7 +6,9 @@
 		<property name="jarFileName" value="net.sourceforge.javahexeditor.jar" />
 		<property name="jarFileStandalonePath" location="../javahexeditor.standalone/lib/${jarFileName}" />
 		<property name="jarFilePluginPath" location="../javahexeditor.plugin/lib/${jarFileName}" />
+		<echo>Creating ${jarFileStandalonePath}</echo>
 		<jar jarfile="${jarFileStandalonePath}" basedir="bin" includes="**/*"  />
+		<echo>Copying ${jarFileStandalonePath} to ${jarFilePluginPath}</echo>
 		<copy file="${jarFileStandalonePath}" tofile="${jarFilePluginPath}" overwrite="true" />
 	</target>
 

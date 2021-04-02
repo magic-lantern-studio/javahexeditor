@@ -1,7 +1,7 @@
 /*
  * javahexeditor, a java hex editor
  * Copyright (C) 2006, 2009 Jordi Bergenthal, pestatije(-at_)users.sourceforge.net
- * The official javahexeditor site is sourceforge.net/projects/javahexeditor
+ * The official javahexeditor site is https://sourceforge.net/projects/javahexeditor
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

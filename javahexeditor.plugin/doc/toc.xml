@@ -2,7 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <!-- The URLs are intentionally "http" instead of "https" because SF does not offer "https" -->
-<toc label="javahexeditor User Guide" topic="http://javahexeditor.sourceforge.net/">
-   <topic label="Web Site" href="http://javahexeditor.sourceforge.net/">
+<toc label="javahexeditor User Guide" topic="https://javahexeditor.sourceforge.io/">
+   <topic label="Web Site" href="https://javahexeditor.sourceforge.io/">
    </topic>
 </toc>

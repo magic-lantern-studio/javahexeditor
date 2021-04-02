@@ -4,13 +4,13 @@
       label="Java Hex Editor"
       version="0.5.2.qualifier"
       provider-name="Jordi Bergenthal, Andre Bossert, Peter Dell, Andrey Loskutov"
-      plugin="net.sourceforge.javahexeditor">
+      plugin="net.sourceforge.javahexeditor.plugin">
 
-   <description url="http://javahexeditor.sourceforge.net">
+   <description url="https://javahexeditor.sourceforge.io">
       A Java Hex Editor Eclipse plugin. Support for very large files. Hex, ASCII and Unicode find. Overwrite/insert modes. Binary and text cut/copy/paste. Undo/redo.
    </description>
 
-   <license url="http://www.gnu.org/licenses/gpl-2.0.txt">
+   <license url="https://www.gnu.org/licenses/gpl-2.0.txt">
       GNU GENERAL PUBLIC LICENSE
          Version 2, June 1991
 
@@ -322,11 +322,11 @@ the &quot;copyright&quot; line and a pointer to where the full notice is found.
    </license>
 
    <url>
-      <update label="Java Hex Editor Update Site" url="http://javahexeditor.sourceforge.net/update"/>
+      <update label="Java Hex Editor Update Site" url="https://javahexeditor.sourceforge.io/update"/>
    </url>
 
    <plugin
-         id="net.sourceforge.javahexeditor"
+         id="net.sourceforge.javahexeditor.plugin"
          download-size="0"
          install-size="0"
          version="0.0.0"

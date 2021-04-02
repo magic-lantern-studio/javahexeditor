@@ -42,7 +42,7 @@ public final class HelpResources {
 		URI uri;
 		if (online) {
 			try {
-				uri = new URI("http://javahexeditor.sourceforge.net");
+				uri = new URI("https://javahexeditor.sourceforge.io");
 			} catch (URISyntaxException ex) {
 				throw new RuntimeException(ex);
 			}

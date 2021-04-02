@@ -395,7 +395,7 @@ public final class BinaryContent {
 	 * immediately in the operating system, instead of having to wait until the
 	 * object is garbage collected. Note: apparently due to a bug in the Java
 	 * virtual machine combined with some dumb OS, files won't be freed after this
-	 * call. See http://forum.java.sun.com/thread.jspa?forumID=4&threadID=158689
+	 * call. See https://forum.java.sun.com/thread.jspa?forumID=4&threadID=158689
 	 */
 	public void dispose() {
 		if (myRanges == null) {

@@ -2,8 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="unitest"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/net.sourceforge.javahexeditor.standalone/lib/org.eclipse.equinox.common.jar"/>
+	<classpathentry kind="lib" path="/net.sourceforge.javahexeditor.standalone/lib/org.eclipse.osgi.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.wudsn.tools.base.standalone"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
