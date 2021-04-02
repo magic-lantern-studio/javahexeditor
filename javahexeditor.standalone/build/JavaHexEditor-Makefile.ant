@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="create_run_jars" name="Create Runnable Jars for Project net.sourceforge.javahexeditor.standalone with Jar-in-Jar Loader">
 
-	<!--this file was created by Eclipse Runnable JAR Export Wizard                   -->
-	<!--ANT 1.7 is required                                                           -->
+	<!-- ANT 1.7 is required  -->
 	<target name="create_run_jars">
 
+		<tstamp>
+			<format property="currentYear" pattern="yyyy" locale="en,US" />
+		</tstamp>
+				
 		<property name="applicationFolder" location=".." />
 		<property name="applicationName" value="JavaHexEditor" />
 		<property name="applicationNameLowerCase" value="javahexeditor" />
@@ -20,9 +23,9 @@
 		<property name="iconFilePath" location="..\icons\javahexeditor.ico" />
 		<property name="icnsFilePath" location="..\icons\javahexeditor-48x48.icns" />
 		<property name="authors" value="Jordi Bergenthal and Peter Dell" />
-		<property name="releaseYears" value="2006 - 2021" />
+		<property name="releaseYears" value="2006 - ${currentYear}" />
 		<property name="release" value="0.5.2" />
-		<property name="version" value="Test" />
+		<property name="version" value="Release" />
 		<property name="jreMinVersion" value="1.8.0" />
 		<property name="outFolder" value="${applicationFolder}/out" />
 
