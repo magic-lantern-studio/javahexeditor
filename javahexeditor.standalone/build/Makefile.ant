@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jars" name="Create Runnable Jars for Project net.sourceforge.javahexeditor.standalone with Jar-in-Jar Loader">
+<project name="Java Hex Editor - Standalone" basedir=".." default="create_run_jars">
 
 	<!-- ANT 1.7 is required  -->
 	<target name="create_run_jars">
@@ -8,20 +8,20 @@
 			<format property="currentYear" pattern="yyyy" locale="en,US" />
 		</tstamp>
 				
-		<property name="applicationFolder" location=".." />
+		<property name="applicationFolder" location="." />
 		<property name="applicationName" value="JavaHexEditor" />
 		<property name="applicationNameLowerCase" value="javahexeditor" />
 		<property name="applicationTitle" value="Java Hex Editor" />
 		<property name="applicationSupportURL" value="https://javahexeditor.sourceforge.io" />
 		<property name="applicationHeaderType" value="gui" />
 		<property name="applicationMainClass" value="net.sourceforge.javahexeditor.standalone.HexEditor" />
-		<property name="applicationBinFolder" location="../bin" />
-		<property name="applicationLibFolder" location="../lib" />
+		<property name="applicationBinFolder" location="bin" />
+		<property name="applicationLibFolder" location="lib" />
 		<property name="applicationLibList" value="net.sourceforge.javahexeditor.jar org.eclipse.equinox.common.jar org.eclipse.osgi.jar swt.jar" />
 		<property name="applicationPlatformLib" value="swt.jar"/>
 		<property name="applicationPlatformTextFile" location="${applicationBinFolder}/net/sourceforge/javahexeditor/standalone/HexEditor.os" />
-		<property name="iconFilePath" location="..\icons\javahexeditor.ico" />
-		<property name="icnsFilePath" location="..\icons\javahexeditor-48x48.icns" />
+		<property name="iconFilePath" location="icons\javahexeditor.ico" />
+		<property name="icnsFilePath" location="icons\javahexeditor-48x48.icns" />
 		<property name="authors" value="Jordi Bergenthal and Peter Dell" />
 		<property name="releaseYears" value="2006 - ${currentYear}" />
 		<property name="release" value="0.5.2" />
@@ -29,8 +29,8 @@
 		<property name="jreMinVersion" value="1.8.0" />
 		<property name="outFolder" value="${applicationFolder}/out" />
 
-		<property name="buildFolder" location="../../../WUDSN-Base/com.wudsn.tools.base.standalone" />
-		<ant dir="${buildFolder}/build" antfile="Makefile.ant" target="create_standalone_executables" />
+		<property name="buildFolder" location="../../WUDSN-Base/com.wudsn.tools.base.standalone" />
+		<ant dir="${buildFolder}" antfile="build/Makefile.ant" target="create_standalone_executables" />
 
 	</target>
 

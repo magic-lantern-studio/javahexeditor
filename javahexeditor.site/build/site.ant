@@ -65,14 +65,14 @@
 
 	<target name="build_and_upload_all">
 		<antcall target="build_libraries" />
-		<antcall target="build_plugin" />
 		<antcall target="build_standlone_executables" />
+		<antcall target="build_plugin" />
 		<antcall target="publish_plugin" />
 		<antcall target="upload_all" />
 	</target>
 
 	<target name="build_libraries">
-		<ant dir="../javahexeditor/build" antfile="Makefile.ant" target="create_libraries" />
+		<ant dir="../javahexeditor" antfile="build/Makefile.ant" target="create_libraries" />
 	</target>
 
 	<target name="build_plugin" depends="_init">
@@ -85,21 +85,27 @@
 			<fileset file="${buildFolder}/site-template.xml" />
 		</copy>
 		<input>Open ${dailyXML} and press "Build All" and hit "Return" or press "Cancel" to stop the build.</input>
+		<fail message="Build failed. Folder 'features' is missing.">
+			<condition>
+				<not>
+					<available file="${dailyFolder}/features" type="dir" />
+				</not>
+			</condition>
+		</fail>
 	</target>
 
 	<target name="build_standlone_executables" depends="_init">
 
 		<!-- Copy built-in documentation to web site folder for upload -->
 		<!-- The destination folders are excluded from source code versioning -->
-		<copy file="../javahexeditor/src/index.html" todir="../../javahexeditor.site" overwrite="true" />
+		<copy file="../javahexeditor/src/index.html" todir="../javahexeditor.site" overwrite="true"/>
 		<replace file="../javahexeditor.site/index.html" token="&lt;p id=&quot;version&quot;&gt;" value="&lt;p&gt;This is version ${version} of the program. " />
 		<mkdir dir="../javahexeditor.site/images" />
 		<copy todir="../javahexeditor.site/images" overwrite="true">
 			<fileset dir="../javahexeditor/src/images" />
 		</copy>
 
-
-		<ant antfile="JavaHexEditor-Makefile.ant" dir="C:\jac\system\Java\Programming\Repositories\JavaHexEditor\javahexeditor.standalone\build" />
+		<ant dir="../javahexeditor.standalone" antfile="build/Makefile.ant" inheritAll="false" />
 	</target>
 
 	<target name="publish_plugin" depends="_init">
@@ -126,11 +132,11 @@
 
 		<antcall target="_configure_default_download">
 			<param name="defaultOS" value="linux" />
-			<param name="defaultFile" value="javahexeditor-linux-x86_64.zip" />
+			<param name="defaultFile" value="javahexeditor-linux-x86_64.tar.gz" />
 		</antcall>
 		<antcall target="_configure_default_download">
 			<param name="defaultOS" value="mac" />
-			<param name="defaultFile" value="javahexeditor-macosx-x86_64.zip" />
+			<param name="defaultFile" value="javahexeditor-macos-x86_64.tar.gz" />
 		</antcall>
 		<antcall target="_configure_default_download">
 			<param name="defaultOS" value="windows" />
