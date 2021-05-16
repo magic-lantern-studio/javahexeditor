@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -122,12 +123,12 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 	}
 
 	// Public id from the contributions.
-	public static final String ID = "net.sourceforge.javahexeditor";
+	public static final String ID = "net.sourceforge.javahexeditor"; //$NON-NLS-1$
 
 	// Private ids from the contributions.
-	private static final String OUTLINE_ELEMENT_ATTRIBUTE_CLASS = "class";
-	private static final String OUTLINE_ELEMENT_NAME = "outline";
-	private static final String OUTLINE_ID = "net.sourceforge.javahexeditor.outline";
+	private static final String OUTLINE_ELEMENT_ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
+	private static final String OUTLINE_ELEMENT_NAME = "outline"; //$NON-NLS-1$
+	private static final String OUTLINE_ID = "net.sourceforge.javahexeditor.outline"; //$NON-NLS-1$
 
 	Manager manager;
 	private IContentOutlinePage outlinePage;
@@ -147,8 +148,10 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 			public void touchFile(File contentFile, IProgressMonitor monitor) throws IOException {
 				IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
-				IFile file = workspace.getRoot().getFileForLocation(new Path(contentFile.getAbsolutePath()));
-				if (file.exists()) {
+				Path p = new Path(contentFile.getAbsolutePath());
+				IWorkspaceRoot r = workspace.getRoot();
+				IFile file = r.getFileForLocation(p);
+				if (file != null && file.exists()) {
 					try {
 						file.appendContents(new ByteArrayInputStream(new byte[0]), true, true, monitor);
 					} catch (CoreException ex) {
@@ -372,7 +375,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		setSite(site);
 		if (!(input instanceof IPathEditorInput) && !(input instanceof ILocationProvider)
 				&& (!(input instanceof IURIEditorInput)) && (!(input instanceof IStorageEditorInput))) {
-			throw new PartInitException("Input '" + input.toString() + "'is not a file");
+			throw new PartInitException("Input '" + input.toString() + "'is not a file"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		setInput(input);
 		// When opening an external file the workbench (Eclipse 3.1) calls
