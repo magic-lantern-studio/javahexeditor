@@ -161,6 +161,10 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 
 	HexEditor activeEditor;
 
+	public HexEditorActionBarContributor() {
+		
+	}
+	
 	/**
 	 * @see EditorActionBarContributor#contributeToMenu(org.eclipse.jface.action.IMenuManager)
 	 */
