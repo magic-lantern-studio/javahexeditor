@@ -31,7 +31,7 @@ import net.sourceforge.javahexeditor.common.Log;
 /**
  * The main plugin class to be used in the desktop.
  */
-public final class HexEditorPlugin extends AbstractUIPlugin implements Log.Delegate {
+public final class HexEditorPlugin extends AbstractUIPlugin {
 
 	public static final String ID = Manager.ID;
 
@@ -63,7 +63,22 @@ public final class HexEditorPlugin extends AbstractUIPlugin implements Log.Deleg
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		Log.setDelegate(this);
+		Log.setDelegate(new Log.Delegate() {
+			
+			public void log(String message, Throwable th) {
+				if (message == null) {
+					message = th.getMessage();
+					if (message == null) {
+						message = th.toString();
+					}
+				}
+				getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, th));
+			}
+
+			public boolean isTraceActive() {
+				return isDebugging();
+			}
+		});
 	}
 
 	/**
@@ -84,18 +99,5 @@ public final class HexEditorPlugin extends AbstractUIPlugin implements Log.Deleg
 		return findReplaceHistory;
 	}
 
-	public void log(String message, Throwable th) {
-		if (message == null) {
-			message = th.getMessage();
-			if (message == null) {
-				message = th.toString();
-			}
-		}
-		getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, th));
-	}
 
-	@Override
-	public boolean isTraceActive() {
-		return isDebugging();
-	}
 }
