@@ -126,7 +126,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 	// Public id from the contributions.
 	public static final String ID = "net.sourceforge.javahexeditor"; //$NON-NLS-1$
 
-	// Private ids from the contributions.
+	// Private IDs from the contributions.
 	private static final String OUTLINE_ELEMENT_ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
 	private static final String OUTLINE_ELEMENT_NAME = "outline"; //$NON-NLS-1$
 	private static final String OUTLINE_ID = "net.sourceforge.javahexeditor.outline"; //$NON-NLS-1$
@@ -280,21 +280,20 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		monitor.beginTask(Texts.EDITOR_MESSAGE_SAVING_FILE_PLEASE_WAIT, IProgressMonitor.UNKNOWN);
-		try {
-			getManager().saveFile(monitor);
-		} catch (IOException ex) {
-			statusLineManager.setErrorMessage(ex.getMessage());
+		File file = getManager().getContentFile();
+		if (file == null) {
+			doSaveAs();
+		} else {
+			saveToFile(file, false, monitor);
 		}
-		monitor.done();
 	}
 
 	@Override
 	public void doSaveAs() {
-		saveToFile(false);
+		saveAsToFile(false);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") // for return (T) result;
 	@Override
 	public <T> T getAdapter(Class<T> required) {
 		Object result = null;
@@ -406,7 +405,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 		}
 	}
 
-	void saveToFile(final boolean selection) {
+	void saveAsToFile(final boolean selection) {
 		final File file = getManager().showSaveAsDialog(getEditorSite().getShell(), selection);
 		if (file == null) {
 			return;
@@ -437,6 +436,7 @@ public final class HexEditor extends EditorPart implements ISelectionProvider {
 				manager.saveAsFile(file, monitor);
 			}
 		} catch (IOException ex) {
+			monitor.setCanceled(true);
 			monitor.done();
 			statusLineManager.setErrorMessage(ex.getMessage());
 			return;

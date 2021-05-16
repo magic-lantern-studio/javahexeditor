@@ -409,12 +409,13 @@ public final class HexEditor {
 	}
 
 	private boolean doSave() {
-		if (manager.getContentFile() == null) {
+		File file = manager.getContentFile();
+		if (file == null) {
 			return doSaveAs();
 		}
 
 		try {
-			manager.saveFile(null);
+			manager.saveAsFile(file, null);
 		} catch (IOException ex) {
 			SWTUtility.showErrorMessage(shell, Texts.SAVE_ERROR_TITLE, Texts.SAVE_ERROR_MESSAGE, ex.getMessage());
 			return false;

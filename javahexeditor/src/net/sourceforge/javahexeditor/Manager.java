@@ -617,12 +617,13 @@ public final class Manager {
 	}
 
 	/**
-	 * Perform save-as action on opened file
+	 * Perform save-as action currently opened file. 
+	 * When successful, the specified file is the new currently opened file.
 	 *
 	 * @param file
 	 *            The new file, not <code>null</code>.
 	 * @param monitor
-	 *
+	 *            The progress monitor or <code>null</code>.
 	 * @throws IOException
 	 *             If the operation fails
 	 */
@@ -652,20 +653,7 @@ public final class Manager {
 	}
 
 	/**
-	 * Perform save action on opened file
-	 * 
-	 * @param monitor
-	 *            the progress monitor or <code>null</code>
-	 *
-	 * @throws IOException
-	 *             If the operation fails
-	 */
-	public void saveFile(IProgressMonitor monitor) throws IOException {
-		saveAsFile(contentFile, monitor);
-	}
-
-	/**
-	 * Sets Find/Replace combo lists pre-exisiting values.
+	 * Sets Find/Replace combo lists pre-existing values.
 	 *
 	 * @param findReplaceHistory
 	 *            The modifiable find-replace history, not <code>null</code>.

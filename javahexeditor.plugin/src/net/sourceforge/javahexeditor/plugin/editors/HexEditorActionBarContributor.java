@@ -66,7 +66,7 @@ public final class HexEditorActionBarContributor extends EditorActionBarContribu
 				myMenuItem.addSelectionListener(new SelectionAdapter() {
 					@Override
 					public void widgetSelected(SelectionEvent e) {
-						activeEditor.saveToFile(true);
+						activeEditor.saveAsToFile(true);
 					}
 				});
 			} else if (MenuIds.TRIM.equals(getId())) {

@@ -34,4 +34,5 @@ Export-Package: net.sourceforge.javahexeditor.plugin;
    org.eclipse.jface.preference,
    org.eclipse.ui.views.contentoutline,
    org.eclipse.ui.part"
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/net.sourceforge.javahexeditor.jar

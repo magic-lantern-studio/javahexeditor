@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.osgi.jar"/>
-	<classpathentry kind="lib" path="lib/net.sourceforge.javahexeditor.jar"/>
+	<classpathentry kind="lib" path="lib/net.sourceforge.javahexeditor.jar" sourcepath="/net.sourceforge.javahexeditor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.wudsn.tools.base.standalone"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
