@@ -276,7 +276,7 @@ public final class Manager {
 	/**
 	 * Determines if the last action can be undone
 	 *
-	 * @return true: an action ca be undone
+	 * @return true: an action can be undone
 	 */
 	public boolean canUndo() {
 		return hexTexts != null && hexTexts.canUndo();
